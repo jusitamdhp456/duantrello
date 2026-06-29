@@ -58,36 +58,36 @@ export default function BoardsPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Boards</h1>
+    <div className="p-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-light text-gray-700 tracking-wide">Boards</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {isLoading ? (
-          <div className="col-span-full flex items-center"><Loader2 className="animate-spin mr-2" /> Loading boards...</div>
+          <div className="col-span-full flex items-center justify-center py-12"><Loader2 className="animate-spin text-gray-500 w-8 h-8" /></div>
         ) : (
           <>
             {boards.map((board) => (
               <Link 
                 key={board.id} 
                 href={`/boards/${board.id}`}
-                className="block h-32 bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition group"
+                className="block h-32 bg-neu-base shadow-neu-convex rounded-2xl p-6 hover:shadow-neu-concave transition-all duration-300 group flex items-center justify-center"
               >
-                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">{board.name}</h3>
+                <h3 className="font-semibold text-xl text-gray-700 group-hover:text-blue-600 transition tracking-wide text-center">{board.name}</h3>
               </Link>
             ))}
 
-            <form onSubmit={handleCreateBoard} className="h-32 bg-gray-50 border border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center">
+            <form onSubmit={handleCreateBoard} className="h-32 bg-neu-base shadow-neu-concave rounded-2xl p-4 flex flex-col items-center justify-center border-none">
               <input 
                 type="text" 
                 value={newBoardName}
                 onChange={(e) => setNewBoardName(e.target.value)}
                 placeholder="New board title..." 
-                className="w-full text-sm p-2 mb-2 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-black"
+                className="w-full text-sm p-3 mb-3 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium text-center placeholder-gray-400"
                 required
               />
-              <button type="submit" className="w-full bg-black text-white text-sm py-2 rounded hover:bg-gray-800 transition">
+              <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs py-2.5 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">
                 Create Board
               </button>
             </form>

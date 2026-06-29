@@ -48,39 +48,43 @@ export default function CampaignsPage() {
   if (!activeWorkspaceId) return <div className="p-8">Please select a workspace.</div>;
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Campaigns</h1>
-        <button onClick={() => setIsAdding(true)} className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium flex items-center">
-          <Plus className="w-4 h-4 mr-2" /> New Campaign
+    <div className="p-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-light text-gray-700 tracking-wide">Campaigns</h1>
+        <button onClick={() => setIsAdding(true)} className="bg-neu-base text-gray-600 px-6 py-3 rounded-full shadow-neu-convex hover:shadow-neu-concave text-sm font-bold transition-all duration-200 uppercase tracking-widest flex items-center">
+          <Plus className="w-5 h-5 mr-2" /> New Campaign
         </button>
       </div>
 
       {isAdding && (
-        <form onSubmit={handleCreate} className="mb-6 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <form onSubmit={handleCreate} className="mb-10 bg-neu-base p-8 rounded-[2rem] shadow-neu-concave border-none max-w-2xl">
           <input 
             type="text" 
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Campaign Name..." 
-            className="w-full text-sm p-2 mb-2 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full text-sm p-4 mb-6 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium placeholder-gray-400"
           />
-          <div className="flex space-x-2 mt-2">
-            <button type="submit" className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium">Save</button>
-            <button type="button" onClick={() => setIsAdding(false)} className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium">Cancel</button>
+          <div className="flex space-x-4">
+            <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">Save</button>
+            <button type="button" onClick={() => setIsAdding(false)} className="bg-neu-base text-gray-500 px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">Cancel</button>
           </div>
         </form>
       )}
 
       {isLoading ? (
-        <Loader2 className="animate-spin text-gray-500" />
+        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-gray-500 w-8 h-8" /></div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {campaigns.map(c => (
-            <div key={c.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition">
-              <h3 className="font-bold text-lg text-gray-900">{c.name}</h3>
-              <p className="text-sm text-gray-500 mt-2 capitalize">Status: {c.status}</p>
+            <div key={c.id} className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex hover:shadow-neu-concave transition-all duration-300">
+              <h3 className="font-semibold text-2xl text-gray-700 tracking-wide truncate" title={c.name}>{c.name}</h3>
+              <div className="mt-6 flex items-center">
+                <span className="px-4 py-2 bg-neu-base shadow-neu-concave rounded-full text-xs font-bold text-gray-500 uppercase tracking-widest">
+                  {c.status}
+                </span>
+              </div>
             </div>
           ))}
           {campaigns.length === 0 && <p className="text-gray-500 col-span-full">No campaigns found.</p>}

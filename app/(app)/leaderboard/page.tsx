@@ -52,64 +52,55 @@ export default function LeaderboardPage() {
   if (!activeWorkspaceId) return <div className="p-8">Please select a workspace.</div>;
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="mb-8 text-center">
-        <Trophy className="w-16 h-16 mx-auto text-yellow-500 mb-4" />
-        <h1 className="text-3xl font-bold">Workspace Leaderboard</h1>
-        <p className="text-gray-500 mt-2">Top performers</p>
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="mb-12 text-center">
+        <Trophy className="w-20 h-20 mx-auto text-yellow-400 mb-6 drop-shadow-md" />
+        <h1 className="text-5xl font-light text-gray-700 tracking-wide">Workspace Leaderboard</h1>
+        <p className="text-gray-500 mt-4 text-lg font-medium">Top performers and active contributors</p>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center"><Loader2 className="animate-spin text-gray-500" /></div>
+        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-gray-500 w-8 h-8" /></div>
       ) : (
-        <div className="grid grid-cols-3 gap-8">
-          <div className="col-span-2">
-            <h2 className="text-xl font-bold mb-4 flex items-center"><Medal className="w-5 h-5 mr-2 text-gray-700" /> Rankings</h2>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Score</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {scores.map((score, idx) => (
-                    <tr key={score.user_id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        #{idx + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                        {score.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600 text-right">
-                        {score.total_score} pts
-                      </td>
-                    </tr>
-                  ))}
-                  {scores.length === 0 && (
-                    <tr><td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">No scores yet.</td></tr>
-                  )}
-                </tbody>
-              </table>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="lg:col-span-2">
+            <h2 className="text-2xl font-semibold mb-6 flex items-center text-gray-700 tracking-wide"><Medal className="w-6 h-6 mr-3 text-indigo-400" /> Rankings</h2>
+            <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-8">
+              <div className="space-y-6">
+                {scores.map((score, idx) => (
+                  <div key={score.user_id} className="flex justify-between items-center px-6 py-5 bg-neu-base shadow-neu-concave rounded-2xl transition-all hover:shadow-neu-convex">
+                    <div className="flex items-center space-x-6">
+                      <div className="w-12 h-12 flex items-center justify-center rounded-full shadow-neu-convex font-bold text-gray-500 text-lg">
+                        {idx + 1}
+                      </div>
+                      <span className="font-semibold text-gray-700 text-xl tracking-wide">{score.name}</span>
+                    </div>
+                    <span className="font-bold text-blue-500 bg-neu-base shadow-neu-convex px-6 py-3 rounded-full text-sm uppercase tracking-widest">
+                      {score.total_score} pts
+                    </span>
+                  </div>
+                ))}
+                {scores.length === 0 && (
+                  <p className="text-center text-gray-500 py-10 font-medium">No scores yet. Complete tasks to earn points!</p>
+                )}
+              </div>
             </div>
           </div>
 
           <div>
-            <h2 className="text-xl font-bold mb-4">Recent Awards</h2>
-            <div className="space-y-4">
+            <h2 className="text-2xl font-semibold mb-6 text-gray-700 tracking-wide">Recent Awards</h2>
+            <div className="space-y-6">
               {logs.map(log => (
-                <div key={log.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 text-sm">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="font-semibold text-gray-900">{log.name}</span>
-                    <span className="font-bold text-green-600">+{log.amount}</span>
+                <div key={log.id} className="bg-neu-base p-6 rounded-[1.5rem] shadow-neu-convex text-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="font-bold text-gray-700 tracking-wide">{log.name}</span>
+                    <span className="font-bold text-green-500 px-3 py-1 bg-neu-base shadow-neu-concave rounded-lg">+{log.amount} pts</span>
                   </div>
-                  <p className="text-gray-600">{log.reason}</p>
-                  <p className="text-xs text-gray-400 mt-2">{new Date(log.created_at).toLocaleDateString()}</p>
+                  <p className="text-gray-600 font-medium leading-relaxed">{log.reason}</p>
+                  <p className="text-xs text-gray-400 mt-4 uppercase tracking-widest font-semibold">{new Date(log.created_at).toLocaleDateString()}</p>
                 </div>
               ))}
-              {logs.length === 0 && <p className="text-gray-500 text-sm">No recent activity.</p>}
+              {logs.length === 0 && <p className="text-gray-500 text-sm p-6 bg-neu-base shadow-neu-concave rounded-[1.5rem] text-center font-medium">No recent activity.</p>}
             </div>
           </div>
         </div>

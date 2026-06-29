@@ -61,77 +61,77 @@ export default function VideoAdsPage() {
   if (!activeWorkspaceId) return <div className="p-8">Please select a workspace.</div>;
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Video Ads Library</h1>
-        <button onClick={() => setIsAdding(true)} className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium flex items-center hover:bg-gray-800 transition">
-          <Plus className="w-4 h-4 mr-2" /> New Video Ad
+    <div className="p-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-light text-gray-700 tracking-wide">Video Ads Library</h1>
+        <button onClick={() => setIsAdding(true)} className="bg-neu-base text-gray-600 px-6 py-3 rounded-full shadow-neu-convex hover:shadow-neu-concave text-sm font-bold transition-all duration-200 uppercase tracking-widest flex items-center">
+          <Plus className="w-5 h-5 mr-2" /> New Video Ad
         </button>
       </div>
 
       {isAdding && (
-        <form onSubmit={handleCreate} className="mb-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200 grid grid-cols-2 gap-4">
+        <form onSubmit={handleCreate} className="mb-10 bg-neu-base p-8 rounded-[2rem] shadow-neu-concave border-none grid grid-cols-2 gap-6 max-w-3xl">
           <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ad Title</label>
-            <input required name="title" type="text" className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black" />
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 ml-2">Ad Title</label>
+            <input required name="title" type="text" className="w-full text-sm p-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium placeholder-gray-400" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Brief</label>
-            <select name="brief_id" className="w-full border border-gray-300 rounded-md p-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 ml-2">Brief</label>
+            <select name="brief_id" className="w-full text-sm p-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium">
               <option value="">None</option>
               {briefs.map(b => <option key={b.id} value={b.id}>{b.title}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Platform</label>
-            <select name="platform" className="w-full border border-gray-300 rounded-md p-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 ml-2">Platform</label>
+            <select name="platform" className="w-full text-sm p-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium">
               <option value="TikTok">TikTok</option>
               <option value="Facebook">Facebook Ads</option>
               <option value="YouTube">YouTube</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Version</label>
-            <input name="version" type="text" defaultValue="v1" className="w-full border border-gray-300 rounded-md p-2 text-sm focus:outline-none focus:ring-1 focus:ring-black" />
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 ml-2">Version</label>
+            <input name="version" type="text" defaultValue="v1" className="w-full text-sm p-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium placeholder-gray-400" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select name="approval_status" className="w-full border border-gray-300 rounded-md p-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2 ml-2">Status</label>
+            <select name="approval_status" className="w-full text-sm p-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium">
               <option value="draft">Draft</option>
               <option value="review">In Review</option>
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
           </div>
-          <div className="col-span-2 flex space-x-2 mt-2">
-            <button type="submit" className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition">Save Ad</button>
-            <button type="button" onClick={() => setIsAdding(false)} className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 transition">Cancel</button>
+          <div className="col-span-2 flex space-x-4 mt-4">
+            <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">Save Ad</button>
+            <button type="button" onClick={() => setIsAdding(false)} className="bg-neu-base text-gray-500 px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">Cancel</button>
           </div>
         </form>
       )}
 
       {isLoading ? (
-        <Loader2 className="animate-spin text-gray-500" />
+        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-gray-500 w-8 h-8" /></div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {ads.map(ad => (
-            <div key={ad.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col hover:shadow-md transition">
-              <div className="bg-gray-100 h-40 flex items-center justify-center text-gray-400">
+            <div key={ad.id} className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden flex flex-col hover:shadow-neu-concave transition-all duration-300 p-6">
+              <div className="bg-neu-base shadow-neu-concave rounded-2xl h-48 flex items-center justify-center text-gray-400">
                 {/* Thumbnail placeholder */}
-                <PlayCircle className="w-12 h-12 opacity-50" />
+                <PlayCircle className="w-14 h-14 text-indigo-400/50 drop-shadow-sm" />
               </div>
-              <div className="p-4 flex-1">
-                <h3 className="font-bold text-gray-900 line-clamp-1">{ad.title}</h3>
-                <div className="mt-2 text-xs text-gray-500 space-y-1">
-                  <p>Brief: <span className="font-medium text-gray-700">{ad.creative_briefs?.title || 'N/A'}</span></p>
-                  <p>Platform: {ad.platform} • Version: {ad.version}</p>
+              <div className="pt-6 flex-1 flex flex-col">
+                <h3 className="font-semibold text-xl text-gray-700 line-clamp-1 tracking-wide">{ad.title}</h3>
+                <div className="mt-4 text-xs text-gray-500 space-y-3 font-medium">
+                  <p className="flex items-center"><span className="px-3 py-1 bg-neu-base shadow-neu-concave rounded-md mr-2">Brief</span> <span className="text-gray-700">{ad.creative_briefs?.title || 'N/A'}</span></p>
+                  <p className="flex items-center"><span className="px-3 py-1 bg-neu-base shadow-neu-concave rounded-md mr-2">Platform</span> {ad.platform} <span className="px-3 py-1 bg-neu-base shadow-neu-concave rounded-md ml-3 mr-2">Version</span> {ad.version}</p>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full uppercase tracking-wider ${
-                    ad.approval_status === 'approved' ? 'bg-green-100 text-green-700' :
-                    ad.approval_status === 'review' ? 'bg-yellow-100 text-yellow-700' :
-                    ad.approval_status === 'rejected' ? 'bg-red-100 text-red-700' :
-                    'bg-gray-100 text-gray-700'
+                <div className="mt-auto pt-6 flex justify-between items-center">
+                  <span className={`px-4 py-2 text-xs font-bold rounded-full uppercase tracking-wider bg-neu-base shadow-neu-concave ${
+                    ad.approval_status === 'approved' ? 'text-green-500' :
+                    ad.approval_status === 'review' ? 'text-yellow-500' :
+                    ad.approval_status === 'rejected' ? 'text-red-500' :
+                    'text-gray-500'
                   }`}>
                     {ad.approval_status}
                   </span>
@@ -146,7 +146,7 @@ export default function VideoAdsPage() {
                           alert(e.message);
                         }
                       }}
-                      className="text-sm font-medium text-blue-600 hover:underline"
+                      className="text-xs font-bold text-blue-500 hover:text-blue-600 uppercase tracking-widest transition-all px-4 py-2 bg-neu-base shadow-neu-convex hover:shadow-neu-concave rounded-full"
                     >
                       Approve Ad
                     </button>
