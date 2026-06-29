@@ -1,8 +1,7 @@
-import Link from 'next/link';
 import { WorkspaceProvider } from '@/components/providers/WorkspaceProvider';
-import WorkspaceSwitcher from '@/components/layout/WorkspaceSwitcher';
-import { logout } from '@/app/auth/actions';
 import { createClient } from '@/lib/supabase/server';
+import Sidebar from '@/components/layout/Sidebar';
+import LanguageToggle from '@/components/layout/LanguageToggle';
 
 export default async function AppLayout({
   children,
@@ -15,60 +14,12 @@ export default async function AppLayout({
   return (
     <WorkspaceProvider>
       <div className="flex min-h-screen bg-neu-base font-sans text-gray-700">
-        <aside className="w-64 bg-neu-base shadow-neu-convex flex flex-col justify-between z-10 m-4 rounded-[2rem]">
-          <div>
-            <div className="h-20 flex items-center justify-center font-bold text-2xl text-gray-700 tracking-wider">
-              Creative OS
-            </div>
-            <div className="px-4 pb-4">
-              <WorkspaceSwitcher />
-            </div>
-            <nav className="px-4 space-y-3">
-              <Link href="/dashboard" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                Dashboard
-              </Link>
-              <Link href="/boards" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                Boards
-              </Link>
-              <Link href="/campaigns" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                Campaigns
-              </Link>
-              <Link href="/creative-briefs" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                Creative Briefs
-              </Link>
-              <Link href="/video-ads" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                Video Ads
-              </Link>
-              <Link href="/media-library" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                Media Library
-              </Link>
-              <div className="pt-2">
-                <Link href="/analytics" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                  Analytics
-                </Link>
-                <Link href="/leaderboard" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-                  Leaderboard
-                </Link>
-              </div>
-            </nav>
+        <Sidebar userEmail={user?.email} />
+        
+        <main className="flex-1 overflow-auto p-4 sm:p-8 flex flex-col">
+          <div className="flex justify-end mb-4">
+            <LanguageToggle />
           </div>
-          
-          <div className="p-6">
-            <div className="mb-4 text-center">
-              <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">Account</p>
-              <p className="text-sm font-medium truncate mt-2 text-gray-600">{user?.email}</p>
-            </div>
-            <form action={logout}>
-              <button 
-                type="submit" 
-                className="w-full text-center px-4 py-3 rounded-full text-sm font-medium text-red-500 shadow-neu-convex hover:shadow-neu-concave hover:text-red-600 transition-all duration-200"
-              >
-                Log out
-              </button>
-            </form>
-          </div>
-        </aside>
-        <main className="flex-1 overflow-auto p-4 sm:p-8">
           {children}
         </main>
       </div>

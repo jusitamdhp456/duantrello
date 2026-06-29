@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { UploadCloud, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function UploadForm() {
   const [file, setFile] = useState<File | null>(null);
@@ -11,6 +12,7 @@ export default function UploadForm() {
   const [errorMessage, setErrorMessage] = useState("");
   
   const { activeWorkspaceId } = useWorkspace();
+  const { t } = useLanguage();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -91,9 +93,9 @@ export default function UploadForm() {
   return (
     <div className="rounded-[2rem] p-10 flex flex-col items-center justify-center bg-neu-base shadow-neu-concave max-w-md w-full">
       <UploadCloud className="w-14 h-14 text-indigo-400 mb-6 drop-shadow-sm" />
-      <h3 className="text-xl font-semibold text-gray-700 mb-2 tracking-wide">Upload Media</h3>
+      <h3 className="text-xl font-semibold text-gray-700 mb-2 tracking-wide">{t("upload_file")}</h3>
       <p className="text-sm text-gray-500 mb-6 text-center">
-        Select a file to upload directly to Cloudflare R2
+        {t("drag_drop")}
       </p>
       
       <input
@@ -107,7 +109,7 @@ export default function UploadForm() {
         htmlFor="file-upload"
         className="cursor-pointer bg-neu-base text-gray-600 px-8 py-3 rounded-full shadow-neu-convex hover:shadow-neu-concave text-sm font-semibold transition-all duration-200 uppercase tracking-widest"
       >
-        Select File
+        {t("upload_file")}
       </label>
 
       {file && (
@@ -126,10 +128,10 @@ export default function UploadForm() {
           {isUploading ? (
             <>
               <Loader2 className="w-5 h-5 mr-3 animate-spin" />
-              Uploading...
+              {t("uploading")}
             </>
           ) : (
-            "Upload to R2"
+            t("upload_file")
           )}
         </button>
       )}

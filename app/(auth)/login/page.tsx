@@ -1,21 +1,26 @@
+"use client";
+
 import Link from "next/link";
 import { login } from "@/app/auth/actions";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function LoginPage({
   searchParams,
 }: {
   searchParams: { message: string }
 }) {
+  const { t } = useLanguage();
+
   return (
     <>
       <div>
         <h2 className="mt-2 text-center text-4xl font-light text-gray-700 tracking-wide">
-          Login
+          {t("login")}
         </h2>
         <p className="mt-4 text-center text-sm text-gray-500">
           Or{" "}
           <Link href="/signup" className="font-medium text-blue-500 hover:text-blue-600 transition-colors">
-            create a new account
+            {t("no_account")}
           </Link>
         </p>
       </div>
@@ -23,7 +28,7 @@ export default function LoginPage({
         <div className="space-y-6">
           <div>
             <label htmlFor="email-address" className="sr-only">
-              Email address
+              {t("email")}
             </label>
             <input
               id="email-address"
@@ -37,7 +42,7 @@ export default function LoginPage({
           </div>
           <div>
             <label htmlFor="password" className="sr-only">
-              Password
+              {t("password")}
             </label>
             <input
               id="password"
@@ -69,7 +74,7 @@ export default function LoginPage({
             type="submit"
             className="group relative w-full flex justify-center py-4 px-4 border-none text-lg font-medium rounded-full text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-neu-convex active:shadow-neu-pressed transition-all duration-200"
           >
-            Sign Up
+            {t("login")}
           </button>
         </div>
       </form>

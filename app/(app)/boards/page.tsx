@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { createBoard } from '@/app/actions/boards';
 import { Loader2 } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export default function BoardsPage() {
   const { activeWorkspaceId, isLoading: isWorkspaceLoading } = useWorkspace();
+  const { t } = useLanguage();
   const [boards, setBoards] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newBoardName, setNewBoardName] = useState("");
@@ -50,17 +52,17 @@ export default function BoardsPage() {
   };
 
   if (isWorkspaceLoading) {
-    return <div className="p-8 flex items-center"><Loader2 className="animate-spin mr-2" /> Loading workspace...</div>;
+    return <div className="p-8 flex items-center"><Loader2 className="animate-spin mr-2" /> {t("loading")}</div>;
   }
 
   if (!activeWorkspaceId) {
-    return <div className="p-8 text-gray-500">Please select a workspace first.</div>;
+    return <div className="p-8 text-gray-500">{t("select_workspace")}</div>;
   }
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-10">
-        <h1 className="text-4xl font-light text-gray-700 tracking-wide">Boards</h1>
+        <h1 className="text-4xl font-light text-gray-700 tracking-wide">{t("boards")}</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -83,12 +85,12 @@ export default function BoardsPage() {
                 type="text" 
                 value={newBoardName}
                 onChange={(e) => setNewBoardName(e.target.value)}
-                placeholder="New board title..." 
+                placeholder={t("new_board")}
                 className="w-full text-sm p-3 mb-3 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium text-center placeholder-gray-400"
                 required
               />
               <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs py-2.5 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">
-                Create Board
+                {t("create_board")}
               </button>
             </form>
           </>

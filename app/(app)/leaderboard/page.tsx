@@ -4,9 +4,11 @@ import { useWorkspace } from '@/components/providers/WorkspaceProvider';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Loader2, Trophy, Medal } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export default function LeaderboardPage() {
   const { activeWorkspaceId } = useWorkspace();
+  const { t } = useLanguage();
   const [scores, setScores] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,13 +51,13 @@ export default function LeaderboardPage() {
     fetchData();
   }, [activeWorkspaceId, supabase]);
 
-  if (!activeWorkspaceId) return <div className="p-8">Please select a workspace.</div>;
+  if (!activeWorkspaceId) return <div className="p-8">{t("select_workspace")}</div>;
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-12 text-center">
         <Trophy className="w-20 h-20 mx-auto text-yellow-400 mb-6 drop-shadow-md" />
-        <h1 className="text-5xl font-light text-gray-700 tracking-wide">Workspace Leaderboard</h1>
+        <h1 className="text-5xl font-light text-gray-700 tracking-wide">{t("leaderboard_title")}</h1>
         <p className="text-gray-500 mt-4 text-lg font-medium">Top performers and active contributors</p>
       </div>
 
@@ -64,7 +66,7 @@ export default function LeaderboardPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2">
-            <h2 className="text-2xl font-semibold mb-6 flex items-center text-gray-700 tracking-wide"><Medal className="w-6 h-6 mr-3 text-indigo-400" /> Rankings</h2>
+            <h2 className="text-2xl font-semibold mb-6 flex items-center text-gray-700 tracking-wide"><Medal className="w-6 h-6 mr-3 text-indigo-400" /> {t("rankings")}</h2>
             <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-8">
               <div className="space-y-6">
                 {scores.map((score, idx) => (
@@ -88,7 +90,7 @@ export default function LeaderboardPage() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-6 text-gray-700 tracking-wide">Recent Awards</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-gray-700 tracking-wide">{t("recent_awards")}</h2>
             <div className="space-y-6">
               {logs.map(log => (
                 <div key={log.id} className="bg-neu-base p-6 rounded-[1.5rem] shadow-neu-convex text-sm">

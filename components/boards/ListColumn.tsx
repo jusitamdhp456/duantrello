@@ -4,6 +4,7 @@ import { Droppable, Draggable } from "@hello-pangea/dnd";
 import TaskCard from "./TaskCard";
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 interface ListColumnProps {
   list: any;
@@ -16,6 +17,7 @@ interface ListColumnProps {
 export default function ListColumn({ list, cards, index, onAddCard, onCardClick }: ListColumnProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
+  const { t } = useLanguage();
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,14 +65,14 @@ export default function ListColumn({ list, cards, index, onAddCard, onCardClick 
                 <textarea
                   autoFocus
                   className="w-full text-sm resize-none bg-transparent focus:outline-none text-gray-700 font-medium"
-                  placeholder="Enter a title for this card..."
+                  placeholder={t("enter_card_title")}
                   value={newCardTitle}
                   onChange={(e) => setNewCardTitle(e.target.value)}
                   rows={2}
                 />
                 <div className="flex items-center justify-between mt-3 px-1">
                   <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
-                    Add card
+                    {t("add_card")}
                   </button>
                   <button type="button" onClick={() => setIsAdding(false)} className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:shadow-neu-concave transition-all">
                     <X className="w-5 h-5" />
@@ -82,7 +84,7 @@ export default function ListColumn({ list, cards, index, onAddCard, onCardClick 
                 onClick={() => setIsAdding(true)}
                 className="flex items-center justify-center text-gray-500 text-sm hover:text-gray-700 hover:shadow-neu-concave w-full py-3 rounded-full font-bold transition-all uppercase tracking-widest mt-2"
               >
-                <Plus className="w-5 h-5 mr-2" /> Add a card
+                <Plus className="w-5 h-5 mr-2" /> {t("add_a_card")}
               </button>
             )}
           </div>

@@ -6,6 +6,7 @@ import CardModal from "./CardModal";
 import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import { createList, createCard, updateCardPosition, updateListPosition } from "@/app/actions/boards";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 interface KanbanBoardProps {
   boardId: string;
@@ -21,6 +22,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
   const [selectedCard, setSelectedCard] = useState<any>(null);
   // Hack to fix hydration issues with react-beautiful-dnd
   const [isBrowser, setIsBrowser] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     setIsBrowser(true);
@@ -126,13 +128,13 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
                   <input
                     autoFocus
                     className="w-full text-sm p-3 mb-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium"
-                    placeholder="Enter list title..."
+                    placeholder={t("enter_list_title")}
                     value={newListName}
                     onChange={(e) => setNewListName(e.target.value)}
                   />
                   <div className="flex items-center justify-between px-1">
                     <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
-                      Add list
+                      {t("add_list")}
                     </button>
                     <button type="button" onClick={() => setIsAddingList(false)} className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:shadow-neu-concave transition-all">
                       <X className="w-5 h-5" />
@@ -144,7 +146,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
                   onClick={() => setIsAddingList(true)}
                   className="flex items-center justify-center bg-neu-base shadow-neu-convex hover:shadow-neu-concave text-gray-500 text-sm w-full p-4 rounded-[1.5rem] font-bold transition-all duration-200 uppercase tracking-widest"
                 >
-                  <Plus className="w-5 h-5 mr-2" /> Add another list
+                  <Plus className="w-5 h-5 mr-2" /> {t("add_another_list")}
                 </button>
               )}
             </div>

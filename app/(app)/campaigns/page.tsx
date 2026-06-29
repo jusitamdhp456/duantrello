@@ -5,9 +5,11 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { createCampaign } from '@/app/actions/marketing';
 import { Loader2, Plus } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export default function CampaignsPage() {
   const { activeWorkspaceId } = useWorkspace();
+  const { t } = useLanguage();
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
@@ -45,14 +47,14 @@ export default function CampaignsPage() {
     }
   };
 
-  if (!activeWorkspaceId) return <div className="p-8">Please select a workspace.</div>;
+  if (!activeWorkspaceId) return <div className="p-8">{t("select_workspace")}</div>;
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-10">
-        <h1 className="text-4xl font-light text-gray-700 tracking-wide">Campaigns</h1>
+        <h1 className="text-4xl font-light text-gray-700 tracking-wide">{t("campaigns_title")}</h1>
         <button onClick={() => setIsAdding(true)} className="bg-neu-base text-gray-600 px-6 py-3 rounded-full shadow-neu-convex hover:shadow-neu-concave text-sm font-bold transition-all duration-200 uppercase tracking-widest flex items-center">
-          <Plus className="w-5 h-5 mr-2" /> New Campaign
+          <Plus className="w-5 h-5 mr-2" /> {t("new_campaign")}
         </button>
       </div>
 
@@ -63,12 +65,12 @@ export default function CampaignsPage() {
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Campaign Name..." 
+            placeholder={t("campaign_name")}
             className="w-full text-sm p-4 mb-6 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium placeholder-gray-400"
           />
           <div className="flex space-x-4">
-            <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">Save</button>
-            <button type="button" onClick={() => setIsAdding(false)} className="bg-neu-base text-gray-500 px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">Cancel</button>
+            <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">{t("save")}</button>
+            <button type="button" onClick={() => setIsAdding(false)} className="bg-neu-base text-gray-500 px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">{t("cancel")}</button>
           </div>
         </form>
       )}
@@ -87,7 +89,7 @@ export default function CampaignsPage() {
               </div>
             </div>
           ))}
-          {campaigns.length === 0 && <p className="text-gray-500 col-span-full">No campaigns found.</p>}
+          {campaigns.length === 0 && <p className="text-gray-500 col-span-full">{t("no_data")}</p>}
         </div>
       )}
     </div>

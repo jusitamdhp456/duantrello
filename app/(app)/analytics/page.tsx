@@ -5,9 +5,11 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { saveAdMetrics } from '@/app/actions/performance';
 import { Loader2, TrendingUp, DollarSign, MousePointerClick } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export default function AnalyticsPage() {
   const { activeWorkspaceId } = useWorkspace();
+  const { t } = useLanguage();
   const [ads, setAds] = useState<any[]>([]);
   const [metricsMap, setMetricsMap] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -73,7 +75,7 @@ export default function AnalyticsPage() {
     }
   };
 
-  if (!activeWorkspaceId) return <div className="p-8">Please select a workspace.</div>;
+  if (!activeWorkspaceId) return <div className="p-8">{t("select_workspace")}</div>;
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
@@ -82,7 +84,7 @@ export default function AnalyticsPage() {
           <div className="p-3 rounded-full shadow-neu-convex mr-4">
             <TrendingUp className="w-8 h-8 text-blue-500" />
           </div>
-          Performance Analytics
+          {t("analytics_title")}
         </h1>
         <p className="text-gray-500 text-sm mt-4 ml-1">Track spend and ROAS for your video ads</p>
       </div>
@@ -105,11 +107,11 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="flex space-x-6">
                     <div className="text-center bg-neu-base shadow-neu-concave px-6 py-4 rounded-2xl">
-                      <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Spend</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">{t("spend")}</p>
                       <p className="font-bold text-gray-700 text-xl">${metrics.spend || 0}</p>
                     </div>
                     <div className="text-center bg-neu-base shadow-neu-concave px-6 py-4 rounded-2xl">
-                      <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">ROAS</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">{t("roas")}</p>
                       <p className="font-bold text-green-500 text-xl">{metrics.roas || 0}x</p>
                     </div>
                   </div>
@@ -117,15 +119,15 @@ export default function AnalyticsPage() {
                 <div className="pt-6 border-t border-gray-300/30">
                   <form onSubmit={(e) => handleSaveMetrics(e, ad.id)} className="flex items-end space-x-6">
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">Spend ($)</label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">{t("spend")} ($)</label>
                       <input name="spend" type="number" step="0.01" defaultValue={metrics.spend} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">ROAS</label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">{t("roas")}</label>
                       <input name="roas" type="number" step="0.01" defaultValue={metrics.roas} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">Clicks</label>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">{t("clicks")}</label>
                       <input name="clicks" type="number" defaultValue={metrics.clicks} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
                     </div>
                     <div>
@@ -133,14 +135,14 @@ export default function AnalyticsPage() {
                       <input name="conversions" type="number" defaultValue={metrics.conversions} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
                     </div>
                     <button disabled={isUpdating === ad.id} type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-medium shadow-neu-convex active:shadow-neu-pressed disabled:opacity-50 transition-all duration-200">
-                      {isUpdating === ad.id ? 'Saving...' : 'Update Metrics'}
+                      {isUpdating === ad.id ? t("loading") : t("update_metrics")}
                     </button>
                   </form>
                 </div>
               </div>
             );
           })}
-          {ads.length === 0 && <p className="text-gray-500">No ads found to track.</p>}
+          {ads.length === 0 && <p className="text-gray-500">{t("no_data")}</p>}
         </div>
       )}
     </div>

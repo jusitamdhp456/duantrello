@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect } from "react";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 interface CardModalProps {
   card: any;
@@ -9,6 +10,8 @@ interface CardModalProps {
 }
 
 export default function CardModal({ card, onClose }: CardModalProps) {
+  const { t } = useLanguage();
+  
   // Prevent body scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -40,25 +43,25 @@ export default function CardModal({ card, onClose }: CardModalProps) {
           <div className="grid grid-cols-3 gap-6">
             <div className="col-span-2 space-y-6">
               <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">Description</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">{t("description")}</h3>
                 <textarea 
                   className="w-full bg-white border border-gray-200 rounded-md p-3 text-sm focus:outline-none focus:ring-1 focus:ring-black min-h-[100px]"
-                  placeholder="Add a more detailed description..."
+                  placeholder={t("add_detailed_desc")}
                   defaultValue={card.description || ""}
                 />
                 <button className="mt-2 bg-black text-white px-4 py-2 rounded-md text-sm font-medium">
-                  Save
+                  {t("save")}
                 </button>
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-2">Activity</h3>
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">{t("activity")}</h3>
                 <div className="flex items-start space-x-3 mt-4">
                   <div className="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0"></div>
                   <div className="flex-1">
                     <input 
                       type="text" 
-                      placeholder="Write a comment..." 
+                      placeholder={t("write_comment")}
                       className="w-full bg-white border border-gray-200 rounded-md p-3 text-sm focus:outline-none focus:ring-1 focus:ring-black"
                     />
                   </div>
@@ -68,16 +71,16 @@ export default function CardModal({ card, onClose }: CardModalProps) {
 
             <div className="space-y-4">
               <div>
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Add to card</h3>
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{t("add_to_card")}</h3>
                 <div className="space-y-2">
                   <button className="w-full text-left px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-100 transition">
-                    Labels
+                    {t("labels")}
                   </button>
                   <button className="w-full text-left px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-100 transition">
-                    Checklist
+                    {t("checklist")}
                   </button>
                   <button className="w-full text-left px-3 py-2 bg-white border border-gray-200 rounded-md text-sm hover:bg-gray-100 transition">
-                    Media Attachment
+                    {t("media_attachment")}
                   </button>
                 </div>
               </div>
