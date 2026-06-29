@@ -48,10 +48,13 @@ export default function Sidebar({ userEmail }: { userEmail: string | undefined }
       </div>
       
       <div className="p-6">
-        <div className="mb-4 text-center">
-          <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">{t("nav_profile")}</p>
-          <p className="text-sm font-medium truncate mt-2 text-gray-600">{userEmail}</p>
-        </div>
+        <Link href="/profile" className="block mb-4 text-center hover:bg-neu-base hover:shadow-neu-concave p-3 rounded-2xl transition-all group">
+          <p className="text-xs text-gray-400 font-medium uppercase tracking-widest group-hover:text-blue-500 transition-colors">{t("nav_profile")}</p>
+          <p className="text-sm font-medium truncate mt-2 text-gray-600 group-hover:text-gray-800">{userEmail}</p>
+        </Link>
+        <Link href="/settings" className="block w-full text-center px-4 py-3 mb-3 rounded-full text-sm font-medium text-gray-600 shadow-neu-convex hover:shadow-neu-concave hover:text-blue-600 transition-all duration-200">
+          {t("nav_settings")}
+        </Link>
         <form action={logout}>
           <button 
             type="submit" 

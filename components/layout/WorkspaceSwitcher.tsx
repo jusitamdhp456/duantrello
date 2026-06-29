@@ -15,14 +15,16 @@ export default function WorkspaceSwitcher() {
 
   return (
     <div className="px-3 mb-6 mt-4">
-      <label htmlFor="workspace-select" className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
-        Workspace
-      </label>
+      <div className="flex justify-between items-center mb-2">
+        <label htmlFor="workspace-select" className="text-xs font-medium text-gray-500 uppercase tracking-wider block">
+          Workspace
+        </label>
+      </div>
       <select
         id="workspace-select"
         value={activeWorkspaceId || ""}
         onChange={(e) => setActiveWorkspaceId(e.target.value)}
-        className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-black focus:outline-none focus:ring-black"
+        className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-sm focus:border-black focus:outline-none focus:ring-black mb-2"
       >
         {workspaces.map((ws) => (
           <option key={ws.id} value={ws.id}>

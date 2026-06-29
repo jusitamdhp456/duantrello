@@ -6,6 +6,10 @@ export const translations = {
     status: "Status",
     loading: "Loading...",
     no_data: "No data found.",
+    save_changes: "Save Changes",
+    delete_confirm: "Are you sure you want to delete this?",
+    success: "Success",
+    error: "Error",
     
     // Sidebar
     nav_dashboard: "Dashboard",
@@ -17,6 +21,7 @@ export const translations = {
     nav_boards: "Kanban Boards",
     nav_leaderboard: "Leaderboard",
     nav_profile: "Profile",
+    nav_settings: "Settings",
 
     // Dashboard
     dashboard_title: "Dashboard",
@@ -103,6 +108,35 @@ export const translations = {
     no_activity: "No recent activity.",
     pts: "pts",
 
+    // Profile
+    profile_title: "My Profile",
+    update_profile: "Update Profile",
+    full_name_label: "Full Name",
+    email_label: "Email Address",
+    profile_updated: "Profile updated successfully",
+
+    // Settings
+    workspace_settings: "Workspace Settings",
+    general: "General",
+    members: "Members",
+    workspace_name: "Workspace Name",
+    delete_workspace: "Delete Workspace",
+    delete_workspace_desc: "Once you delete a workspace, there is no going back. Please be certain.",
+    invite_member: "Invite Member",
+    invite_member_desc: "Add a member to this workspace using their registered email address.",
+    invite_email_placeholder: "user@example.com",
+    invite_btn: "Invite",
+    member_role: "Role",
+    remove: "Remove",
+    admin: "Admin",
+    member: "Member",
+    owner: "Owner",
+    add_member_success: "Member added successfully",
+    add_member_error: "User not found or already a member",
+    remove_member_success: "Member removed successfully",
+    update_role_success: "Role updated successfully",
+    manage_workspaces: "Manage Workspace",
+
     // Auth
     login: "Sign In",
     signup: "Sign Up",
@@ -127,6 +161,10 @@ export const translations = {
     status: "Trạng thái",
     loading: "Đang tải...",
     no_data: "Không có dữ liệu.",
+    save_changes: "Lưu Thay Đổi",
+    delete_confirm: "Bạn có chắc chắn muốn xóa không?",
+    success: "Thành công",
+    error: "Lỗi",
     
     // Sidebar
     nav_dashboard: "Trang chủ",
@@ -138,6 +176,7 @@ export const translations = {
     nav_boards: "Bảng Kanban",
     nav_leaderboard: "Bảng xếp hạng",
     nav_profile: "Hồ sơ",
+    nav_settings: "Cài đặt",
 
     // Dashboard
     dashboard_title: "Trang chủ",
@@ -223,6 +262,35 @@ export const translations = {
     no_scores: "Chưa có điểm nào. Hãy hoàn thành công việc để nhận điểm!",
     no_activity: "Chưa có hoạt động nào.",
     pts: "điểm",
+
+    // Profile
+    profile_title: "Hồ sơ của tôi",
+    update_profile: "Cập nhật Hồ sơ",
+    full_name_label: "Họ và Tên",
+    email_label: "Địa chỉ Email",
+    profile_updated: "Cập nhật hồ sơ thành công",
+
+    // Settings
+    workspace_settings: "Cài đặt Không gian làm việc",
+    general: "Chung",
+    members: "Thành viên",
+    workspace_name: "Tên Không gian",
+    delete_workspace: "Xóa Không gian",
+    delete_workspace_desc: "Sau khi xóa, mọi dữ liệu sẽ mất vĩnh viễn. Vui lòng cân nhắc.",
+    invite_member: "Thêm thành viên",
+    invite_member_desc: "Thêm một thành viên vào Không gian này bằng địa chỉ email đã đăng ký của họ.",
+    invite_email_placeholder: "nguoidung@example.com",
+    invite_btn: "Thêm",
+    member_role: "Vai trò",
+    remove: "Xóa",
+    admin: "Quản trị viên",
+    member: "Thành viên",
+    owner: "Chủ sở hữu",
+    add_member_success: "Thêm thành viên thành công",
+    add_member_error: "Không tìm thấy người dùng hoặc đã là thành viên",
+    remove_member_success: "Đã xóa thành viên khỏi không gian",
+    update_role_success: "Cập nhật quyền thành công",
+    manage_workspaces: "Quản lý Không gian",
 
     // Auth
     login: "Đăng nhập",
