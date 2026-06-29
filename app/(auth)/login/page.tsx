@@ -9,18 +9,18 @@ export default function LoginPage({
   return (
     <>
       <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
+        <h2 className="mt-2 text-center text-4xl font-light text-gray-700 tracking-wide">
+          Login
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-sm text-gray-500">
           Or{" "}
-          <Link href="/signup" className="font-medium text-black hover:underline">
+          <Link href="/signup" className="font-medium text-blue-500 hover:text-blue-600 transition-colors">
             create a new account
           </Link>
         </p>
       </div>
       <form className="mt-8 space-y-6" action={login}>
-        <div className="rounded-md shadow-sm space-y-4">
+        <div className="space-y-6">
           <div>
             <label htmlFor="email-address" className="sr-only">
               Email address
@@ -31,8 +31,8 @@ export default function LoginPage({
               type="email"
               autoComplete="email"
               required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm"
-              placeholder="Email address"
+              className="appearance-none rounded-2xl relative block w-full px-5 py-4 bg-neu-base text-gray-700 placeholder-gray-400 shadow-neu-concave focus:outline-none focus:ring-2 focus:ring-blue-400/50 sm:text-sm border-none transition-shadow"
+              placeholder="username@mail.com"
             />
           </div>
           <div>
@@ -45,9 +45,16 @@ export default function LoginPage({
               type="password"
               autoComplete="current-password"
               required
-              className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-black focus:border-black focus:z-10 sm:text-sm"
-              placeholder="Password"
+              className="appearance-none rounded-2xl relative block w-full px-5 py-4 bg-neu-base text-gray-700 placeholder-gray-400 shadow-neu-concave focus:outline-none focus:ring-2 focus:ring-blue-400/50 sm:text-sm border-none transition-shadow"
+              placeholder="**********"
             />
+          </div>
+          <div className="flex items-center justify-between px-2">
+            <div className="text-sm">
+              <a href="#" className="font-medium text-gray-500 hover:text-gray-700 underline decoration-gray-300 underline-offset-4">
+                Forget Password?
+              </a>
+            </div>
           </div>
         </div>
 
@@ -57,12 +64,12 @@ export default function LoginPage({
           </p>
         )}
 
-        <div>
+        <div className="pt-4">
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition"
+            className="group relative w-full flex justify-center py-4 px-4 border-none text-lg font-medium rounded-full text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-neu-convex active:shadow-neu-pressed transition-all duration-200"
           >
-            Sign in
+            Sign Up
           </button>
         </div>
       </form>

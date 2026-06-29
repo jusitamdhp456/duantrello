@@ -14,57 +14,61 @@ export default async function AppLayout({
 
   return (
     <WorkspaceProvider>
-      <div className="flex min-h-screen bg-gray-50">
-        <aside className="w-64 bg-white border-r border-gray-200 flex flex-col justify-between">
+      <div className="flex min-h-screen bg-neu-base font-sans text-gray-700">
+        <aside className="w-64 bg-neu-base shadow-neu-convex flex flex-col justify-between z-10 m-4 rounded-[2rem]">
           <div>
-            <div className="h-16 flex items-center px-6 border-b border-gray-200 font-bold text-lg">
+            <div className="h-20 flex items-center justify-center font-bold text-2xl text-gray-700 tracking-wider">
               Creative OS
             </div>
-            <WorkspaceSwitcher />
-            <nav className="p-4 space-y-1">
-              <Link href="/dashboard" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+            <div className="px-4 pb-4">
+              <WorkspaceSwitcher />
+            </div>
+            <nav className="px-4 space-y-3">
+              <Link href="/dashboard" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
                 Dashboard
               </Link>
-              <Link href="/boards" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+              <Link href="/boards" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
                 Boards
               </Link>
-              <Link href="/campaigns" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+              <Link href="/campaigns" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
                 Campaigns
               </Link>
-              <Link href="/creative-briefs" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+              <Link href="/creative-briefs" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
                 Creative Briefs
               </Link>
-              <Link href="/video-ads" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+              <Link href="/video-ads" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
                 Video Ads
               </Link>
-              <Link href="/media-library" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+              <Link href="/media-library" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
                 Media Library
               </Link>
-              <Link href="/analytics" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 mt-4 border-t border-gray-100 pt-4">
-                Analytics
-              </Link>
-              <Link href="/leaderboard" className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900">
-                Leaderboard
-              </Link>
+              <div className="pt-2">
+                <Link href="/analytics" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
+                  Analytics
+                </Link>
+                <Link href="/leaderboard" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
+                  Leaderboard
+                </Link>
+              </div>
             </nav>
           </div>
           
-          <div className="p-4 border-t border-gray-200">
-            <div className="mb-4">
-              <p className="text-xs text-gray-500 font-medium px-3 uppercase">Account</p>
-              <p className="px-3 text-sm font-medium truncate mt-1">{user?.email}</p>
+          <div className="p-6">
+            <div className="mb-4 text-center">
+              <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">Account</p>
+              <p className="text-sm font-medium truncate mt-2 text-gray-600">{user?.email}</p>
             </div>
             <form action={logout}>
               <button 
                 type="submit" 
-                className="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 transition"
+                className="w-full text-center px-4 py-3 rounded-full text-sm font-medium text-red-500 shadow-neu-convex hover:shadow-neu-concave hover:text-red-600 transition-all duration-200"
               >
                 Log out
               </button>
             </form>
           </div>
         </aside>
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto p-4 sm:p-8">
           {children}
         </main>
       </div>

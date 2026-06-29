@@ -120,31 +120,31 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
             {provided.placeholder}
 
             {/* Add List Button */}
-            <div className="w-72 flex-shrink-0">
+            <div className="w-72 flex-shrink-0 ml-4">
               {isAddingList ? (
-                <form onSubmit={handleAddList} className="bg-white p-2 rounded shadow-sm border border-gray-200">
+                <form onSubmit={handleAddList} className="bg-neu-base p-4 rounded-[1.5rem] shadow-neu-convex border-none">
                   <input
                     autoFocus
-                    className="w-full text-sm p-2 mb-2 border border-gray-200 rounded focus:outline-none"
+                    className="w-full text-sm p-3 mb-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium"
                     placeholder="Enter list title..."
                     value={newListName}
                     onChange={(e) => setNewListName(e.target.value)}
                   />
-                  <div className="flex items-center justify-between">
-                    <button type="submit" className="bg-black text-white text-xs px-3 py-1.5 rounded font-medium">
+                  <div className="flex items-center justify-between px-1">
+                    <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
                       Add list
                     </button>
-                    <button type="button" onClick={() => setIsAddingList(false)} className="p-1 text-gray-500 hover:text-black">
-                      <X className="w-4 h-4" />
+                    <button type="button" onClick={() => setIsAddingList(false)} className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:shadow-neu-concave transition-all">
+                      <X className="w-5 h-5" />
                     </button>
                   </div>
                 </form>
               ) : (
                 <button
                   onClick={() => setIsAddingList(true)}
-                  className="flex items-center bg-black/5 hover:bg-black/10 text-gray-800 text-sm w-full p-3 rounded-lg font-medium transition"
+                  className="flex items-center justify-center bg-neu-base shadow-neu-convex hover:shadow-neu-concave text-gray-500 text-sm w-full p-4 rounded-[1.5rem] font-bold transition-all duration-200 uppercase tracking-widest"
                 >
-                  <Plus className="w-4 h-4 mr-1" /> Add another list
+                  <Plus className="w-5 h-5 mr-2" /> Add another list
                 </button>
               )}
             </div>

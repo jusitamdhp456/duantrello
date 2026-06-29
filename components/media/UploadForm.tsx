@@ -89,10 +89,10 @@ export default function UploadForm() {
   };
 
   return (
-    <div className="border border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center bg-gray-50 max-w-md w-full">
-      <UploadCloud className="w-12 h-12 text-gray-400 mb-4" />
-      <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Media</h3>
-      <p className="text-sm text-gray-500 mb-4 text-center">
+    <div className="rounded-[2rem] p-10 flex flex-col items-center justify-center bg-neu-base shadow-neu-concave max-w-md w-full">
+      <UploadCloud className="w-14 h-14 text-indigo-400 mb-6 drop-shadow-sm" />
+      <h3 className="text-xl font-semibold text-gray-700 mb-2 tracking-wide">Upload Media</h3>
+      <p className="text-sm text-gray-500 mb-6 text-center">
         Select a file to upload directly to Cloudflare R2
       </p>
       
@@ -105,15 +105,15 @@ export default function UploadForm() {
       
       <label
         htmlFor="file-upload"
-        className="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 transition"
+        className="cursor-pointer bg-neu-base text-gray-600 px-8 py-3 rounded-full shadow-neu-convex hover:shadow-neu-concave text-sm font-semibold transition-all duration-200 uppercase tracking-widest"
       >
         Select File
       </label>
 
       {file && (
-        <div className="mt-4 w-full bg-white p-3 rounded border border-gray-200 text-sm flex justify-between items-center">
+        <div className="mt-6 w-full bg-neu-base p-4 rounded-2xl shadow-neu-convex text-sm flex justify-between items-center text-gray-700 font-medium">
           <span className="truncate max-w-[200px]">{file.name}</span>
-          <span className="text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
+          <span className="text-gray-500 bg-neu-base shadow-neu-concave px-2 py-1 rounded-md">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
         </div>
       )}
 
@@ -121,11 +121,11 @@ export default function UploadForm() {
         <button
           onClick={handleUpload}
           disabled={isUploading}
-          className="mt-4 w-full flex items-center justify-center bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          className="mt-6 w-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-full text-sm font-bold tracking-wider uppercase shadow-neu-convex hover:shadow-neu-concave disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
         >
           {isUploading ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className="w-5 h-5 mr-3 animate-spin" />
               Uploading...
             </>
           ) : (
@@ -135,19 +135,19 @@ export default function UploadForm() {
       )}
 
       {status === "success" && (
-        <div className="mt-4 flex items-center text-green-600 text-sm">
-          <CheckCircle className="w-4 h-4 mr-2" />
+        <div className="mt-6 flex items-center text-green-500 font-medium text-sm bg-neu-base shadow-neu-concave px-4 py-2 rounded-xl">
+          <CheckCircle className="w-5 h-5 mr-2" />
           Upload completed successfully!
         </div>
       )}
 
       {status === "error" && (
-        <div className="mt-4 flex flex-col items-center text-red-600 text-sm text-center">
-          <div className="flex items-center">
-            <AlertCircle className="w-4 h-4 mr-2" />
+        <div className="mt-6 flex flex-col items-center text-red-500 text-sm text-center bg-neu-base shadow-neu-concave p-4 rounded-xl">
+          <div className="flex items-center font-medium">
+            <AlertCircle className="w-5 h-5 mr-2" />
             Upload failed
           </div>
-          <p className="mt-1 text-xs text-red-500">{errorMessage}</p>
+          <p className="mt-2 text-xs text-red-400">{errorMessage}</p>
         </div>
       )}
     </div>

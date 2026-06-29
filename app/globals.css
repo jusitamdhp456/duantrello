@@ -4,34 +4,37 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --background: #e0e5ec;
+    --foreground: #4a5568;
+    --card: #e0e5ec;
+    --card-foreground: #4a5568;
+    --popover: #e0e5ec;
+    --popover-foreground: #4a5568;
+    --primary: #4f46e5;
+    --primary-foreground: #ffffff;
+    --secondary: #e0e5ec;
+    --secondary-foreground: #4a5568;
+    --muted: #d1d8e0;
+    --muted-foreground: #718096;
+    --accent: #d1d8e0;
+    --accent-foreground: #4a5568;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: transparent;
+    --input: transparent;
+    --ring: #4f46e5;
+    --radius: 1rem;
   }
 }
 
 @layer base {
   * {
-    @apply border-gray-200;
+    border-color: var(--border);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
+    /* Basic text shadow for Neumorphism feel */
+    -webkit-font-smoothing: antialiased;
   }
 }

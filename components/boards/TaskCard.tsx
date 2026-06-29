@@ -17,12 +17,12 @@ export default function TaskCard({ card, index, onClick }: TaskCardProps) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => onClick(card)}
-          className={`p-3 mb-2 bg-white rounded shadow-sm border cursor-pointer hover:border-gray-300 transition ${
-            snapshot.isDragging ? "border-blue-500 shadow-md" : "border-gray-200"
+          className={`px-5 py-4 mb-4 bg-neu-base rounded-2xl cursor-pointer hover:shadow-neu-concave transition-all duration-200 border-none ${
+            snapshot.isDragging ? "shadow-neu-concave ring-1 ring-blue-400/30" : "shadow-neu-convex"
           }`}
           style={{ ...provided.draggableProps.style }}
         >
-          <p className="text-sm text-gray-800">{card.title}</p>
+          <p className="text-sm text-gray-700 font-medium leading-relaxed">{card.title}</p>
         </div>
       )}
     </Draggable>

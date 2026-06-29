@@ -14,29 +14,29 @@ export default async function MediaLibraryPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Media Library</h1>
+    <div className="p-8 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-light text-gray-700 tracking-wide">Media Library</h1>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2">
           {(!assets || assets.length === 0) ? (
-            <div className="bg-white border border-gray-200 rounded-lg p-12 text-center">
-              <h3 className="text-lg font-medium text-gray-900">No media assets yet</h3>
-              <p className="mt-2 text-sm text-gray-500">
+            <div className="bg-neu-base shadow-neu-concave rounded-[2rem] p-12 text-center">
+              <h3 className="text-xl font-medium text-gray-700 tracking-wide">No media assets yet</h3>
+              <p className="mt-4 text-sm text-gray-500">
                 Upload your first video, image, or audio file to get started.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {assets.map((asset) => (
-                <div key={asset.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                  <div className="aspect-video bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
-                    <span className="text-xs text-gray-400 uppercase font-medium">{asset.asset_type}</span>
+                <div key={asset.id} className="bg-neu-base shadow-neu-convex rounded-[1.5rem] p-5 transition-all duration-200 hover:shadow-neu-concave">
+                  <div className="aspect-video bg-neu-base shadow-neu-concave rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                    <span className="text-xs text-gray-400 uppercase font-semibold tracking-widest">{asset.asset_type}</span>
                   </div>
-                  <p className="text-sm font-medium truncate" title={asset.file_name}>{asset.file_name}</p>
-                  <p className="text-xs text-gray-500 mt-1">{(asset.file_size / 1024 / 1024).toFixed(2)} MB</p>
+                  <p className="text-sm font-semibold text-gray-700 truncate tracking-wide" title={asset.file_name}>{asset.file_name}</p>
+                  <p className="text-xs text-gray-500 mt-2 font-medium">{(asset.file_size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
               ))}
             </div>
@@ -47,7 +47,7 @@ export default async function MediaLibraryPage() {
           <UploadForm />
           
           {!user && (
-            <div className="mt-4 p-4 bg-yellow-50 text-yellow-800 rounded-md text-sm border border-yellow-200">
+            <div className="mt-6 p-6 bg-neu-base shadow-neu-concave text-yellow-600 rounded-[2rem] text-sm font-medium">
               <strong>Chú ý:</strong> Bạn chưa đăng nhập. Việc upload sẽ thất bại ở bước lưu Supabase do vi phạm Row Level Security (RLS). Vui lòng cấu hình `.env.local` và tạo một user test.
             </div>
           )}

@@ -114,87 +114,95 @@ export default function DashboardPage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Insights Dashboard</h1>
+      <div className="mb-10">
+        <h1 className="text-4xl font-light text-gray-700 tracking-wide">Insights Dashboard</h1>
         <p className="text-gray-500 mt-2">Overview of your creative OS performance</p>
       </div>
 
       {isLoading ? (
         <div className="flex justify-center py-12"><Loader2 className="animate-spin text-gray-500 w-8 h-8" /></div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-10">
           {/* KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center text-gray-500 mb-2">
-                <DollarSign className="w-5 h-5 mr-2 text-indigo-500" />
-                <span className="text-sm font-medium uppercase tracking-wider">Total Spend</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
+              <div className="flex items-center text-gray-500 mb-4">
+                <div className="p-3 rounded-full shadow-neu-convex mr-3">
+                  <DollarSign className="w-5 h-5 text-indigo-500" />
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-widest">Total Spend</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">${metrics.totalSpend.toFixed(2)}</p>
+              <p className="text-3xl font-light text-gray-700">${metrics.totalSpend.toFixed(2)}</p>
             </div>
             
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center text-gray-500 mb-2">
-                <TrendingUp className="w-5 h-5 mr-2 text-green-500" />
-                <span className="text-sm font-medium uppercase tracking-wider">Avg ROAS</span>
+            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
+              <div className="flex items-center text-gray-500 mb-4">
+                <div className="p-3 rounded-full shadow-neu-convex mr-3">
+                  <TrendingUp className="w-5 h-5 text-blue-500" />
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-widest">Avg ROAS</span>
               </div>
-              <p className="text-3xl font-bold text-green-600">{metrics.avgRoas.toFixed(2)}x</p>
+              <p className="text-3xl font-light text-blue-600">{metrics.avgRoas.toFixed(2)}x</p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center text-gray-500 mb-2">
-                <CheckCircle className="w-5 h-5 mr-2 text-blue-500" />
-                <span className="text-sm font-medium uppercase tracking-wider">Approved Ads</span>
+            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
+              <div className="flex items-center text-gray-500 mb-4">
+                <div className="p-3 rounded-full shadow-neu-convex mr-3">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-widest">Approved Ads</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">{metrics.adsApproved}</p>
+              <p className="text-3xl font-light text-gray-700">{metrics.adsApproved}</p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-              <div className="flex items-center text-gray-500 mb-2">
-                <Video className="w-5 h-5 mr-2 text-yellow-500" />
-                <span className="text-sm font-medium uppercase tracking-wider">Ads in Review</span>
+            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
+              <div className="flex items-center text-gray-500 mb-4">
+                <div className="p-3 rounded-full shadow-neu-convex mr-3">
+                  <Video className="w-5 h-5 text-yellow-500" />
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-widest">Ads in Review</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">{metrics.adsReview}</p>
+              <p className="text-3xl font-light text-gray-700">{metrics.adsReview}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             {/* Top Performers */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="font-bold text-gray-900 flex items-center"><Star className="w-5 h-5 mr-2 text-yellow-500" /> Top Performers</h3>
-                <Link href="/leaderboard" className="text-sm text-indigo-600 hover:underline font-medium">View all</Link>
+            <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-6">
+              <div className="px-4 py-4 flex justify-between items-center mb-4">
+                <h3 className="font-semibold text-xl text-gray-700 flex items-center tracking-wide"><Star className="w-6 h-6 mr-3 text-yellow-500 drop-shadow-sm" /> Top Performers</h3>
+                <Link href="/leaderboard" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-blue-600 font-medium transition-all duration-200">View all</Link>
               </div>
-              <div className="divide-y divide-gray-100">
+              <div className="space-y-4 px-2 pb-2">
                 {topPerformers.map((p, idx) => (
-                  <div key={p.user_id} className="px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition">
-                    <div className="flex items-center space-x-3">
-                      <span className="font-bold text-gray-400 w-4">#{idx + 1}</span>
-                      <span className="font-semibold text-gray-900">{p.name}</span>
+                  <div key={p.user_id} className="px-6 py-5 rounded-[1.5rem] shadow-neu-concave flex justify-between items-center">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-8 h-8 flex items-center justify-center rounded-full shadow-neu-convex font-bold text-gray-500">{idx + 1}</div>
+                      <span className="font-medium text-gray-700 text-lg">{p.name}</span>
                     </div>
-                    <span className="font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full text-sm">{p.total_score} pts</span>
+                    <span className="font-bold text-blue-600 shadow-neu-convex bg-neu-base px-4 py-2 rounded-full text-sm">{p.total_score} pts</span>
                   </div>
                 ))}
-                {topPerformers.length === 0 && <p className="px-6 py-8 text-center text-gray-500 text-sm">No scores yet. Approve an ad to award points!</p>}
+                {topPerformers.length === 0 && <p className="py-8 text-center text-gray-500 text-sm">No scores yet. Approve an ad to award points!</p>}
               </div>
             </div>
 
             {/* Active Tasks */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="font-bold text-gray-900 flex items-center"><ListTodo className="w-5 h-5 mr-2 text-blue-500" /> Active Tasks</h3>
-                <Link href="/boards" className="text-sm text-indigo-600 hover:underline font-medium">Go to Boards</Link>
+            <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-6">
+              <div className="px-4 py-4 flex justify-between items-center mb-4">
+                <h3 className="font-semibold text-xl text-gray-700 flex items-center tracking-wide"><ListTodo className="w-6 h-6 mr-3 text-indigo-500 drop-shadow-sm" /> Active Tasks</h3>
+                <Link href="/boards" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-blue-600 font-medium transition-all duration-200">Go to Boards</Link>
               </div>
-              <div className="divide-y divide-gray-100">
+              <div className="space-y-4 px-2 pb-2">
                 {tasks.map((t) => (
-                  <div key={t.id} className="px-6 py-4 hover:bg-gray-50 transition">
-                    <h4 className="font-medium text-gray-900 mb-1">{t.title}</h4>
+                  <div key={t.id} className="px-6 py-5 rounded-[1.5rem] shadow-neu-concave transition">
+                    <h4 className="font-medium text-gray-700 mb-1">{t.title}</h4>
                     <p className="text-xs text-gray-500">
-                      In <span className="font-medium text-gray-700">{t.listName}</span>
+                      In <span className="font-medium px-2 py-1 bg-neu-base shadow-neu-convex rounded-full ml-1 text-gray-600">{t.listName}</span>
                     </p>
                   </div>
                 ))}
-                {tasks.length === 0 && <p className="px-6 py-8 text-center text-gray-500 text-sm">No active tasks. Create a brief and generate tasks!</p>}
+                {tasks.length === 0 && <p className="py-8 text-center text-gray-500 text-sm">No active tasks. Create a brief and generate tasks!</p>}
               </div>
             </div>
           </div>
