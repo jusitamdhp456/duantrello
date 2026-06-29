@@ -8,8 +8,11 @@ export const translations = {
     no_data: "No data found.",
     save_changes: "Save Changes",
     delete_confirm: "Are you sure you want to delete this?",
+    delete_asset_confirm: "Are you sure you want to delete this asset? It cannot be undone.",
     success: "Success",
     error: "Error",
+    delete: "Delete",
+    download: "Download",
     
     // Sidebar
     nav_dashboard: "Dashboard",
@@ -51,6 +54,7 @@ export const translations = {
     file_type: "Type",
     size: "Size",
     uploaded_at: "Uploaded at",
+    storage_used: "Storage Used",
 
     // Boards
     boards_title: "Boards",
@@ -163,8 +167,11 @@ export const translations = {
     no_data: "Không có dữ liệu.",
     save_changes: "Lưu Thay Đổi",
     delete_confirm: "Bạn có chắc chắn muốn xóa không?",
+    delete_asset_confirm: "Bạn có chắc chắn muốn xóa tệp này? Hành động không thể hoàn tác.",
     success: "Thành công",
     error: "Lỗi",
+    delete: "Xóa",
+    download: "Tải xuống",
     
     // Sidebar
     nav_dashboard: "Trang chủ",
@@ -206,6 +213,7 @@ export const translations = {
     file_type: "Loại",
     size: "Kích thước",
     uploaded_at: "Ngày tải",
+    storage_used: "Đã sử dụng",
 
     // Boards
     boards_title: "Bảng công việc",
