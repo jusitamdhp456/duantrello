@@ -43,7 +43,7 @@ export default function BoardsPage() {
     if (!newBoardName.trim() || !activeWorkspaceId) return;
     
     try {
-      const newBoard = await createBoard(newBoardName, activeWorkspaceId);
+      const newBoard = await createBoard(activeWorkspaceId, newBoardName);
       setBoards([newBoard, ...boards]);
       setNewBoardName("");
     } catch (err) {
