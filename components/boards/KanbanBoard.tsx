@@ -49,7 +49,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
       setLists(updatedLists);
 
       // Save to db
-      await updateListPosition(draggableId, destination.index * 1024, boardId);
+      await updateListPosition(draggableId, destination.index * 1024);
       return;
     }
 
@@ -72,24 +72,21 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
       
       setCards(newAllCards);
 
-      await updateCardPosition(draggableId, destListId, destination.index * 1024, boardId);
+      await updateCardPosition(draggableId, destListId, destination.index * 1024);
     }
   };
 
   const handleAddList = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newListName.trim()) return;
-    const position = lists.length * 1024;
-    const newList = await createList(newListName, boardId, position);
+    const newList = await createList(boardId, newListName);
     setLists([...lists, newList]);
     setNewListName("");
     setIsAddingList(false);
   };
 
   const handleAddCard = async (title: string, listId: string) => {
-    const listCards = cards.filter((c) => c.list_id === listId);
-    const position = listCards.length * 1024;
-    const newCard = await createCard(title, listId, position);
+    const newCard = await createCard(listId, title, boardId);
     setCards([...cards, newCard]);
   };
 
