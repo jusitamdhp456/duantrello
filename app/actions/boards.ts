@@ -74,22 +74,28 @@ export async function createCard(listId: string, title: string, boardId: string)
   return data;
 }
 
-export async function updateListPosition(listId: string, newPosition: number) {
+export async function updateListPosition(listId: string, newPosition: number, boardId?: string) {
   const supabase = createClient();
   const { error } = await supabase
     .from("lists")
     .update({ position: newPosition })
     .eq("id", listId);
   if (error) throw new Error(error.message);
+  if (boardId) {
+    revalidatePath(`/boards/${boardId}`);
+  }
 }
 
-export async function updateCardPosition(cardId: string, newListId: string, newPosition: number) {
+export async function updateCardPosition(cardId: string, newListId: string, newPosition: number, boardId?: string) {
   const supabase = createClient();
   const { error } = await supabase
     .from("cards")
     .update({ list_id: newListId, position: newPosition })
     .eq("id", cardId);
   if (error) throw new Error(error.message);
+  if (boardId) {
+    revalidatePath(`/boards/${boardId}`);
+  }
 }
 
 export async function updateCardDetails(cardId: string, data: any) {
@@ -147,4 +153,71 @@ export async function addComment(cardId: string, content: string) {
     
   if (error) throw new Error(error.message);
   return data;
+}
+
+// Labels Actions
+export async function getBoardLabels(boardId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("card_labels")
+    .select("*")
+    .eq("board_id", boardId);
+  if (error) throw new Error(error.message);
+  return data || [];
+}
+
+export async function createLabel(boardId: string, name: string, color: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("card_labels")
+    .insert({ board_id: boardId, name, color })
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function assignLabelToCard(cardId: string, labelId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("cards_labels_map")
+    .insert({ card_id: cardId, label_id: labelId });
+  if (error) throw new Error(error.message);
+}
+
+export async function removeLabelFromCard(cardId: string, labelId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("cards_labels_map")
+    .delete()
+    .match({ card_id: cardId, label_id: labelId });
+  if (error) throw new Error(error.message);
+}
+
+// Members Actions
+export async function getWorkspaceMembers(workspaceId: string) {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("workspace_members")
+    .select("user_id, role, profiles(full_name, email, avatar_url)")
+    .eq("workspace_id", workspaceId);
+  if (error) throw new Error(error.message);
+  return data || [];
+}
+
+export async function assignMemberToCard(cardId: string, userId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("card_members")
+    .insert({ card_id: cardId, user_id: userId });
+  if (error) throw new Error(error.message);
+}
+
+export async function removeMemberFromCard(cardId: string, userId: string) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("card_members")
+    .delete()
+    .match({ card_id: cardId, user_id: userId });
+  if (error) throw new Error(error.message);
 }

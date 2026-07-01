@@ -49,7 +49,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
       setLists(updatedLists);
 
       // Save to db
-      await updateListPosition(draggableId, destination.index * 1024);
+      await updateListPosition(draggableId, destination.index * 1024, boardId);
       return;
     }
 
@@ -72,7 +72,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
       
       setCards(newAllCards);
 
-      await updateCardPosition(draggableId, destListId, destination.index * 1024);
+      await updateCardPosition(draggableId, destListId, destination.index * 1024, boardId);
     }
   };
 
@@ -152,7 +152,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
       </Droppable>
 
       {selectedCard && (
-        <CardModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+        <CardModal card={selectedCard} boardId={boardId} onClose={() => setSelectedCard(null)} />
       )}
     </DragDropContext>
   );

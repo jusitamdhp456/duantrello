@@ -34,7 +34,19 @@ export default async function BoardDetailPage({ params }: { params: { id: string
   if (listIds.length > 0) {
     const { data: fetchCards } = await supabase
       .from('cards')
-      .select('*')
+      .select(`
+        *,
+        cards_labels_map (
+          card_labels (*)
+        ),
+        card_members (
+          user_id,
+          profiles (
+            full_name,
+            avatar_url
+          )
+        )
+      `)
       .in('list_id', listIds)
       .order('position', { ascending: true });
     cards = fetchCards || [];
