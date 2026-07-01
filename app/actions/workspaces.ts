@@ -4,6 +4,32 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 // Workspaces
+export async function createWorkspace(name: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { data: workspace, error: workspaceError } = await supabase
+    .from("workspaces")
+    .insert({ name })
+    .select()
+    .single();
+
+  if (workspaceError) throw new Error(workspaceError.message);
+
+  const { error: memberError } = await supabase
+    .from("workspace_members")
+    .insert({
+      workspace_id: workspace.id,
+      user_id: user.id,
+      role: 'owner'
+    });
+
+  if (memberError) throw new Error(memberError.message);
+
+  revalidatePath("/");
+  return workspace;
+}
 export async function updateWorkspaceName(workspaceId: string, name: string) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
