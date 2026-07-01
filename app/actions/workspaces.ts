@@ -9,18 +9,18 @@ export async function createWorkspace(name: string) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  const { data: workspace, error: workspaceError } = await supabase
+  const newWorkspaceId = crypto.randomUUID();
+
+  const { error: workspaceError } = await supabase
     .from("workspaces")
-    .insert({ name })
-    .select()
-    .single();
+    .insert({ id: newWorkspaceId, name });
 
   if (workspaceError) throw new Error(workspaceError.message);
 
   const { error: memberError } = await supabase
     .from("workspace_members")
     .insert({
-      workspace_id: workspace.id,
+      workspace_id: newWorkspaceId,
       user_id: user.id,
       role: 'owner'
     });
@@ -28,7 +28,7 @@ export async function createWorkspace(name: string) {
   if (memberError) throw new Error(memberError.message);
 
   revalidatePath("/");
-  return workspace;
+  return { id: newWorkspaceId, name };
 }
 export async function updateWorkspaceName(workspaceId: string, name: string) {
   const supabase = createClient();
