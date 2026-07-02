@@ -22,7 +22,7 @@ export async function getTasks(workspaceId: string) {
   }
 
   if (data && data.length > 0) {
-    const assigneeIds = [...new Set(data.map(t => t.assignee_id).filter(Boolean))];
+    const assigneeIds = Array.from(new Set(data.map(t => t.assignee_id).filter(Boolean)));
     if (assigneeIds.length > 0) {
       const { data: profiles } = await supabase
         .from('profiles')
