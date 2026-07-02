@@ -249,7 +249,7 @@ export default function TasksView() {
 
   return (
     <div className="flex-1 flex flex-col m-4 overflow-hidden">
-      <div className="flex justify-between items-center mb-6 px-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 px-2">
         <h1 className="text-2xl font-bold text-gray-700 tracking-wide">{t("nav_todo")}</h1>
         <button 
           onClick={openCreateModal}
@@ -260,31 +260,31 @@ export default function TasksView() {
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-6 mb-8 px-2">
-        <div className="bg-neu-base rounded-3xl p-5 shadow-neu-convex flex flex-col justify-between">
-          <div className="text-gray-500 text-sm font-medium">{t("task_total")}</div>
-          <div className="text-3xl font-bold text-gray-700 mt-2">{stats.total}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 px-2">
+        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
+          <div className="text-gray-500 text-xs md:text-sm font-medium">{t("task_total")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-gray-700 mt-2">{stats.total}</div>
         </div>
-        <div className="bg-neu-base rounded-3xl p-5 shadow-neu-convex flex flex-col justify-between">
-          <div className="text-gray-500 text-sm font-medium">{t("task_status_in_progress")}</div>
-          <div className="text-3xl font-bold text-purple-600 mt-2">{stats.inProgress}</div>
+        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
+          <div className="text-gray-500 text-xs md:text-sm font-medium">{t("task_status_in_progress")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-purple-600 mt-2">{stats.inProgress}</div>
         </div>
-        <div className="bg-neu-base rounded-3xl p-5 shadow-neu-convex flex flex-col justify-between">
-          <div className="text-gray-500 text-sm font-medium">{t("task_status_review")}</div>
-          <div className="text-3xl font-bold text-purple-600 mt-2">{stats.review}</div>
+        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
+          <div className="text-gray-500 text-xs md:text-sm font-medium">{t("task_status_review")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-purple-600 mt-2">{stats.review}</div>
         </div>
-        <div className="bg-neu-base rounded-3xl p-5 shadow-neu-convex flex flex-col justify-between">
-          <div className="text-red-400 text-sm font-medium">{t("task_overdue")}</div>
-          <div className="text-3xl font-bold text-red-500 mt-2">{stats.overdue}</div>
+        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
+          <div className="text-red-400 text-xs md:text-sm font-medium">{t("task_overdue")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-red-500 mt-2">{stats.overdue}</div>
         </div>
       </div>
 
-      <div className="flex gap-3 mb-6 px-2 overflow-x-auto pb-2">
+      <div className="flex gap-2 md:gap-3 mb-6 px-2 overflow-x-auto pb-3 snap-x scrollbar-hide">
         {(['all', 'pending', 'in_progress', 'review', 'revision', 'completed', 'cancelled'] as const).map(s => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+            className={`px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap snap-start flex-shrink-0 ${
               statusFilter === s 
                 ? 'bg-purple-500 text-white shadow-neu-convex' 
                 : 'bg-neu-base text-gray-600 hover:shadow-neu-concave shadow-neu-convex'
@@ -307,24 +307,24 @@ export default function TasksView() {
               const isTaskOverdue = isOverdue(task.deadline) && task.status !== 'completed' && task.status !== 'cancelled';
               
               return (
-                <div key={task.id} className="bg-neu-base rounded-[1.5rem] p-5 shadow-neu-convex hover:shadow-[12px_12px_24px_rgba(207,200,218,0.8),-12px_-12px_24px_rgba(255,255,255,1)] hover:-translate-y-1 transition-all duration-300 group flex items-center justify-between border-l-4 border-transparent hover:border-purple-400">
-                  <div className="flex items-center gap-5 flex-1">
-                    <div className="w-8 h-8 rounded-full bg-neu-base shadow-neu-concave flex items-center justify-center flex-shrink-0">
+                <div key={task.id} className="bg-neu-base rounded-[1.5rem] p-4 md:p-5 shadow-neu-convex hover:shadow-[12px_12px_24px_rgba(207,200,218,0.8),-12px_-12px_24px_rgba(255,255,255,1)] hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between border-l-4 border-transparent hover:border-purple-400 gap-4">
+                  <div className="flex items-start md:items-center gap-3 sm:gap-5 flex-1 w-full lg:w-auto overflow-hidden">
+                    <div className="w-8 h-8 rounded-full bg-neu-base shadow-neu-concave flex items-center justify-center flex-shrink-0 mt-1 md:mt-0">
                       {getPriorityIcon(task.priority)}
                     </div>
-                    <div className="flex flex-col">
-                      <h3 className="text-gray-800 font-medium text-lg flex items-center gap-2">
-                        {task.title}
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <h3 className="text-gray-800 font-medium text-base sm:text-lg flex flex-wrap items-center gap-2">
+                        <span className="truncate">{task.title}</span>
                         {isTaskOverdue && (
-                          <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <span className="text-[10px] sm:text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0">
                             <AlertCircle size={12} /> {t("task_overdue")}
                           </span>
                         )}
                       </h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-500 mt-1">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mt-1.5">
                         <span className="flex items-center gap-1">
                           <Eye size={14} className="text-gray-400" />
-                          {task.assignee_name || "Chưa giao"}
+                          <span className="truncate max-w-[120px] sm:max-w-none">{task.assignee_name || "Chưa giao"}</span>
                         </span>
                         <span className={`flex items-center gap-1 ${isTaskOverdue ? 'text-red-500 font-medium' : ''}`}>
                           <Clock size={14} className={isTaskOverdue ? 'text-red-500' : 'text-gray-400'} />
@@ -334,14 +334,14 @@ export default function TasksView() {
                     </div>
                   </div>
                   
-                  <div className="flex flex-col items-end gap-2">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-3 w-full lg:w-auto pt-3 lg:pt-0 border-t border-gray-100 lg:border-t-0">
+                    <div className="flex flex-wrap items-center gap-2 justify-start sm:justify-end w-full lg:w-auto">
                       {task.video_url && (
                         <a 
                           href={task.video_url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-sm px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full font-medium hover:bg-purple-100 transition-colors"
+                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full font-medium hover:bg-purple-100 transition-colors whitespace-nowrap"
                         >
                           Xem source
                         </a>
@@ -352,17 +352,17 @@ export default function TasksView() {
                           href={task.product_url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full font-medium hover:bg-blue-100 transition-colors"
+                          className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full font-medium hover:bg-blue-100 transition-colors whitespace-nowrap"
                         >
                           <Link2 size={14} />
-                          Sản phẩm đã xong
+                          SP hoàn thành
                         </a>
                       )}
 
                       <select 
                         value={task.status}
                         onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
-                        className={`text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none ${getStatusColor(task.status)}`}
+                        className={`text-[11px] sm:text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 ${getStatusColor(task.status)}`}
                       >
                         <option value="pending">{t("task_status_pending")}</option>
                         <option value="in_progress">{t("task_status_in_progress")}</option>
@@ -372,7 +372,7 @@ export default function TasksView() {
                         <option value="cancelled">{t("task_status_cancelled")}</option>
                       </select>
 
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity w-[72px] justify-end">
+                      <div className="flex items-center gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => openEditModal(task)}
                           className="p-1.5 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-full transition-colors"
@@ -391,10 +391,10 @@ export default function TasksView() {
                     </div>
 
                     {task.product_url && (
-                      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl border border-gray-200 mr-[72px]">
+                      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl border border-gray-200 lg:mr-[72px] w-full sm:w-auto">
                         <button
                           onClick={() => task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                          className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status === 'approved' 
                               ? 'bg-green-500 text-white shadow-md scale-100' 
                               : 'text-gray-400 hover:text-green-600 hover:bg-green-50 scale-95'
@@ -405,8 +405,8 @@ export default function TasksView() {
                         </button>
                         <button
                           onClick={() => task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
-                            task.review_status !== 'approved' // Treat pending as chưa duyệt active visually for clarity, or just when rejected
+                          className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                            task.review_status !== 'approved' 
                               ? 'bg-red-500 text-white shadow-md scale-100' 
                               : 'text-gray-400 hover:text-red-500 hover:bg-red-50 scale-95'
                           }`}

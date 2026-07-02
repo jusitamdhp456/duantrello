@@ -143,21 +143,21 @@ export default function MySalaryPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-light text-gray-700 tracking-wide flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-light text-gray-700 tracking-wide flex items-center gap-3">
             <div className="p-3 rounded-2xl shadow-neu-convex">
-              <DollarSign className="w-7 h-7 text-purple-500" />
+              <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 text-purple-500" />
             </div>
             Lương của tôi
           </h1>
-          <p className="text-gray-400 mt-2 ml-1 text-sm">
+          <p className="text-gray-400 mt-2 ml-1 text-xs sm:text-sm">
             Tự động tính lương theo số clip hoàn thành mỗi tháng
           </p>
         </div>
         <button
           onClick={() => { setSelectedDay(null); setShowAddModal(true); }}
-          className="flex items-center gap-2 px-5 py-3 rounded-2xl shadow-neu-convex text-purple-600 font-semibold text-sm hover:shadow-neu-concave transition-all duration-200"
+          className="flex items-center justify-center w-full sm:w-auto gap-2 px-5 py-3 rounded-2xl shadow-neu-convex text-purple-600 font-semibold text-sm hover:shadow-neu-concave transition-all duration-200"
         >
           <Plus className="w-5 h-5" />
           Thêm clip
@@ -165,7 +165,7 @@ export default function MySalaryPage() {
       </div>
 
       {/* KPI Summary */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-neu-base rounded-2xl shadow-neu-convex p-5 text-center">
           <Film className="w-6 h-6 text-indigo-400 mx-auto mb-2" />
           <p className="text-2xl font-light text-gray-700">{totalClips}</p>
@@ -186,24 +186,24 @@ export default function MySalaryPage() {
       </div>
 
       {/* Quy tắc tính lương */}
-      <div className="bg-neu-base rounded-2xl shadow-neu-convex p-4 flex items-center gap-4 text-sm text-gray-500">
-        <div className="flex items-center gap-2 px-4 py-2 rounded-xl shadow-neu-concave">
-          <span className="text-purple-500 font-semibold">Clip 1–5</span>
+      <div className="bg-neu-base rounded-2xl shadow-neu-convex p-4 flex flex-col md:flex-row md:items-center gap-3 md:gap-4 text-sm text-gray-500 overflow-hidden">
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl shadow-neu-concave justify-center">
+          <span className="text-purple-500 font-semibold whitespace-nowrap">Clip 1–5</span>
           <span className="text-gray-400">=</span>
-          <span className="font-bold text-gray-700">250.000 ₫/clip</span>
+          <span className="font-bold text-gray-700 whitespace-nowrap">250.000 ₫/clip</span>
         </div>
-        <span className="text-gray-300">|</span>
-        <div className="flex items-center gap-2 px-4 py-2 rounded-xl shadow-neu-concave">
-          <span className="text-green-500 font-semibold">Clip 6 trở đi</span>
+        <span className="text-gray-300 hidden md:inline">|</span>
+        <div className="flex items-center gap-2 px-4 py-2 rounded-xl shadow-neu-concave justify-center">
+          <span className="text-green-500 font-semibold whitespace-nowrap">Clip 6 trở đi</span>
           <span className="text-gray-400">=</span>
-          <span className="font-bold text-gray-700">280.000 ₫/clip</span>
+          <span className="font-bold text-gray-700 whitespace-nowrap">280.000 ₫/clip</span>
         </div>
-        <span className="text-gray-300">|</span>
-        <span className="text-xs text-gray-400 italic">Reset lại vào đầu mỗi tháng</span>
+        <span className="text-gray-300 hidden md:inline">|</span>
+        <span className="text-xs text-gray-400 italic text-center md:text-left w-full md:w-auto">Reset lại vào đầu mỗi tháng</span>
       </div>
 
       {/* Calendar */}
-      <div className="bg-neu-base rounded-2xl shadow-neu-convex p-6">
+      <div className="bg-neu-base rounded-2xl shadow-neu-convex p-4 sm:p-6 overflow-hidden">
         {/* Month nav */}
         <div className="flex items-center justify-between mb-5">
           <button
@@ -212,8 +212,8 @@ export default function MySalaryPage() {
           >
             <ChevronLeft className="w-5 h-5 text-gray-500" />
           </button>
-          <h2 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-purple-400" />
+          <h2 className="text-base sm:text-lg font-semibold text-gray-700 flex items-center gap-2">
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
             {getMonthName(viewMonth)} {viewYear}
           </h2>
           <button
@@ -227,7 +227,7 @@ export default function MySalaryPage() {
         {/* Day headers */}
         <div className="grid grid-cols-7 gap-1 mb-2">
           {dayNames.map((d) => (
-            <div key={d} className="text-center text-xs font-bold text-gray-400 py-1">{d}</div>
+            <div key={d} className="text-center text-[10px] sm:text-xs font-bold text-gray-400 py-1">{d}</div>
           ))}
         </div>
 
@@ -252,18 +252,18 @@ export default function MySalaryPage() {
                   setSelectedDay(day);
                   setShowAddModal(true);
                 }}
-                className={`aspect-square rounded-xl flex flex-col items-center justify-center relative transition-all duration-200 hover:shadow-neu-concave text-xs
+                className={`aspect-square rounded-lg sm:rounded-xl flex flex-col items-center justify-center relative transition-all duration-200 hover:shadow-neu-concave text-[10px] sm:text-xs
                   ${isToday ? "shadow-neu-concave text-purple-600 font-bold" : "shadow-neu-convex text-gray-600"}
-                  ${hasClips ? "border-2 border-purple-200" : ""}
+                  ${hasClips ? "border border-purple-200 sm:border-2" : ""}
                 `}
               >
                 <span>{day}</span>
                 {hasClips && (
-                  <div className="flex gap-0.5 mt-0.5">
+                  <div className="flex gap-[1px] sm:gap-0.5 mt-0.5 sm:mt-1">
                     {dayRecords.slice(0, 3).map((_, idx) => (
-                      <div key={idx} className="w-1 h-1 rounded-full bg-purple-400" />
+                      <div key={idx} className="w-0.5 h-0.5 sm:w-1 sm:h-1 rounded-full bg-purple-400" />
                     ))}
-                    {dayRecords.length > 3 && <div className="w-1 h-1 rounded-full bg-gray-400" />}
+                    {dayRecords.length > 3 && <div className="w-0.5 h-0.5 sm:w-1 sm:h-1 rounded-full bg-gray-400" />}
                   </div>
                 )}
               </button>
@@ -273,9 +273,9 @@ export default function MySalaryPage() {
       </div>
 
       {/* List of clips this month */}
-      <div className="bg-neu-base rounded-2xl shadow-neu-convex p-6">
-        <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-green-500" />
+      <div className="bg-neu-base rounded-2xl shadow-neu-convex p-4 sm:p-6 overflow-hidden">
+        <h3 className="font-semibold text-sm sm:text-base text-gray-700 mb-4 flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
           Danh sách clip {getMonthName(viewMonth)} {viewYear}
         </h3>
 
@@ -293,27 +293,27 @@ export default function MySalaryPage() {
               return (
                 <div
                   key={r.id}
-                  className="flex items-center justify-between px-5 py-4 rounded-2xl shadow-neu-concave"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-5 py-4 rounded-2xl shadow-neu-concave gap-3"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-8 h-8 rounded-full shadow-neu-convex flex items-center justify-center text-xs font-bold ${isBonus ? "text-green-600" : "text-purple-600"}`}>
+                  <div className="flex items-start sm:items-center gap-3 sm:gap-4 flex-1 overflow-hidden">
+                    <div className={`w-8 h-8 rounded-full shadow-neu-convex flex items-center justify-center text-xs font-bold shrink-0 ${isBonus ? "text-green-600" : "text-purple-600"}`}>
                       #{r.clip_count_in_month}
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-700">{r.clip_title}</p>
-                      <p className="text-xs text-gray-400">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-700 text-sm sm:text-base truncate">{r.clip_title}</p>
+                      <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5 flex flex-wrap gap-1">
                         Ngày {day}/{viewMonth}/{viewYear}
-                        {isBonus && <span className="ml-2 text-green-500 font-semibold">★ Bonus rate</span>}
+                        {isBonus && <span className="text-green-500 font-semibold">★ Bonus rate</span>}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto border-t sm:border-none border-gray-100 pt-3 sm:pt-0">
                     <span className={`font-bold text-sm ${isBonus ? "text-green-600" : "text-purple-600"}`}>
                       {formatVND(r.rate_per_clip)}
                     </span>
                     <button
                       onClick={() => handleDelete(r.id)}
-                      className="p-2 rounded-xl shadow-neu-convex hover:shadow-neu-concave text-gray-400 hover:text-red-400 transition-all"
+                      className="p-2 rounded-xl shadow-neu-convex hover:shadow-neu-concave text-gray-400 hover:text-red-400 transition-all shrink-0"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -323,9 +323,9 @@ export default function MySalaryPage() {
             })}
 
             {/* Total row */}
-            <div className="flex items-center justify-between px-5 py-4 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 shadow-neu-concave border border-purple-100">
-              <span className="font-bold text-gray-700">Tổng lương tháng {viewMonth}</span>
-              <span className="font-bold text-xl text-purple-600">{formatVND(totalSalary)}</span>
+            <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-5 py-4 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 shadow-neu-concave border border-purple-100 gap-2 text-center sm:text-left mt-4">
+              <span className="font-bold text-gray-700 text-sm sm:text-base">Tổng lương tháng {viewMonth}</span>
+              <span className="font-bold text-xl sm:text-2xl text-purple-600">{formatVND(totalSalary)}</span>
             </div>
           </div>
         )}
