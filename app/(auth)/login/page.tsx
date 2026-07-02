@@ -1,26 +1,21 @@
-"use client";
-
 import Link from "next/link";
 import { login } from "@/app/auth/actions";
-import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: { message: string }
+  searchParams: { message?: string }
 }) {
-  const { t } = useLanguage();
-
   return (
     <>
       <div>
         <h2 className="mt-2 text-center text-4xl font-light text-gray-700 tracking-wide">
-          {t("login")}
+          Sign In
         </h2>
         <p className="mt-4 text-center text-sm text-gray-500">
           Or{" "}
           <Link href="/signup" className="font-medium text-purple-500 hover:text-purple-600 transition-colors">
-            {t("no_account")}
+            Don&apos;t have an account?
           </Link>
         </p>
       </div>
@@ -28,7 +23,7 @@ export default function LoginPage({
         <div className="space-y-6">
           <div>
             <label htmlFor="email-address" className="sr-only">
-              {t("email")}
+              Email
             </label>
             <input
               id="email-address"
@@ -42,7 +37,7 @@ export default function LoginPage({
           </div>
           <div>
             <label htmlFor="password" className="sr-only">
-              {t("password")}
+              Password
             </label>
             <input
               id="password"
@@ -64,7 +59,7 @@ export default function LoginPage({
         </div>
 
         {searchParams?.message && (
-          <p className="mt-4 text-sm text-center text-red-500">
+          <p className="mt-4 text-sm text-center text-red-500 bg-red-50 rounded-xl py-3 px-4">
             {searchParams.message}
           </p>
         )}
@@ -74,7 +69,7 @@ export default function LoginPage({
             type="submit"
             className="group relative w-full flex justify-center py-4 px-4 border-none text-lg font-medium rounded-full text-white bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-neu-convex active:shadow-neu-pressed transition-all duration-200"
           >
-            {t("login")}
+            Sign In
           </button>
         </div>
       </form>
