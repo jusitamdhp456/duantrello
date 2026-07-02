@@ -326,88 +326,91 @@ export default function TasksView() {
                     </div>
                   </div>
                   
-                  {/* Cột hiển thị Link Sản Phẩm & Trạng thái Duyệt (nếu có Link Sản Phẩm) */}
-                  {task.product_url && (
-                    <div className="flex flex-col items-end gap-2 mx-4 px-4 border-l border-r border-gray-100">
-                      <a 
-                        href={task.product_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
-                      >
-                        <Link2 size={14} />
-                        Sản phẩm đã hoàn thành
-                      </a>
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="flex items-center gap-3">
+                      {task.video_url && (
+                        <a 
+                          href={task.video_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full font-medium hover:bg-purple-100 transition-colors"
+                        >
+                          Xem source
+                        </a>
+                      )}
                       
-                      <div className="flex items-center gap-2 text-xs">
+                      {task.product_url && (
+                        <a 
+                          href={task.product_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full font-medium hover:bg-blue-100 transition-colors"
+                        >
+                          <Link2 size={14} />
+                          Sản phẩm
+                        </a>
+                      )}
+
+                      <select 
+                        value={task.status}
+                        onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
+                        className={`text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none ${getStatusColor(task.status)}`}
+                      >
+                        <option value="pending">{t("task_status_pending")}</option>
+                        <option value="in_progress">{t("task_status_in_progress")}</option>
+                        <option value="review">{t("task_status_review")}</option>
+                        <option value="revision">{t("task_status_revision")}</option>
+                        <option value="completed">{t("task_status_completed")}</option>
+                        <option value="cancelled">{t("task_status_cancelled")}</option>
+                      </select>
+
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity w-[72px] justify-end">
+                        <button 
+                          onClick={() => openEditModal(task)}
+                          className="p-1.5 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-full transition-colors"
+                          title={t("task_edit")}
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(task.id)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                          title={t("task_delete")}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {task.product_url && (
+                      <div className="flex items-center gap-2 text-xs pr-[80px]">
                         {task.review_status === 'approved' ? (
                           <span className="flex items-center gap-1 text-green-600 font-bold bg-green-50 px-2 py-1 rounded-md">
                             <CheckSquare size={14} /> Đã duyệt & Tính lương
                           </span>
                         ) : task.review_status === 'rejected' ? (
                           <span className="flex items-center gap-1 text-red-500 font-bold bg-red-50 px-2 py-1 rounded-md">
-                            <XCircle size={14} /> Chưa duyệt
+                            <XCircle size={14} /> Từ chối
                           </span>
                         ) : (
-                          <div className="flex gap-1">
+                          <div className="flex gap-1 items-center bg-orange-50 px-2 py-1 rounded-md">
+                            <span className="text-orange-600 font-medium mr-2">Chờ duyệt:</span>
                             <button 
                               onClick={() => handleReviewAction(task, 'approved')}
-                              className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-medium shadow-neu-convex"
+                              className="px-2 py-0.5 bg-green-500 text-white rounded hover:bg-green-600 transition-colors shadow-sm"
                             >
                               Duyệt
                             </button>
                             <button 
                               onClick={() => handleReviewAction(task, 'rejected')}
-                              className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors font-medium shadow-neu-convex"
+                              className="px-2 py-0.5 bg-red-500 text-white rounded hover:bg-red-600 transition-colors shadow-sm"
                             >
                               Từ chối
                             </button>
                           </div>
                         )}
                       </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-4">
-                    {task.video_url && (
-                      <a 
-                        href={task.video_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-sm px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full font-medium hover:bg-purple-100 transition-colors"
-                      >
-                        Xem source
-                      </a>
                     )}
-                    <select 
-                      value={task.status}
-                      onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
-                      className={`text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none ${getStatusColor(task.status)}`}
-                    >
-                      <option value="pending">{t("task_status_pending")}</option>
-                      <option value="in_progress">{t("task_status_in_progress")}</option>
-                      <option value="review">{t("task_status_review")}</option>
-                      <option value="revision">{t("task_status_revision")}</option>
-                      <option value="completed">{t("task_status_completed")}</option>
-                      <option value="cancelled">{t("task_status_cancelled")}</option>
-                    </select>
-
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button 
-                        onClick={() => openEditModal(task)}
-                        className="p-2 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-full transition-colors"
-                        title={t("task_edit")}
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(task.id)}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                        title={t("task_delete")}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
                   </div>
                 </div>
               );
