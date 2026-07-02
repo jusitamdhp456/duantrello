@@ -21,6 +21,9 @@ export default function Sidebar({ userEmail }: { userEmail: string | undefined }
           <Link href="/dashboard" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
             {t("nav_dashboard")}
           </Link>
+          <Link href="/tasks" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
+            {t("nav_todo")}
+          </Link>
           <Link href="/my-kpi" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
             {t("nav_my_kpi")}
           </Link>
