@@ -224,7 +224,11 @@ export default function TasksView() {
       if (!confirm("Bạn có chắc chắn muốn duyệt và tính lương cho sản phẩm này?")) return;
       try {
         const res = await approveTaskAndPay(task.id, activeWorkspaceId, task.title);
-        alert(`Đã duyệt! Sản phẩm được tính lương với đơn giá ${res.rate.toLocaleString('vi-VN')} đ (Clip #${res.nextCount} trong tháng).`);
+        if (res && res.error) {
+          alert("Lỗi: " + res.error);
+          return;
+        }
+        alert(`Đã duyệt! Sản phẩm được tính lương với đơn giá ${res.rate?.toLocaleString('vi-VN')} đ (Clip #${res.nextCount} trong tháng).`);
         setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'approved' } : t));
       } catch (err: any) {
         alert(err.message);
@@ -232,7 +236,11 @@ export default function TasksView() {
     } else if (action === 'rejected' && task.review_status === 'approved') {
       if (!confirm("Bạn có chắc chắn muốn HỦY duyệt? Tiền lương của sản phẩm này sẽ bị trừ đi.")) return;
       try {
-        await revokeTaskApprovalAndDeduct(task.id, task.title);
+        const res = await revokeTaskApprovalAndDeduct(task.id, task.title);
+        if (res && res.error) {
+          alert("Lỗi: " + res.error);
+          return;
+        }
         setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'rejected' } : t));
       } catch (err: any) {
         alert(err.message);

@@ -177,7 +177,7 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
     
   if (taskError || !taskData?.assignee_id) {
     console.error("Error getting assignee_id:", taskError);
-    throw new Error("Không tìm thấy người làm nhiệm vụ này để cộng lương.");
+    return { error: "Không tìm thấy người làm nhiệm vụ này để cộng lương." };
   }
   
   const targetUserId = taskData.assignee_id;
@@ -193,7 +193,7 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
 
   if (updateError) {
     console.error("Error approving task:", updateError);
-    throw new Error(updateError.message);
+    return { error: updateError.message };
   }
 
   // 2. Tính lương và lưu vào salary_records
@@ -232,7 +232,7 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
 
   if (salaryError) {
     console.error("Error adding salary record:", salaryError);
-    throw new Error("Lỗi khi cộng lương: " + salaryError.message);
+    return { error: "Lỗi khi cộng lương: " + salaryError.message };
   }
 
   revalidatePath("/tasks");
@@ -254,7 +254,7 @@ export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: str
     
   if (taskError || !taskData?.assignee_id) {
     console.error("Error getting assignee_id:", taskError);
-    throw new Error("Không tìm thấy người làm nhiệm vụ này để thu hồi lương.");
+    return { error: "Không tìm thấy người làm nhiệm vụ này để thu hồi lương." };
   }
   
   const targetUserId = taskData.assignee_id;
@@ -270,7 +270,7 @@ export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: str
 
   if (updateError) {
     console.error("Error revoking task:", updateError);
-    throw new Error(updateError.message);
+    return { error: updateError.message };
   }
 
   // 2. Xóa record lương của người làm
