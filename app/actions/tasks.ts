@@ -29,26 +29,29 @@ export async function createTask(workspaceId: string, data: Partial<Task>) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  const payload: any = {
+    workspace_id: workspaceId,
+    title: data.title,
+    priority: data.priority || 'medium',
+    status: data.status || 'pending',
+    review_status: data.review_status || 'pending',
+  };
+  
+  if (data.assignee_name !== undefined) payload.assignee_name = data.assignee_name || null;
+  if (data.assignee_id !== undefined) payload.assignee_id = data.assignee_id || null;
+  if (data.deadline !== undefined) payload.deadline = data.deadline || null;
+  if (data.video_url !== undefined) payload.video_url = data.video_url || null;
+  if (data.product_url !== undefined) payload.product_url = data.product_url || null;
+
   const { data: newTask, error } = await supabase
     .from("tasks")
-    .insert({
-      workspace_id: workspaceId,
-      title: data.title,
-      assignee_name: data.assignee_name || null,
-      assignee_id: data.assignee_id || null,
-      deadline: data.deadline || null,
-      priority: data.priority || 'medium',
-      status: data.status || 'pending',
-      video_url: data.video_url || null,
-      product_url: data.product_url || null,
-      review_status: data.review_status || 'pending',
-    })
+    .insert(payload)
     .select()
     .single();
 
   if (error) {
     console.error("Error creating task:", error);
-    throw new Error(error.message);
+    throw new Error("Lỗi cơ sở dữ liệu: " + error.message);
   }
 
   revalidatePath("/tasks");
@@ -60,27 +63,27 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  const payload: any = { updated_at: new Date().toISOString() };
+  if (data.title !== undefined) payload.title = data.title;
+  if (data.assignee_name !== undefined) payload.assignee_name = data.assignee_name;
+  if (data.assignee_id !== undefined) payload.assignee_id = data.assignee_id;
+  if (data.deadline !== undefined) payload.deadline = data.deadline;
+  if (data.priority !== undefined) payload.priority = data.priority;
+  if (data.status !== undefined) payload.status = data.status;
+  if (data.video_url !== undefined) payload.video_url = data.video_url;
+  if (data.product_url !== undefined) payload.product_url = data.product_url;
+  if (data.review_status !== undefined) payload.review_status = data.review_status;
+
   const { data: updatedTask, error } = await supabase
     .from("tasks")
-    .update({
-      title: data.title,
-      assignee_name: data.assignee_name,
-      assignee_id: data.assignee_id,
-      deadline: data.deadline,
-      priority: data.priority,
-      status: data.status,
-      video_url: data.video_url,
-      product_url: data.product_url,
-      review_status: data.review_status,
-      updated_at: new Date().toISOString()
-    })
+    .update(payload)
     .eq("id", taskId)
     .select()
     .single();
 
   if (error) {
     console.error("Error updating task:", error);
-    throw new Error(error.message);
+    throw new Error("Lỗi cơ sở dữ liệu: " + error.message);
   }
 
   revalidatePath("/tasks");
