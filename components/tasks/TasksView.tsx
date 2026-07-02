@@ -481,26 +481,28 @@ export default function TasksView() {
                       </div>
                     </div>
 
-                    {task.product_url && isAdmin && (
+                    {task.product_url && (
                       <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl border border-gray-200 lg:mr-[72px] w-full sm:w-auto">
                         <button
-                          onClick={() => task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
+                          onClick={() => isAdmin && task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
+                          disabled={!isAdmin}
                           className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status === 'approved' 
                               ? 'bg-green-500 text-white shadow-md scale-100' 
-                              : 'text-gray-400 hover:text-green-600 hover:bg-green-50 scale-95'
-                          }`}
+                              : `text-gray-400 scale-95 ${isAdmin ? 'hover:text-green-600 hover:bg-green-50' : ''}`
+                          } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
                           <CheckSquare size={14} />
                           Đã duyệt
                         </button>
                         <button
-                          onClick={() => task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
+                          onClick={() => isAdmin && task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
+                          disabled={!isAdmin}
                           className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status !== 'approved' 
                               ? 'bg-red-500 text-white shadow-md scale-100' 
-                              : 'text-gray-400 hover:text-red-500 hover:bg-red-50 scale-95'
-                          }`}
+                              : `text-gray-400 scale-95 ${isAdmin ? 'hover:text-red-500 hover:bg-red-50' : ''}`
+                          } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
                           <XCircle size={14} />
                           Chưa duyệt
