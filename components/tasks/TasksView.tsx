@@ -6,7 +6,15 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask } from "@/app/actions/tasks";
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
 import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw } from "lucide-react";
-import { isPast, isToday } from "date-fns";
+
+const isOverdue = (deadlineStr: string | null) => {
+  if (!deadlineStr) return false;
+  const deadlineDate = new Date(deadlineStr);
+  deadlineDate.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return deadlineDate.getTime() < today.getTime();
+};
 
 type ModalMode = 'create' | 'edit' | null;
 
@@ -70,9 +78,8 @@ export default function TasksView() {
     const inProgress = tasks.filter(t => t.status === 'in_progress').length;
     const review = tasks.filter(t => t.status === 'review').length;
     const overdue = tasks.filter(t => {
-      if (!t.deadline) return false;
       if (t.status === 'completed' || t.status === 'cancelled') return false;
-      return isPast(new Date(t.deadline)) && !isToday(new Date(t.deadline));
+      return isOverdue(t.deadline);
     }).length;
 
     return { total, inProgress, review, overdue };
@@ -256,7 +263,7 @@ export default function TasksView() {
         ) : (
           <div className="grid gap-4">
             {filteredTasks.map(task => {
-              const isTaskOverdue = task.deadline && isPast(new Date(task.deadline)) && !isToday(new Date(task.deadline)) && task.status !== 'completed' && task.status !== 'cancelled';
+              const isTaskOverdue = isOverdue(task.deadline) && task.status !== 'completed' && task.status !== 'cancelled';
               
               return (
                 <div key={task.id} className="bg-neu-base rounded-2xl p-5 shadow-neu-convex hover:shadow-neu-concave transition-all duration-200 group flex items-center justify-between border-l-4 border-transparent hover:border-blue-400">
