@@ -2,6 +2,7 @@ import { WorkspaceProvider } from '@/components/providers/WorkspaceProvider';
 import { createClient } from '@/lib/supabase/server';
 import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
+import { redirect } from 'next/navigation';
 
 export default async function AppLayout({
   children,
@@ -10,6 +11,10 @@ export default async function AppLayout({
 }) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
 
   return (
     <WorkspaceProvider>
