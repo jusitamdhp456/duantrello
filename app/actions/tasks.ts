@@ -35,6 +35,7 @@ export async function createTask(workspaceId: string, data: Partial<Task>) {
       workspace_id: workspaceId,
       title: data.title,
       assignee_name: data.assignee_name || null,
+      assignee_id: data.assignee_id || null,
       deadline: data.deadline || null,
       priority: data.priority || 'medium',
       status: data.status || 'pending',
@@ -64,6 +65,7 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
     .update({
       title: data.title,
       assignee_name: data.assignee_name,
+      assignee_id: data.assignee_id,
       deadline: data.deadline,
       priority: data.priority,
       status: data.status,
@@ -83,6 +85,38 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
 
   revalidatePath("/tasks");
   return updatedTask as Task;
+}
+
+export async function claimTask(taskId: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Get current user's profile to get full_name
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+    
+  const fullName = profile?.full_name || user.email?.split('@')[0] || "Unknown";
+
+  const { error } = await supabase
+    .from("tasks")
+    .update({
+      assignee_id: user.id,
+      assignee_name: fullName,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", taskId);
+
+  if (error) {
+    console.error("Error claiming task:", error);
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/tasks");
+  return { success: true };
 }
 
 export async function updateTaskStatus(taskId: string, status: TaskStatus) {
@@ -131,6 +165,20 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  // Lấy assignee_id từ task
+  const { data: taskData, error: taskError } = await supabase
+    .from("tasks")
+    .select("assignee_id")
+    .eq("id", taskId)
+    .single();
+    
+  if (taskError || !taskData?.assignee_id) {
+    console.error("Error getting assignee_id:", taskError);
+    throw new Error("Không tìm thấy người làm nhiệm vụ này để cộng lương.");
+  }
+  
+  const targetUserId = taskData.assignee_id;
+
   // 1. Cập nhật review_status thành 'approved'
   const { error: updateError } = await supabase
     .from("tasks")
@@ -154,11 +202,11 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
   const viewYear = now.getFullYear();
   const viewMonth = now.getMonth() + 1;
 
-  // Đếm số lượng clip hiện tại trong tháng
+  // Đếm số lượng clip hiện tại trong tháng của người làm (targetUserId)
   const { data: currentRecords } = await supabase
     .from("salary_records")
     .select("id")
-    .eq("user_id", user.id)
+    .eq("user_id", targetUserId)
     .eq("period_year", viewYear)
     .eq("period_month", viewMonth);
 
@@ -170,7 +218,7 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
     .from("salary_records")
     .insert({
       workspace_id: workspaceId,
-      user_id: user.id,
+      user_id: targetUserId,
       clip_title: `Sản phẩm hoàn thành từ: ${taskTitle}`,
       completed_at: now.toISOString(),
       period_year: viewYear,
@@ -194,6 +242,20 @@ export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: str
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  // Lấy assignee_id từ task
+  const { data: taskData, error: taskError } = await supabase
+    .from("tasks")
+    .select("assignee_id")
+    .eq("id", taskId)
+    .single();
+    
+  if (taskError || !taskData?.assignee_id) {
+    console.error("Error getting assignee_id:", taskError);
+    throw new Error("Không tìm thấy người làm nhiệm vụ này để thu hồi lương.");
+  }
+  
+  const targetUserId = taskData.assignee_id;
+
   // 1. Cập nhật review_status thành 'rejected'
   const { error: updateError } = await supabase
     .from("tasks")
@@ -208,11 +270,11 @@ export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: str
     throw new Error(updateError.message);
   }
 
-  // 2. Xóa record lương
+  // 2. Xóa record lương của người làm
   const { error: deleteError } = await supabase
     .from("salary_records")
     .delete()
-    .eq("user_id", user.id)
+    .eq("user_id", targetUserId)
     .eq("clip_title", `Sản phẩm hoàn thành từ: ${taskTitle}`);
 
   if (deleteError) {

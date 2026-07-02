@@ -5,8 +5,9 @@ export interface Task {
   id: string;
   workspace_id: string;
   title: string;
-  assignee_name: string | null;
-  deadline: string | null;
+  assignee_name?: string | null;
+  assignee_id?: string | null;
+  deadline?: string | null;
   priority: TaskPriority;
   status: TaskStatus;
   video_url?: string | null;

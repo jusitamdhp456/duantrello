@@ -3,9 +3,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay, revokeTaskApprovalAndDeduct } from "@/app/actions/tasks";
+import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay, revokeTaskApprovalAndDeduct, claimTask } from "@/app/actions/tasks";
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
-import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare } from "lucide-react";
+import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare, Hand } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 const isOverdue = (deadlineStr: string | null) => {
   if (!deadlineStr) return false;
@@ -25,6 +26,21 @@ export default function TasksView() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string, email: string } | null>(null);
+  
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function loadUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUser({ id: user.id, email: user.email || "" });
+      }
+    }
+    loadUser();
+  }, [supabase.auth]);
+
+  const isAdmin = currentUser?.email === 'jusitamd999@gmail.com';
   
   // Filter state
   const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
@@ -171,6 +187,20 @@ export default function TasksView() {
     }
   };
 
+  const handleClaimTask = async (id: string) => {
+    if (!confirm("Bạn muốn nhận công việc này?")) return;
+    try {
+      await claimTask(id);
+      // Reload tasks to get the updated assignee_id and assignee_name
+      if (activeWorkspaceId) {
+        const data = await getTasks(activeWorkspaceId);
+        setTasks(data);
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   const handleReviewAction = async (task: Task, action: 'approved' | 'rejected') => {
     if (!activeWorkspaceId) return;
     
@@ -251,13 +281,15 @@ export default function TasksView() {
     <div className="flex-1 flex flex-col m-4 overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 px-2">
         <h1 className="text-2xl font-bold text-gray-700 tracking-wide">{t("nav_todo")}</h1>
-        <button 
-          onClick={openCreateModal}
-          className="flex items-center gap-2 px-5 py-2.5 bg-purple-500 text-white rounded-full shadow-neu-convex hover:shadow-neu-concave transition-all duration-200"
-        >
-          <Plus size={18} />
-          <span className="text-sm font-medium">{t("task_add")}</span>
-        </button>
+        {isAdmin && (
+          <button 
+            onClick={openCreateModal}
+            className="flex items-center gap-2 px-5 py-2.5 bg-purple-500 text-white rounded-full shadow-neu-convex hover:shadow-neu-concave transition-all duration-200"
+          >
+            <Plus size={18} />
+            <span className="text-sm font-medium">{t("task_add")}</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 px-2">
@@ -361,8 +393,9 @@ export default function TasksView() {
 
                       <select 
                         value={task.status}
+                        disabled={!isAdmin && task.assignee_id !== currentUser?.id}
                         onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
-                        className={`text-[11px] sm:text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 ${getStatusColor(task.status)}`}
+                        className={`text-[11px] sm:text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 disabled:opacity-70 disabled:cursor-not-allowed ${getStatusColor(task.status)}`}
                       >
                         <option value="pending">{t("task_status_pending")}</option>
                         <option value="in_progress">{t("task_status_in_progress")}</option>
@@ -373,24 +406,37 @@ export default function TasksView() {
                       </select>
 
                       <div className="flex items-center gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                        <button 
-                          onClick={() => openEditModal(task)}
-                          className="p-1.5 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-full transition-colors"
-                          title={t("task_edit")}
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(task.id)}
-                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                          title={t("task_delete")}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {(isAdmin || task.assignee_id === currentUser?.id) && (
+                          <button 
+                            onClick={() => openEditModal(task)}
+                            className="p-1.5 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-full transition-colors"
+                            title={t("task_edit")}
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                        )}
+                        {isAdmin && (
+                          <button 
+                            onClick={() => handleDelete(task.id)}
+                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                            title={t("task_delete")}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                        {!isAdmin && !task.assignee_id && (
+                          <button
+                            onClick={() => handleClaimTask(task.id)}
+                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-white bg-purple-500 hover:bg-purple-600 rounded-full transition-colors shadow-sm"
+                            title="Nhận việc"
+                          >
+                            <Hand size={14} /> Nhận việc
+                          </button>
+                        )}
                       </div>
                     </div>
 
-                    {task.product_url && (
+                    {task.product_url && isAdmin && (
                       <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl border border-gray-200 lg:mr-[72px] w-full sm:w-auto">
                         <button
                           onClick={() => task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
@@ -442,9 +488,10 @@ export default function TasksView() {
                 <input 
                   type="text" 
                   required
+                  disabled={!isAdmin}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none"
+                  className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
                   placeholder="Tên công việc..."
                 />
               </div>
@@ -453,9 +500,10 @@ export default function TasksView() {
                 <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_assignee")}</label>
                 <input 
                   type="text" 
+                  disabled={!isAdmin}
                   value={assignee}
                   onChange={(e) => setAssignee(e.target.value)}
-                  className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none"
+                  className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
                   placeholder="Người phụ trách..."
                 />
               </div>
@@ -465,17 +513,19 @@ export default function TasksView() {
                   <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_deadline")}</label>
                   <input 
                     type="date" 
+                    disabled={!isAdmin}
                     value={deadline}
                     onChange={(e) => setDeadline(e.target.value)}
-                    className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none text-gray-600"
+                    className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none text-gray-600 disabled:opacity-70 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_priority")}</label>
                   <select 
                     value={priority}
+                    disabled={!isAdmin}
                     onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                    className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none text-gray-600"
+                    className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none text-gray-600 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     <option value="low">{t("task_priority_low")}</option>
                     <option value="medium">{t("task_priority_medium")}</option>
@@ -506,9 +556,10 @@ export default function TasksView() {
                 <div className="flex gap-2">
                   <input 
                     type="url" 
+                    disabled={!isAdmin}
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
-                    className="flex-1 bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none"
+                    className="flex-1 bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
                     placeholder="https://..."
                   />
                   {videoUrl && (
