@@ -205,6 +205,18 @@ export default function TasksView() {
     }
   };
 
+  const handleSubmitProductUrl = async (task: Task) => {
+    const url = window.prompt("Nhập link sản phẩm hoàn thành (Google Drive, YouTube, Tiktok...):", task.product_url || "");
+    if (url === null) return; // User cancelled
+    
+    try {
+      await updateTask(task.id, { product_url: url.trim() || undefined });
+      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, product_url: url.trim() || null } : t));
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   const handleReviewAction = async (task: Task, action: 'approved' | 'rejected') => {
     if (!activeWorkspaceId) return;
     
@@ -383,16 +395,37 @@ export default function TasksView() {
                         </a>
                       )}
                       
-                      {task.product_url && (
-                        <a 
-                          href={task.product_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full font-medium hover:bg-blue-100 transition-colors whitespace-nowrap"
-                        >
-                          <Link2 size={14} />
-                          SP hoàn thành
-                        </a>
+                      {task.product_url ? (
+                        <div className="flex items-center gap-1">
+                          <a 
+                            href={task.product_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full font-medium hover:bg-blue-100 transition-colors whitespace-nowrap"
+                          >
+                            <Link2 size={14} />
+                            SP hoàn thành
+                          </a>
+                          {(isAdmin || task.assignee_id === currentUser?.id) && (
+                            <button
+                              onClick={() => handleSubmitProductUrl(task)}
+                              className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                              title="Sửa link sản phẩm"
+                            >
+                              <Edit2 size={14} />
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        (isAdmin || task.assignee_id === currentUser?.id) && (
+                          <button
+                            onClick={() => handleSubmitProductUrl(task)}
+                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors whitespace-nowrap border border-dashed border-gray-300"
+                          >
+                            <Plus size={14} />
+                            Nộp SP
+                          </button>
+                        )
                       )}
 
                       <select 
