@@ -84,7 +84,7 @@ export default function BriefsPage() {
                   <button 
                     onClick={() => handleGenerateTasks(b.id)}
                     disabled={isGenerating === b.id}
-                    className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all disabled:opacity-50 flex items-center"
+                    className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all disabled:opacity-50 flex items-center"
                   >
                     {isGenerating === b.id ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Zap className="w-5 h-5 mr-2 drop-shadow-sm" />} 
                     {t("generate_tasks")}

@@ -37,7 +37,7 @@ export default function WorkspaceSwitcher() {
         <button 
           onClick={handleCreate}
           disabled={isCreating}
-          className="w-full flex items-center justify-center gap-2 bg-blue-50 text-blue-600 px-3 py-2 rounded-xl text-sm font-medium hover:bg-blue-100 transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-purple-50 text-purple-600 px-3 py-2 rounded-xl text-sm font-medium hover:bg-purple-100 transition-colors"
         >
           <Plus size={16} />
           {isCreating ? "Creating..." : "Create Workspace"}
@@ -55,7 +55,7 @@ export default function WorkspaceSwitcher() {
         <button 
           onClick={handleCreate}
           disabled={isCreating}
-          className="text-gray-400 hover:text-blue-500 transition-colors p-1"
+          className="text-gray-400 hover:text-purple-500 transition-colors p-1"
           title="Create Workspace"
         >
           <Plus size={16} />

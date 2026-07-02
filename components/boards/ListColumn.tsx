@@ -71,7 +71,7 @@ export default function ListColumn({ list, cards, index, onAddCard, onCardClick 
                   rows={2}
                 />
                 <div className="flex items-center justify-between mt-3 px-1">
-                  <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
+                  <button type="submit" className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
                     {t("add_card")}
                   </button>
                   <button type="button" onClick={() => setIsAdding(false)} className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:shadow-neu-concave transition-all">

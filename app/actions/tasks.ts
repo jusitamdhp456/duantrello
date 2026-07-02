@@ -38,6 +38,7 @@ export async function createTask(workspaceId: string, data: Partial<Task>) {
       deadline: data.deadline || null,
       priority: data.priority || 'medium',
       status: data.status || 'pending',
+      video_url: data.video_url || null,
     })
     .select()
     .single();
@@ -64,6 +65,7 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
       deadline: data.deadline,
       priority: data.priority,
       status: data.status,
+      video_url: data.video_url,
       updated_at: new Date().toISOString()
     })
     .eq("id", taskId)

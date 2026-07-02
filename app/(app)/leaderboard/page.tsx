@@ -77,7 +77,7 @@ export default function LeaderboardPage() {
                       </div>
                       <span className="font-semibold text-gray-700 text-xl tracking-wide">{score.name}</span>
                     </div>
-                    <span className="font-bold text-blue-500 bg-neu-base shadow-neu-convex px-6 py-3 rounded-full text-sm uppercase tracking-widest">
+                    <span className="font-bold text-purple-500 bg-neu-base shadow-neu-convex px-6 py-3 rounded-full text-sm uppercase tracking-widest">
                       {score.total_score} pts
                     </span>
                   </div>

@@ -130,7 +130,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
                     onChange={(e) => setNewListName(e.target.value)}
                   />
                   <div className="flex items-center justify-between px-1">
-                    <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
+                    <button type="submit" className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
                       {t("add_list")}
                     </button>
                     <button type="button" onClick={() => setIsAddingList(false)} className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:shadow-neu-concave transition-all">

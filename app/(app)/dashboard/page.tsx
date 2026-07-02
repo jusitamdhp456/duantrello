@@ -140,11 +140,11 @@ export default function DashboardPage() {
             <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
               <div className="flex items-center text-gray-500 mb-4">
                 <div className="p-3 rounded-full shadow-neu-convex mr-3">
-                  <TrendingUp className="w-5 h-5 text-blue-500" />
+                  <TrendingUp className="w-5 h-5 text-purple-500" />
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-widest">{t("roas")}</span>
               </div>
-              <p className="text-3xl font-light text-blue-600">{metrics.avgRoas.toFixed(2)}x</p>
+              <p className="text-3xl font-light text-purple-600">{metrics.avgRoas.toFixed(2)}x</p>
             </div>
 
             <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
@@ -173,7 +173,7 @@ export default function DashboardPage() {
             <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-6">
               <div className="px-4 py-4 flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-xl text-gray-700 flex items-center tracking-wide"><Star className="w-6 h-6 mr-3 text-yellow-500 drop-shadow-sm" /> {t("nav_leaderboard")}</h3>
-                <Link href="/leaderboard" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-blue-600 font-medium transition-all duration-200">{t("nav_leaderboard")}</Link>
+                <Link href="/leaderboard" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-purple-600 font-medium transition-all duration-200">{t("nav_leaderboard")}</Link>
               </div>
               <div className="space-y-4 px-2 pb-2">
                 {topPerformers.map((p, idx) => (
@@ -182,7 +182,7 @@ export default function DashboardPage() {
                       <div className="w-8 h-8 flex items-center justify-center rounded-full shadow-neu-convex font-bold text-gray-500">{idx + 1}</div>
                       <span className="font-medium text-gray-700 text-lg">{p.name}</span>
                     </div>
-                    <span className="font-bold text-blue-600 shadow-neu-convex bg-neu-base px-4 py-2 rounded-full text-sm">{p.total_score} {t("pts")}</span>
+                    <span className="font-bold text-purple-600 shadow-neu-convex bg-neu-base px-4 py-2 rounded-full text-sm">{p.total_score} {t("pts")}</span>
                   </div>
                 ))}
                 {topPerformers.length === 0 && <p className="py-8 text-center text-gray-500 text-sm">{t("no_scores")}</p>}
@@ -193,7 +193,7 @@ export default function DashboardPage() {
             <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-6">
               <div className="px-4 py-4 flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-xl text-gray-700 flex items-center tracking-wide"><ListTodo className="w-6 h-6 mr-3 text-indigo-500 drop-shadow-sm" /> {t("recent_tasks")}</h3>
-                <Link href="/boards" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-blue-600 font-medium transition-all duration-200">{t("nav_boards")}</Link>
+                <Link href="/boards" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-purple-600 font-medium transition-all duration-200">{t("nav_boards")}</Link>
               </div>
               <div className="space-y-4 px-2 pb-2">
                 {tasks.map((t) => (

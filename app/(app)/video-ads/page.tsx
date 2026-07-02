@@ -106,7 +106,7 @@ export default function VideoAdsPage() {
             </select>
           </div>
           <div className="col-span-2 flex space-x-4 mt-4">
-            <button type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">{t("save")}</button>
+            <button type="submit" className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">{t("save")}</button>
             <button type="button" onClick={() => setIsAdding(false)} className="bg-neu-base text-gray-500 px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">{t("cancel")}</button>
           </div>
         </form>
@@ -148,7 +148,7 @@ export default function VideoAdsPage() {
                           alert(e.message);
                         }
                       }}
-                      className="text-xs font-bold text-blue-500 hover:text-blue-600 uppercase tracking-widest transition-all px-4 py-2 bg-neu-base shadow-neu-convex hover:shadow-neu-concave rounded-full"
+                      className="text-xs font-bold text-purple-500 hover:text-purple-600 uppercase tracking-widest transition-all px-4 py-2 bg-neu-base shadow-neu-convex hover:shadow-neu-concave rounded-full"
                     >
                       {t("approve_ad")}
                     </button>

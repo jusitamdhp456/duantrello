@@ -76,7 +76,7 @@ export default function BoardsPage() {
                 href={`/boards/${board.id}`}
                 className="block h-32 bg-neu-base shadow-neu-convex rounded-2xl p-6 hover:shadow-neu-concave transition-all duration-300 group flex items-center justify-center"
               >
-                <h3 className="font-semibold text-xl text-gray-700 group-hover:text-blue-600 transition tracking-wide text-center">{board.name}</h3>
+                <h3 className="font-semibold text-xl text-gray-700 group-hover:text-purple-600 transition tracking-wide text-center">{board.name}</h3>
               </Link>
             ))}
 
@@ -89,7 +89,7 @@ export default function BoardsPage() {
                 className="w-full text-sm p-3 mb-3 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium text-center placeholder-gray-400"
                 required
               />
-              <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs py-2.5 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">
+              <button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs py-2.5 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave transition-all">
                 {t("create_board")}
               </button>
             </form>

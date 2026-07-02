@@ -90,7 +90,7 @@ export default function AnalyticsPage() {
         <div>
           <h1 className="text-4xl font-light text-gray-700 flex items-center tracking-wide">
             <div className="p-3 rounded-full shadow-neu-convex mr-4">
-              <TrendingUp className="w-8 h-8 text-blue-500" />
+              <TrendingUp className="w-8 h-8 text-purple-500" />
             </div>
             {t("analytics_title")}
           </h1>
@@ -105,7 +105,7 @@ export default function AnalyticsPage() {
           {/* Workspace Totals Overview */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
             <div className="bg-neu-base rounded-3xl p-6 shadow-neu-convex flex flex-col items-center justify-center text-center">
-              <div className="p-3 rounded-full shadow-neu-concave text-blue-500 mb-4"><DollarSign className="w-5 h-5"/></div>
+              <div className="p-3 rounded-full shadow-neu-concave text-purple-500 mb-4"><DollarSign className="w-5 h-5"/></div>
               <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Total Spend</p>
               <p className="text-2xl font-black text-gray-700">${totals?.totalSpend?.toFixed(2) || 0}</p>
             </div>
@@ -156,21 +156,21 @@ export default function AnalyticsPage() {
                     <form onSubmit={(e) => handleSaveMetrics(e, ad.id)} className="flex items-end space-x-6">
                       <div>
                         <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">{t("spend")} ($)</label>
-                        <input name="spend" type="number" step="0.01" defaultValue={metrics.spend} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
+                        <input name="spend" type="number" step="0.01" defaultValue={metrics.spend} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-purple-400/50" />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">{t("roas")}</label>
-                        <input name="roas" type="number" step="0.01" defaultValue={metrics.roas} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
+                        <input name="roas" type="number" step="0.01" defaultValue={metrics.roas} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-purple-400/50" />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">{t("clicks")}</label>
-                        <input name="clicks" type="number" defaultValue={metrics.clicks} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
+                        <input name="clicks" type="number" defaultValue={metrics.clicks} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-purple-400/50" />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2 ml-1">Conversions</label>
-                        <input name="conversions" type="number" defaultValue={metrics.conversions} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-blue-400/50" />
+                        <input name="conversions" type="number" defaultValue={metrics.conversions} className="w-28 bg-neu-base shadow-neu-concave rounded-xl px-4 py-3 text-sm text-gray-700 border-none focus:outline-none focus:ring-2 focus:ring-purple-400/50" />
                       </div>
-                      <button disabled={isUpdating === ad.id} type="submit" className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-medium shadow-neu-convex active:shadow-neu-pressed disabled:opacity-50 transition-all duration-200">
+                      <button disabled={isUpdating === ad.id} type="submit" className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-8 py-3 rounded-full text-sm font-medium shadow-neu-convex active:shadow-neu-pressed disabled:opacity-50 transition-all duration-200">
                         {isUpdating === ad.id ? t("loading") : t("update_metrics")}
                       </button>
                     </form>

@@ -24,7 +24,7 @@ export default function TaskCard({ card, index, onClick }: TaskCardProps) {
           {...provided.dragHandleProps}
           onClick={() => onClick(card)}
           className={`px-4 py-3 mb-3 bg-neu-base rounded-2xl cursor-pointer hover:shadow-neu-concave transition-all duration-200 border-none ${
-            snapshot.isDragging ? "shadow-neu-concave ring-1 ring-blue-400/30" : "shadow-neu-convex"
+            snapshot.isDragging ? "shadow-neu-concave ring-1 ring-purple-400/30" : "shadow-neu-convex"
           }`}
           style={{ ...provided.draggableProps.style }}
         >

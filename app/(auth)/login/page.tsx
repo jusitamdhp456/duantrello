@@ -19,7 +19,7 @@ export default function LoginPage({
         </h2>
         <p className="mt-4 text-center text-sm text-gray-500">
           Or{" "}
-          <Link href="/signup" className="font-medium text-blue-500 hover:text-blue-600 transition-colors">
+          <Link href="/signup" className="font-medium text-purple-500 hover:text-purple-600 transition-colors">
             {t("no_account")}
           </Link>
         </p>
@@ -36,7 +36,7 @@ export default function LoginPage({
               type="email"
               autoComplete="email"
               required
-              className="appearance-none rounded-2xl relative block w-full px-5 py-4 bg-neu-base text-gray-700 placeholder-gray-400 shadow-neu-concave focus:outline-none focus:ring-2 focus:ring-blue-400/50 sm:text-sm border-none transition-shadow"
+              className="appearance-none rounded-2xl relative block w-full px-5 py-4 bg-neu-base text-gray-700 placeholder-gray-400 shadow-neu-concave focus:outline-none focus:ring-2 focus:ring-purple-400/50 sm:text-sm border-none transition-shadow"
               placeholder="username@mail.com"
             />
           </div>
@@ -50,7 +50,7 @@ export default function LoginPage({
               type="password"
               autoComplete="current-password"
               required
-              className="appearance-none rounded-2xl relative block w-full px-5 py-4 bg-neu-base text-gray-700 placeholder-gray-400 shadow-neu-concave focus:outline-none focus:ring-2 focus:ring-blue-400/50 sm:text-sm border-none transition-shadow"
+              className="appearance-none rounded-2xl relative block w-full px-5 py-4 bg-neu-base text-gray-700 placeholder-gray-400 shadow-neu-concave focus:outline-none focus:ring-2 focus:ring-purple-400/50 sm:text-sm border-none transition-shadow"
               placeholder="**********"
             />
           </div>
@@ -72,7 +72,7 @@ export default function LoginPage({
         <div className="pt-4">
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-4 px-4 border-none text-lg font-medium rounded-full text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-neu-convex active:shadow-neu-pressed transition-all duration-200"
+            className="group relative w-full flex justify-center py-4 px-4 border-none text-lg font-medium rounded-full text-white bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-neu-convex active:shadow-neu-pressed transition-all duration-200"
           >
             {t("login")}
           </button>

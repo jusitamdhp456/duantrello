@@ -122,7 +122,7 @@ export default function MediaAssetCard({ asset, onDelete }: MediaAssetCardProps)
             download={asset.file_name}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center bg-neu-base shadow-neu-convex hover:shadow-neu-concave text-blue-500 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all"
+            className="flex-1 flex items-center justify-center bg-neu-base shadow-neu-convex hover:shadow-neu-concave text-purple-500 px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all"
           >
             <Download className="w-4 h-4 mr-1" /> {t("download")}
           </a>

@@ -1,7 +1,7 @@
 import { WorkspaceProvider } from '@/components/providers/WorkspaceProvider';
 import { createClient } from '@/lib/supabase/server';
 import Sidebar from '@/components/layout/Sidebar';
-import LanguageToggle from '@/components/layout/LanguageToggle';
+import TopBar from '@/components/layout/TopBar';
 
 export default async function AppLayout({
   children,
@@ -13,15 +13,20 @@ export default async function AppLayout({
 
   return (
     <WorkspaceProvider>
-      <div className="flex min-h-screen bg-neu-base font-sans text-gray-700">
-        <Sidebar userEmail={user?.email} />
+      <div className="flex h-screen bg-neu-base font-sans text-gray-700 overflow-hidden">
+        {/* Left Sidebar Fixed */}
+        <Sidebar />
         
-        <main className="flex-1 overflow-auto p-4 sm:p-8 flex flex-col">
-          <div className="flex justify-end mb-4">
-            <LanguageToggle />
-          </div>
-          {children}
-        </main>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col h-screen overflow-hidden">
+          <TopBar userEmail={user?.email} />
+          
+          <main className="flex-1 overflow-x-hidden overflow-y-auto px-8 pb-8 pt-2">
+            <div className="max-w-7xl mx-auto w-full h-full flex flex-col">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
     </WorkspaceProvider>
   );

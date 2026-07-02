@@ -123,7 +123,7 @@ export default function UploadForm() {
         <button
           onClick={handleUpload}
           disabled={isUploading}
-          className="mt-6 w-full flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-full text-sm font-bold tracking-wider uppercase shadow-neu-convex hover:shadow-neu-concave disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="mt-6 w-full flex items-center justify-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-full text-sm font-bold tracking-wider uppercase shadow-neu-convex hover:shadow-neu-concave disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
         >
           {isUploading ? (
             <>

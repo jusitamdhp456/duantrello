@@ -97,7 +97,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={isSaving}
-              className="flex items-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm px-8 py-3 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50"
+              className="flex items-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm px-8 py-3 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50"
             >
               {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               {t("update_profile")}

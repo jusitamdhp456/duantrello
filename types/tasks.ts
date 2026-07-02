@@ -9,6 +9,7 @@ export interface Task {
   deadline: string | null;
   priority: TaskPriority;
   status: TaskStatus;
+  video_url?: string | null;
   created_at: string;
   updated_at: string;
 }

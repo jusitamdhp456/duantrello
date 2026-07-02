@@ -309,7 +309,7 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
                     <button 
                       onClick={handleSaveDescription}
                       disabled={isSavingDesc}
-                      className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50 flex items-center"
+                      className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50 flex items-center"
                     >
                       {isSavingDesc && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
                       {t("save")}
@@ -468,7 +468,7 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
                               </label>
                             ))}
                           </div>
-                          <button type="submit" className="w-full bg-blue-50 text-blue-600 text-xs font-bold py-1.5 rounded">Create</button>
+                          <button type="submit" className="w-full bg-purple-50 text-purple-600 text-xs font-bold py-1.5 rounded">Create</button>
                         </form>
                       </div>
                     )}

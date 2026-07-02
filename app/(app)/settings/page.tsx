@@ -164,7 +164,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("general")}
           className={`flex items-center px-6 py-3 rounded-full font-bold uppercase tracking-wider transition-all duration-300 ${
             activeTab === "general" 
-              ? "bg-neu-base shadow-neu-pressed text-blue-600" 
+              ? "bg-neu-base shadow-neu-pressed text-purple-600" 
               : "bg-neu-base shadow-neu-convex text-gray-500 hover:shadow-neu-concave"
           }`}
         >
@@ -174,7 +174,7 @@ export default function SettingsPage() {
           onClick={() => setActiveTab("members")}
           className={`flex items-center px-6 py-3 rounded-full font-bold uppercase tracking-wider transition-all duration-300 ${
             activeTab === "members" 
-              ? "bg-neu-base shadow-neu-pressed text-blue-600" 
+              ? "bg-neu-base shadow-neu-pressed text-purple-600" 
               : "bg-neu-base shadow-neu-convex text-gray-500 hover:shadow-neu-concave"
           }`}
         >
@@ -213,7 +213,7 @@ export default function SettingsPage() {
                   <button
                     type="submit"
                     disabled={isSavingName}
-                    className="flex items-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm px-8 py-3 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50"
+                    className="flex items-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm px-8 py-3 rounded-full font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50"
                   >
                     {isSavingName && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                     {t("save_changes")}
@@ -287,7 +287,7 @@ export default function SettingsPage() {
                     <div>
                       <p className="font-bold text-gray-700 text-lg tracking-wide flex items-center">
                         {member.profiles?.full_name || "Unknown"}
-                        {member.user_id === currentUserId && <span className="ml-2 text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full uppercase tracking-widest shadow-neu-convex">You</span>}
+                        {member.user_id === currentUserId && <span className="ml-2 text-xs bg-purple-100 text-purple-600 px-2 py-1 rounded-full uppercase tracking-widest shadow-neu-convex">You</span>}
                       </p>
                       <p className="text-sm text-gray-500 mt-1 font-medium">{member.profiles?.email}</p>
                     </div>

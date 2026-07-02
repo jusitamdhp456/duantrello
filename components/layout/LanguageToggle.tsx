@@ -11,7 +11,7 @@ export default function LanguageToggle() {
         onClick={() => setLanguage("en")}
         className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
           language === "en"
-            ? "shadow-neu-convex text-blue-500"
+            ? "shadow-neu-convex text-purple-500"
             : "text-gray-400 hover:text-gray-600"
         }`}
       >
@@ -21,7 +21,7 @@ export default function LanguageToggle() {
         onClick={() => setLanguage("vi")}
         className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 ${
           language === "vi"
-            ? "shadow-neu-convex text-blue-500"
+            ? "shadow-neu-convex text-purple-500"
             : "text-gray-400 hover:text-gray-600"
         }`}
       >
