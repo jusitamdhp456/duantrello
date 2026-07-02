@@ -38,11 +38,11 @@ export default function TopBar({ userEmail }: { userEmail: string | undefined })
 
         <LanguageToggle />
 
-        <div className="flex items-center gap-3 pl-2">
-          <div className="w-10 h-10 rounded-full bg-neu-base shadow-neu-convex flex items-center justify-center text-purple-600">
+        <div className="flex items-center gap-2 md:gap-3 pl-1 md:pl-2">
+          <div className="w-10 h-10 rounded-full bg-neu-base shadow-neu-convex flex items-center justify-center text-purple-600 shrink-0">
             <User size={18} />
           </div>
-          <div className="flex flex-col">
+          <div className="hidden md:flex flex-col">
             <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">{t("nav_profile") || "PROFILE"}</span>
             <span className="text-sm font-semibold text-gray-700">{userEmail || "Guest"}</span>
           </div>
