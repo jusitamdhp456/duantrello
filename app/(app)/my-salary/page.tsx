@@ -171,10 +171,10 @@ export default function MySalaryPage() {
           <p className="text-2xl font-light text-gray-700">{totalClips}</p>
           <p className="text-xs text-gray-400 mt-1 uppercase tracking-wider">Clip hoàn thành</p>
         </div>
-        <div className="bg-neu-base rounded-2xl shadow-neu-convex p-5 text-center">
-          <DollarSign className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-          <p className="text-2xl font-light text-purple-600">{formatVND(totalSalary)}</p>
-          <p className="text-xs text-gray-400 mt-1 uppercase tracking-wider">Tổng lương tháng</p>
+        <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl shadow-[0_10px_20px_rgba(168,85,247,0.4)] p-5 text-center transform hover:-translate-y-1 transition-all duration-300 border border-purple-400">
+          <DollarSign className="w-6 h-6 text-white/90 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-white tracking-wide">{formatVND(totalSalary)}</p>
+          <p className="text-xs text-purple-100 mt-1 uppercase tracking-wider font-medium">Tổng lương tháng</p>
         </div>
         <div className="bg-neu-base rounded-2xl shadow-neu-convex p-5 text-center">
           <TrendingUp className="w-6 h-6 text-green-400 mx-auto mb-2" />
