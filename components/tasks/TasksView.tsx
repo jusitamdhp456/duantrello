@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay } from "@/app/actions/tasks";
+import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay, revokeTaskApprovalAndDeduct } from "@/app/actions/tasks";
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
 import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare } from "lucide-react";
 
@@ -173,7 +173,8 @@ export default function TasksView() {
 
   const handleReviewAction = async (task: Task, action: 'approved' | 'rejected') => {
     if (!activeWorkspaceId) return;
-    if (action === 'approved') {
+    
+    if (action === 'approved' && task.review_status !== 'approved') {
       if (!confirm("Bạn có chắc chắn muốn duyệt và tính lương cho sản phẩm này?")) return;
       try {
         const res = await approveTaskAndPay(task.id, activeWorkspaceId, task.title);
@@ -182,9 +183,16 @@ export default function TasksView() {
       } catch (err: any) {
         alert(err.message);
       }
-    } else {
-      // Just mark as rejected (for simplicity, we update locally, you could add an endpoint if needed)
-      // We will do a generic updateTask for this
+    } else if (action === 'rejected' && task.review_status === 'approved') {
+      if (!confirm("Bạn có chắc chắn muốn HỦY duyệt? Tiền lương của sản phẩm này sẽ bị trừ đi.")) return;
+      try {
+        await revokeTaskApprovalAndDeduct(task.id, task.title);
+        setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'rejected' } : t));
+      } catch (err: any) {
+        alert(err.message);
+      }
+    } else if (action === 'rejected' && task.review_status !== 'approved') {
+      // Just marking as rejected from pending
       try {
         await updateTask(task.id, { review_status: 'rejected' });
         setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'rejected' } : t));
@@ -383,32 +391,29 @@ export default function TasksView() {
                     </div>
 
                     {task.product_url && (
-                      <div className="flex items-center gap-2 text-xs pr-[80px]">
-                        {task.review_status === 'approved' ? (
-                          <span className="flex items-center gap-1 text-green-600 font-bold bg-green-50 px-2 py-1 rounded-md">
-                            <CheckSquare size={14} /> Đã duyệt & Tính lương
-                          </span>
-                        ) : task.review_status === 'rejected' ? (
-                          <span className="flex items-center gap-1 text-red-500 font-bold bg-red-50 px-2 py-1 rounded-md">
-                            <XCircle size={14} /> Từ chối
-                          </span>
-                        ) : (
-                          <div className="flex gap-1 items-center bg-orange-50 px-2 py-1 rounded-md">
-                            <span className="text-orange-600 font-medium mr-2">Chờ duyệt:</span>
-                            <button 
-                              onClick={() => handleReviewAction(task, 'approved')}
-                              className="px-2 py-0.5 bg-green-500 text-white rounded hover:bg-green-600 transition-colors shadow-sm"
-                            >
-                              Duyệt
-                            </button>
-                            <button 
-                              onClick={() => handleReviewAction(task, 'rejected')}
-                              className="px-2 py-0.5 bg-red-500 text-white rounded hover:bg-red-600 transition-colors shadow-sm"
-                            >
-                              Từ chối
-                            </button>
-                          </div>
-                        )}
+                      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl border border-gray-200 mr-[72px]">
+                        <button
+                          onClick={() => task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                            task.review_status === 'approved' 
+                              ? 'bg-green-500 text-white shadow-md scale-100' 
+                              : 'text-gray-400 hover:text-green-600 hover:bg-green-50 scale-95'
+                          }`}
+                        >
+                          <CheckSquare size={14} />
+                          Đã duyệt
+                        </button>
+                        <button
+                          onClick={() => task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                            task.review_status !== 'approved' // Treat pending as chưa duyệt active visually for clarity, or just when rejected
+                              ? 'bg-red-500 text-white shadow-md scale-100' 
+                              : 'text-gray-400 hover:text-red-500 hover:bg-red-50 scale-95'
+                          }`}
+                        >
+                          <XCircle size={14} />
+                          Chưa duyệt
+                        </button>
                       </div>
                     )}
                   </div>

@@ -188,3 +188,38 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
   revalidatePath("/my-salary");
   return { success: true, rate, nextCount };
 }
+
+export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // 1. Cập nhật review_status thành 'rejected'
+  const { error: updateError } = await supabase
+    .from("tasks")
+    .update({ 
+      review_status: 'rejected',
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", taskId);
+
+  if (updateError) {
+    console.error("Error revoking task:", updateError);
+    throw new Error(updateError.message);
+  }
+
+  // 2. Xóa record lương
+  const { error: deleteError } = await supabase
+    .from("salary_records")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("clip_title", `Sản phẩm hoàn thành từ: ${taskTitle}`);
+
+  if (deleteError) {
+    console.error("Error deleting salary record:", deleteError);
+  }
+
+  revalidatePath("/tasks");
+  revalidatePath("/my-salary");
+  return { success: true };
+}
