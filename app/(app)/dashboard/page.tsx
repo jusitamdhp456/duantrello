@@ -12,6 +12,11 @@ export default function DashboardPage() {
   const [showSalary, setShowSalary] = useState(false);
   
   const [profile, setProfile] = useState<any>(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editAvatarUrl, setEditAvatarUrl] = useState("");
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+
   const [metrics, setMetrics] = useState({
     processing: 0,
     approved: 0,
@@ -39,6 +44,12 @@ export default function DashboardPage() {
         .single();
         
       setProfile(profileData || { full_name: user.email?.split('@')[0] });
+      if (profileData) {
+        setEditName(profileData.full_name || "");
+        setEditAvatarUrl(profileData.avatar_url || "");
+      } else {
+        setEditName(user.email?.split('@')[0] || "");
+      }
 
       const now = new Date();
       const viewYear = now.getFullYear();
@@ -84,6 +95,28 @@ export default function DashboardPage() {
     return <div className="p-8 flex items-center justify-center min-h-screen"><Loader2 className="animate-spin text-gray-500" /></div>;
   }
 
+  const handleUpdateProfile = async () => {
+    try {
+      setIsSavingProfile(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const { error } = await supabase.from('profiles').update({ 
+        full_name: editName,
+        avatar_url: editAvatarUrl
+      }).eq('id', user.id);
+      
+      if (error) throw error;
+      
+      setProfile((prev: any) => ({ ...prev, full_name: editName, avatar_url: editAvatarUrl }));
+      setIsEditingProfile(false);
+    } catch (err: any) {
+      alert("Lỗi: " + err.message);
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
   const currentDate = new Date().toLocaleDateString('vi-VN', {
     weekday: 'long',
     year: 'numeric',
@@ -95,23 +128,75 @@ export default function DashboardPage() {
     <div className="p-4 md:p-8 w-full mx-auto space-y-6">
       {/* Banner */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-[2rem] p-8 text-white shadow-neu-convex relative overflow-hidden flex flex-col justify-between min-h-[160px]">
-        <div className="flex items-center gap-5 relative z-10">
-          <div className="w-16 h-16 bg-white/20 rounded-2xl overflow-hidden border border-white/30 backdrop-blur-sm flex items-center justify-center shadow-inner">
-            {profile?.avatar_url ? (
-              <Image src={profile.avatar_url} alt="Avatar" width={64} height={64} className="object-cover" />
-            ) : (
-              <span className="text-3xl font-bold">{profile?.full_name?.charAt(0)?.toUpperCase()}</span>
-            )}
-          </div>
-          <div>
-            <p className="text-sm text-purple-100 font-medium mb-1">Xin chào 👋</p>
-            <h2 className="text-2xl font-bold tracking-wide">{profile?.full_name || 'Người dùng'}</h2>
-            <div className="flex items-center gap-3 mt-1.5">
-              <p className="text-xs text-purple-200 font-medium bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">Editor · Outsource</p>
-              <p className="text-xs text-green-300 font-bold bg-green-500/20 px-3 py-1 rounded-full backdrop-blur-sm border border-green-400/30">Trạng thái: Chính thức</p>
+        {isEditingProfile ? (
+          <div className="flex flex-col gap-4 relative z-10 bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/20">
+            <h3 className="font-bold text-lg">Cập nhật hồ sơ</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-purple-200 mb-1">Họ và tên</label>
+                <input 
+                  type="text" 
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+                  placeholder="Full Name"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-purple-200 mb-1">Link Ảnh đại diện (URL)</label>
+                <input 
+                  type="url" 
+                  value={editAvatarUrl}
+                  onChange={(e) => setEditAvatarUrl(e.target.value)}
+                  className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+                  placeholder="https://..."
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-2">
+              <button 
+                onClick={handleUpdateProfile}
+                disabled={isSavingProfile}
+                className="px-5 py-2.5 bg-white text-purple-600 font-bold text-sm rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-70 flex items-center gap-2"
+              >
+                {isSavingProfile && <Loader2 className="w-4 h-4 animate-spin" />}
+                Lưu thay đổi
+              </button>
+              <button 
+                onClick={() => setIsEditingProfile(false)}
+                className="px-5 py-2.5 bg-black/20 text-white font-medium text-sm rounded-xl hover:bg-black/30 transition-colors"
+              >
+                Hủy
+              </button>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl overflow-hidden border border-white/30 backdrop-blur-sm flex items-center justify-center shadow-inner shrink-0">
+                {profile?.avatar_url ? (
+                  <Image src={profile.avatar_url} alt="Avatar" width={64} height={64} className="object-cover w-full h-full" />
+                ) : (
+                  <span className="text-3xl font-bold">{profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}</span>
+                )}
+              </div>
+              <div>
+                <p className="text-sm text-purple-100 font-medium mb-1">Xin chào 👋</p>
+                <h2 className="text-2xl font-bold tracking-wide">{profile?.full_name || 'Người dùng'}</h2>
+                <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+                  <p className="text-xs text-purple-200 font-medium bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">Editor · Outsource</p>
+                  <p className="text-xs text-green-300 font-bold bg-green-500/20 px-3 py-1 rounded-full backdrop-blur-sm border border-green-400/30">Trạng thái: Chính thức</p>
+                </div>
+              </div>
+            </div>
+            <button 
+              onClick={() => setIsEditingProfile(true)}
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-full backdrop-blur-sm border border-white/20 transition-all self-start sm:self-center shrink-0"
+            >
+              Chỉnh sửa hồ sơ
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Grid */}
