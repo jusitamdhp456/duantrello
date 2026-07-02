@@ -17,7 +17,7 @@ export default function TopBar({ userEmail }: { userEmail: string | undefined })
         </div>
         <input 
           type="text" 
-          placeholder={t("search_placeholder") || "Tìm kiếm..."} 
+          placeholder={t("search_placeholder" as any) || "Tìm kiếm..."} 
           className="w-full bg-neu-base shadow-neu-concave border-none rounded-full py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-purple-400 outline-none transition-all"
         />
       </div>
