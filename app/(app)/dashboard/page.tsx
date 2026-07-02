@@ -3,106 +3,75 @@
 import { useWorkspace } from '@/components/providers/WorkspaceProvider';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Loader2, DollarSign, TrendingUp, CheckCircle, Video, Star, ListTodo } from 'lucide-react';
-import Link from 'next/link';
-import { useLanguage } from '@/components/providers/LanguageProvider';
+import { Loader2, Trophy, Scissors, CheckCircle2, Target, Wallet, Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 
 export default function DashboardPage() {
   const { activeWorkspaceId, isLoading: wsLoading } = useWorkspace();
-  const { t } = useLanguage();
-  const [metrics, setMetrics] = useState({ totalSpend: 0, avgRoas: 0, adsApproved: 0, adsReview: 0 });
-  const [topPerformers, setTopPerformers] = useState<any[]>([]);
-  const [tasks, setTasks] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showSalary, setShowSalary] = useState(false);
+  
+  const [profile, setProfile] = useState<any>(null);
+  const [metrics, setMetrics] = useState({
+    processing: 0,
+    approved: 0,
+    totalSalary: 0,
+    win: 0,
+    avgScore: "0.0",
+  });
   
   const supabase = createClient();
 
   useEffect(() => {
     async function fetchDashboardData() {
-      if (!activeWorkspaceId) {
+      setIsLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         setIsLoading(false);
         return;
       }
-      setIsLoading(true);
-      
-      // 1. Fetch Ad Metrics
-      const { data: adMetrics } = await supabase
-        .from('ad_metrics')
-        .select('spend, roas')
-        .eq('workspace_id', activeWorkspaceId);
-        
-      let totalSpend = 0;
-      let totalRoas = 0;
-      if (adMetrics && adMetrics.length > 0) {
-        adMetrics.forEach(m => {
-          totalSpend += Number(m.spend || 0);
-          totalRoas += Number(m.roas || 0);
-        });
-        totalRoas = totalRoas / adMetrics.length;
-      }
 
-      // 2. Fetch Video Ads status
-      const { data: videoAds } = await supabase
-        .from('video_ads')
-        .select('approval_status')
-        .eq('workspace_id', activeWorkspaceId);
+      // Fetch Profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
         
-      const approved = videoAds?.filter(a => a.approval_status === 'approved').length || 0;
-      const review = videoAds?.filter(a => a.approval_status === 'review').length || 0;
+      setProfile(profileData || { full_name: user.email?.split('@')[0] });
 
-      setMetrics({ totalSpend, avgRoas: totalRoas, adsApproved: approved, adsReview: review });
+      const now = new Date();
+      const viewYear = now.getFullYear();
+      const viewMonth = now.getMonth() + 1;
 
-      // 3. Fetch Top Performers
-      const { data: scores } = await supabase
-        .from('user_scores')
-        .select('total_score, user_id')
-        .eq('workspace_id', activeWorkspaceId)
-        .order('total_score', { ascending: false })
-        .limit(3);
-        
-      if (scores && scores.length > 0) {
-        const { data: profiles } = await supabase.from('profiles').select('id, full_name, email');
-        const enrichedScores = scores.map(s => {
-          const p = profiles?.find(pr => pr.id === s.user_id);
-          return { ...s, name: p?.full_name || p?.email || 'Unknown User' };
-        });
-        setTopPerformers(enrichedScores);
-      } else {
-        setTopPerformers([]);
-      }
-
-      // 4. Fetch Tasks (from 'To Do' or 'In Progress' lists)
-      const { data: boards } = await supabase
-        .from('boards')
-        .select('id')
-        .eq('workspace_id', activeWorkspaceId);
-        
-      const boardIds = boards?.map(b => b.id) || [];
-      if (boardIds.length > 0) {
-        const { data: lists } = await supabase
-          .from('lists')
-          .select('id, name')
-          .in('board_id', boardIds)
-          .in('name', ['To Do', 'In Progress']);
+      // Fetch Tasks (Đang xử lý)
+      if (activeWorkspaceId) {
+        const { data: tasks } = await supabase
+          .from('tasks')
+          .select('id, review_status, status')
+          .eq('workspace_id', activeWorkspaceId)
+          .eq('assignee_name', profileData?.full_name || user.email?.split('@')[0]);
           
-        const listIds = lists?.map(l => l.id) || [];
-        if (listIds.length > 0) {
-          const { data: cards } = await supabase
-            .from('cards')
-            .select('id, title, list_id')
-            .in('list_id', listIds)
-            .limit(5);
-            
-          const enrichedCards = cards?.map(c => {
-             const list = lists?.find(l => l.id === c.list_id);
-             return { ...c, listName: list?.name };
-          });
-          setTasks(enrichedCards || []);
-        } else {
-          setTasks([]);
-        }
-      } else {
-        setTasks([]);
+        const processing = tasks?.filter(t => t.review_status !== 'approved' && t.status !== 'completed').length || 0;
+        
+        // Fetch Salary Records for this month (Đã duyệt & Lương)
+        const { data: salaryRecords } = await supabase
+          .from('salary_records')
+          .select('rate_per_clip')
+          .eq('user_id', user.id)
+          .eq('period_year', viewYear)
+          .eq('period_month', viewMonth);
+          
+        const approved = salaryRecords?.length || 0;
+        const totalSalary = salaryRecords?.reduce((sum, r) => sum + r.rate_per_clip, 0) || 0;
+
+        setMetrics({
+          processing,
+          approved,
+          totalSalary,
+          win: 0,
+          avgScore: "0.0",
+        });
       }
 
       setIsLoading(false);
@@ -111,105 +80,116 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, [activeWorkspaceId, supabase]);
 
-  if (wsLoading) return <div className="p-8 flex items-center justify-center"><Loader2 className="animate-spin text-gray-500" /></div>;
-  if (!activeWorkspaceId) return <div className="p-8">{t("select_workspace")}</div>;
+  if (wsLoading || isLoading) {
+    return <div className="p-8 flex items-center justify-center min-h-screen"><Loader2 className="animate-spin text-gray-500" /></div>;
+  }
+
+  const currentDate = new Date().toLocaleDateString('vi-VN', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-10">
-        <h1 className="text-4xl font-light text-gray-700 tracking-wide">{t("dashboard_title")}</h1>
-        <p className="text-gray-500 mt-2">{t("welcome")}</p>
-      </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-gray-500 w-8 h-8" /></div>
-      ) : (
-        <div className="space-y-10">
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
-              <div className="flex items-center text-gray-500 mb-4">
-                <div className="p-3 rounded-full shadow-neu-convex mr-3">
-                  <DollarSign className="w-5 h-5 text-indigo-500" />
-                </div>
-                <span className="text-xs font-semibold uppercase tracking-widest">{t("spend")}</span>
-              </div>
-              <p className="text-3xl font-light text-gray-700">${metrics.totalSpend.toFixed(2)}</p>
-            </div>
-            
-            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
-              <div className="flex items-center text-gray-500 mb-4">
-                <div className="p-3 rounded-full shadow-neu-convex mr-3">
-                  <TrendingUp className="w-5 h-5 text-purple-500" />
-                </div>
-                <span className="text-xs font-semibold uppercase tracking-widest">{t("roas")}</span>
-              </div>
-              <p className="text-3xl font-light text-purple-600">{metrics.avgRoas.toFixed(2)}x</p>
-            </div>
-
-            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
-              <div className="flex items-center text-gray-500 mb-4">
-                <div className="p-3 rounded-full shadow-neu-convex mr-3">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                </div>
-                <span className="text-xs font-semibold uppercase tracking-widest">{t("status")}</span>
-              </div>
-              <p className="text-3xl font-light text-gray-700">{metrics.adsApproved}</p>
-            </div>
-
-            <div className="bg-neu-base p-8 rounded-[2rem] shadow-neu-convex flex flex-col justify-center">
-              <div className="flex items-center text-gray-500 mb-4">
-                <div className="p-3 rounded-full shadow-neu-convex mr-3">
-                  <Video className="w-5 h-5 text-yellow-500" />
-                </div>
-                <span className="text-xs font-semibold uppercase tracking-widest">{t("status")}</span>
-              </div>
-              <p className="text-3xl font-light text-gray-700">{metrics.adsReview}</p>
-            </div>
+    <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-4">
+      {/* Banner */}
+      <div className="bg-[#13a884] rounded-2xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="w-14 h-14 bg-white/20 rounded-lg overflow-hidden border border-white/30 backdrop-blur-sm flex items-center justify-center">
+            {profile?.avatar_url ? (
+              <Image src={profile.avatar_url} alt="Avatar" width={56} height={56} className="object-cover" />
+            ) : (
+              <span className="text-2xl font-bold">{profile?.full_name?.charAt(0)?.toUpperCase()}</span>
+            )}
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {/* Top Performers */}
-            <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-6">
-              <div className="px-4 py-4 flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-xl text-gray-700 flex items-center tracking-wide"><Star className="w-6 h-6 mr-3 text-yellow-500 drop-shadow-sm" /> {t("nav_leaderboard")}</h3>
-                <Link href="/leaderboard" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-purple-600 font-medium transition-all duration-200">{t("nav_leaderboard")}</Link>
-              </div>
-              <div className="space-y-4 px-2 pb-2">
-                {topPerformers.map((p, idx) => (
-                  <div key={p.user_id} className="px-6 py-5 rounded-[1.5rem] shadow-neu-concave flex justify-between items-center">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-8 h-8 flex items-center justify-center rounded-full shadow-neu-convex font-bold text-gray-500">{idx + 1}</div>
-                      <span className="font-medium text-gray-700 text-lg">{p.name}</span>
-                    </div>
-                    <span className="font-bold text-purple-600 shadow-neu-convex bg-neu-base px-4 py-2 rounded-full text-sm">{p.total_score} {t("pts")}</span>
-                  </div>
-                ))}
-                {topPerformers.length === 0 && <p className="py-8 text-center text-gray-500 text-sm">{t("no_scores")}</p>}
-              </div>
-            </div>
-
-            {/* Active Tasks */}
-            <div className="bg-neu-base rounded-[2rem] shadow-neu-convex overflow-hidden p-6">
-              <div className="px-4 py-4 flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-xl text-gray-700 flex items-center tracking-wide"><ListTodo className="w-6 h-6 mr-3 text-indigo-500 drop-shadow-sm" /> {t("recent_tasks")}</h3>
-                <Link href="/boards" className="text-sm px-4 py-2 rounded-full shadow-neu-convex hover:shadow-neu-concave text-purple-600 font-medium transition-all duration-200">{t("nav_boards")}</Link>
-              </div>
-              <div className="space-y-4 px-2 pb-2">
-                {tasks.map((t) => (
-                  <div key={t.id} className="px-6 py-5 rounded-[1.5rem] shadow-neu-concave transition">
-                    <h4 className="font-medium text-gray-700 mb-1">{t.title}</h4>
-                    <p className="text-xs text-gray-500">
-                      In <span className="font-medium px-2 py-1 bg-neu-base shadow-neu-convex rounded-full ml-1 text-gray-600">{t.listName}</span>
-                    </p>
-                  </div>
-                ))}
-                {tasks.length === 0 && <p className="py-8 text-center text-gray-500 text-sm">{t("no_data")}</p>}
-              </div>
-            </div>
+          <div>
+            <p className="text-xs text-teal-50 font-medium">Xin chào 👋</p>
+            <h2 className="text-lg font-bold">{profile?.full_name || 'Người dùng'}</h2>
+            <p className="text-[10px] text-teal-100 mt-0.5">Editor · Outsource</p>
           </div>
         </div>
-      )}
+        
+        <div className="flex justify-between items-end mt-8 relative z-10">
+          <div>
+            <p className="text-[10px] text-teal-100/80 mb-1">Lương cơ bản</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs font-semibold tracking-wider">
+                {showSalary ? "5.000.000 ₫" : "••••••••"}
+              </p>
+              <button onClick={() => setShowSalary(!showSalary)} className="text-teal-100 hover:text-white transition">
+                {showSalary ? <EyeOff size={12} /> : <Eye size={12} />}
+              </button>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] text-teal-100/80 mb-1">Trạng thái</p>
+            <p className="text-xs font-bold">Chính thức</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Card 1 */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
+          <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center mb-1">
+            <Trophy className="w-5 h-5 text-orange-400" />
+          </div>
+          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Clip Win (Tháng)</p>
+          <p className="text-lg font-bold text-gray-700">
+            {metrics.win} <span className="text-xs font-normal text-gray-400 normal-case">clip</span>
+          </p>
+        </div>
+
+        {/* Card 2 */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
+          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-1">
+            <Scissors className="w-5 h-5 text-blue-500" />
+          </div>
+          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Đang xử lý</p>
+          <p className="text-lg font-bold text-gray-700">
+            {metrics.processing} <span className="text-xs font-normal text-gray-400 normal-case">clip</span>
+          </p>
+        </div>
+
+        {/* Card 3 */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
+          <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center mb-1">
+            <CheckCircle2 className="w-5 h-5 text-purple-500" />
+          </div>
+          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Clip đã duyệt</p>
+          <p className="text-lg font-bold text-gray-700">
+            {metrics.approved} <span className="text-xs font-normal text-gray-400 normal-case">clip</span>
+          </p>
+        </div>
+
+        {/* Card 4 */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
+          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-1">
+            <Target className="w-5 h-5 text-red-500" />
+          </div>
+          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Điểm ADS TB (Tháng)</p>
+          <p className="text-lg font-bold text-gray-700">
+            {metrics.avgScore} <span className="text-xs font-normal text-gray-400 normal-case">/10</span>
+          </p>
+        </div>
+
+        {/* Card 5 */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
+          <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mb-1">
+            <Wallet className="w-5 h-5 text-emerald-500" />
+          </div>
+          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Tổng lương (Tháng)</p>
+          <p className="text-lg font-bold text-gray-700">
+            {new Intl.NumberFormat("vi-VN").format(metrics.totalSalary)} <span className="text-xs font-normal text-gray-400 normal-case">₫</span>
+          </p>
+        </div>
+      </div>
+
+      <div className="text-center pt-8">
+        <p className="text-xs text-gray-300 font-medium capitalize">{currentDate}</p>
+      </div>
     </div>
   );
 }
