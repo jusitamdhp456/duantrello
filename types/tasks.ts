@@ -10,6 +10,8 @@ export interface Task {
   priority: TaskPriority;
   status: TaskStatus;
   video_url?: string | null;
+  product_url?: string | null;
+  review_status?: 'pending' | 'approved' | 'rejected' | null;
   created_at: string;
   updated_at: string;
 }

@@ -39,6 +39,8 @@ export async function createTask(workspaceId: string, data: Partial<Task>) {
       priority: data.priority || 'medium',
       status: data.status || 'pending',
       video_url: data.video_url || null,
+      product_url: data.product_url || null,
+      review_status: data.review_status || 'pending',
     })
     .select()
     .single();
@@ -66,6 +68,8 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
       priority: data.priority,
       status: data.status,
       video_url: data.video_url,
+      product_url: data.product_url,
+      review_status: data.review_status,
       updated_at: new Date().toISOString()
     })
     .eq("id", taskId)
@@ -120,4 +124,67 @@ export async function deleteTask(taskId: string) {
 
   revalidatePath("/tasks");
   return { success: true };
+}
+
+export async function approveTaskAndPay(taskId: string, workspaceId: string, taskTitle: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // 1. Cập nhật review_status thành 'approved'
+  const { error: updateError } = await supabase
+    .from("tasks")
+    .update({ 
+      review_status: 'approved',
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", taskId);
+
+  if (updateError) {
+    console.error("Error approving task:", updateError);
+    throw new Error(updateError.message);
+  }
+
+  // 2. Tính lương và lưu vào salary_records
+  const RATE_BASE = 250000;      // 250k/clip
+  const RATE_BONUS = 280000;     // 280k/clip từ clip thứ 6 trở đi
+  const BONUS_THRESHOLD = 5;
+
+  const now = new Date();
+  const viewYear = now.getFullYear();
+  const viewMonth = now.getMonth() + 1;
+
+  // Đếm số lượng clip hiện tại trong tháng
+  const { data: currentRecords } = await supabase
+    .from("salary_records")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("period_year", viewYear)
+    .eq("period_month", viewMonth);
+
+  const totalClips = currentRecords ? currentRecords.length : 0;
+  const nextCount = totalClips + 1;
+  const rate = totalClips >= BONUS_THRESHOLD ? RATE_BONUS : RATE_BASE;
+
+  const { error: salaryError } = await supabase
+    .from("salary_records")
+    .insert({
+      workspace_id: workspaceId,
+      user_id: user.id,
+      clip_title: `Sản phẩm hoàn thành từ: ${taskTitle}`,
+      completed_at: now.toISOString(),
+      period_year: viewYear,
+      period_month: viewMonth,
+      clip_count_in_month: nextCount,
+      rate_per_clip: rate,
+    });
+
+  if (salaryError) {
+    console.error("Error adding salary record:", salaryError);
+    throw new Error("Lỗi khi cộng lương: " + salaryError.message);
+  }
+
+  revalidatePath("/tasks");
+  revalidatePath("/my-salary");
+  return { success: true, rate, nextCount };
 }

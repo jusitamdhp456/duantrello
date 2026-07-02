@@ -3,9 +3,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask } from "@/app/actions/tasks";
+import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay } from "@/app/actions/tasks";
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
-import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw } from "lucide-react";
+import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare } from "lucide-react";
 
 const isOverdue = (deadlineStr: string | null) => {
   if (!deadlineStr) return false;
@@ -40,6 +40,7 @@ export default function TasksView() {
   const [priority, setPriority] = useState<TaskPriority>("medium");
   const [status, setStatus] = useState<TaskStatus>("pending");
   const [videoUrl, setVideoUrl] = useState("");
+  const [productUrl, setProductUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -93,6 +94,7 @@ export default function TasksView() {
     setPriority("medium");
     setStatus("pending");
     setVideoUrl("");
+    setProductUrl("");
     setModalMode('create');
   };
 
@@ -104,6 +106,7 @@ export default function TasksView() {
     setPriority(task.priority);
     setStatus(task.status);
     setVideoUrl(task.video_url || "");
+    setProductUrl(task.product_url || "");
     setModalMode('edit');
   };
 
@@ -125,7 +128,8 @@ export default function TasksView() {
           deadline: deadline ? new Date(deadline).toISOString() : null,
           priority,
           status,
-          video_url: videoUrl || null
+          video_url: videoUrl || null,
+          product_url: productUrl || null,
         });
         setTasks(prev => [...prev, newTask]);
       } else if (modalMode === 'edit' && editingTask) {
@@ -135,7 +139,8 @@ export default function TasksView() {
           deadline: deadline ? new Date(deadline).toISOString() : null,
           priority,
           status,
-          video_url: videoUrl || null
+          video_url: videoUrl || null,
+          product_url: productUrl || null,
         });
         setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
       }
@@ -163,6 +168,29 @@ export default function TasksView() {
       setTasks(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
     } catch (err: any) {
       alert(err.message);
+    }
+  };
+
+  const handleReviewAction = async (task: Task, action: 'approved' | 'rejected') => {
+    if (!activeWorkspaceId) return;
+    if (action === 'approved') {
+      if (!confirm("Bạn có chắc chắn muốn duyệt và tính lương cho sản phẩm này?")) return;
+      try {
+        const res = await approveTaskAndPay(task.id, activeWorkspaceId, task.title);
+        alert(`Đã duyệt! Sản phẩm được tính lương với đơn giá ${res.rate.toLocaleString('vi-VN')} đ (Clip #${res.nextCount} trong tháng).`);
+        setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'approved' } : t));
+      } catch (err: any) {
+        alert(err.message);
+      }
+    } else {
+      // Just mark as rejected (for simplicity, we update locally, you could add an endpoint if needed)
+      // We will do a generic updateTask for this
+      try {
+        await updateTask(task.id, { review_status: 'rejected' });
+        setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'rejected' } : t));
+      } catch (err: any) {
+        alert(err.message);
+      }
     }
   };
 
@@ -298,6 +326,48 @@ export default function TasksView() {
                     </div>
                   </div>
                   
+                  {/* Cột hiển thị Link Sản Phẩm & Trạng thái Duyệt (nếu có Link Sản Phẩm) */}
+                  {task.product_url && (
+                    <div className="flex flex-col items-end gap-2 mx-4 px-4 border-l border-r border-gray-100">
+                      <a 
+                        href={task.product_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                      >
+                        <Link2 size={14} />
+                        Sản phẩm đã hoàn thành
+                      </a>
+                      
+                      <div className="flex items-center gap-2 text-xs">
+                        {task.review_status === 'approved' ? (
+                          <span className="flex items-center gap-1 text-green-600 font-bold bg-green-50 px-2 py-1 rounded-md">
+                            <CheckSquare size={14} /> Đã duyệt & Tính lương
+                          </span>
+                        ) : task.review_status === 'rejected' ? (
+                          <span className="flex items-center gap-1 text-red-500 font-bold bg-red-50 px-2 py-1 rounded-md">
+                            <XCircle size={14} /> Chưa duyệt
+                          </span>
+                        ) : (
+                          <div className="flex gap-1">
+                            <button 
+                              onClick={() => handleReviewAction(task, 'approved')}
+                              className="px-2 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-medium shadow-neu-convex"
+                            >
+                              Duyệt
+                            </button>
+                            <button 
+                              onClick={() => handleReviewAction(task, 'rejected')}
+                              className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors font-medium shadow-neu-convex"
+                            >
+                              Từ chối
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-center gap-4">
                     {task.video_url && (
                       <a 
@@ -445,6 +515,33 @@ export default function TasksView() {
                     </a>
                   )}
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Link sản phẩm hoàn thành</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="url" 
+                    value={productUrl}
+                    onChange={(e) => setProductUrl(e.target.value)}
+                    className="flex-1 bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 outline-none"
+                    placeholder="https://... (Link Google Drive, YouTube, Tiktok...)"
+                  />
+                  {productUrl && (
+                    <a 
+                      href={productUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="px-4 py-3 bg-blue-50 text-blue-600 rounded-xl font-medium hover:bg-blue-100 transition-colors flex items-center justify-center whitespace-nowrap"
+                      title="Mở link sản phẩm"
+                    >
+                      Mở link
+                    </a>
+                  )}
+                </div>
+                <p className="text-xs text-gray-400 mt-2">
+                  * Khi điền link sản phẩm, quản lý có thể duyệt để tự động tính lương.
+                </p>
               </div>
 
               <div className="flex gap-3 pt-4">
