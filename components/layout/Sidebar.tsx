@@ -21,29 +21,12 @@ export default function Sidebar({ userEmail }: { userEmail: string | undefined }
           <Link href="/dashboard" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
             {t("nav_dashboard")}
           </Link>
-          <Link href="/boards" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-            {t("nav_boards")}
+          <Link href="/my-kpi" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
+            {t("nav_my_kpi")}
           </Link>
-          <Link href="/campaigns" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-            {t("nav_campaigns")}
+          <Link href="/my-salary" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
+            {t("nav_my_salary")}
           </Link>
-          <Link href="/creative-briefs" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-            {t("nav_briefs")}
-          </Link>
-          <Link href="/video-ads" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-            {t("nav_video_ads")}
-          </Link>
-          <Link href="/media-library" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-            {t("nav_media")}
-          </Link>
-          <div className="pt-2">
-            <Link href="/analytics" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-              {t("nav_analytics")}
-            </Link>
-            <Link href="/leaderboard" className="block px-4 py-3 rounded-2xl text-sm font-medium text-gray-600 hover:shadow-neu-concave transition-all duration-200">
-              {t("nav_leaderboard")}
-            </Link>
-          </div>
         </nav>
       </div>
       

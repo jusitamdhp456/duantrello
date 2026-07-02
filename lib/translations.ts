@@ -25,6 +25,8 @@ export const translations = {
     nav_leaderboard: "Leaderboard",
     nav_profile: "Profile",
     nav_settings: "Settings",
+    nav_my_kpi: "My KPI",
+    nav_my_salary: "My Salary",
 
     // Dashboard
     dashboard_title: "Dashboard",
@@ -184,6 +186,8 @@ export const translations = {
     nav_leaderboard: "Bảng xếp hạng",
     nav_profile: "Hồ sơ",
     nav_settings: "Cài đặt",
+    nav_my_kpi: "KPI của tôi",
+    nav_my_salary: "Lương của tôi",
 
     // Dashboard
     dashboard_title: "Trang chủ",
