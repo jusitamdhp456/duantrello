@@ -3,7 +3,7 @@
 import { useWorkspace } from '@/components/providers/WorkspaceProvider';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { Loader2, Trophy, Scissors, CheckCircle2, Target, Wallet, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Trophy, Scissors, CheckCircle2, Target, Wallet, Eye, EyeOff, Upload } from 'lucide-react';
 import Image from 'next/image';
 
 export default function DashboardPage() {
@@ -16,6 +16,7 @@ export default function DashboardPage() {
   const [editName, setEditName] = useState("");
   const [editAvatarUrl, setEditAvatarUrl] = useState("");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [metrics, setMetrics] = useState({
     processing: 0,
@@ -117,6 +118,34 @@ export default function DashboardPage() {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `user-avatars/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      setEditAvatarUrl(data.publicUrl);
+    } catch (error: any) {
+      alert('Lỗi tải ảnh lên: ' + error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const currentDate = new Date().toLocaleDateString('vi-VN', {
     weekday: 'long',
     year: 'numeric',
@@ -143,14 +172,26 @@ export default function DashboardPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-purple-200 mb-1">Link Ảnh đại diện (URL)</label>
-                <input 
-                  type="url" 
-                  value={editAvatarUrl}
-                  onChange={(e) => setEditAvatarUrl(e.target.value)}
-                  className="w-full bg-white/20 border border-white/30 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
-                  placeholder="https://..."
-                />
+                <label className="block text-xs font-medium text-purple-200 mb-1">Ảnh đại diện</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="url" 
+                    value={editAvatarUrl}
+                    onChange={(e) => setEditAvatarUrl(e.target.value)}
+                    className="flex-1 w-full bg-white/20 border border-white/30 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    placeholder="Nhập link URL hoặc..."
+                  />
+                  <label className="flex items-center justify-center bg-white/20 border border-white/30 rounded-xl px-4 py-2.5 cursor-pointer hover:bg-white/30 transition-colors" title="Tải ảnh lên">
+                    {isUploading ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Upload className="w-4 h-4 text-white" />}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={handleFileUpload}
+                      disabled={isUploading}
+                    />
+                  </label>
+                </div>
               </div>
             </div>
             <div className="flex gap-3 mt-2">
