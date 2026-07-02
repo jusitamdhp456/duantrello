@@ -216,7 +216,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 bg-white/20 rounded-2xl overflow-hidden border border-white/30 backdrop-blur-sm flex items-center justify-center shadow-inner shrink-0">
                 {profile?.avatar_url ? (
-                  <Image src={profile.avatar_url} alt="Avatar" width={64} height={64} className="object-cover w-full h-full" />
+                  <img src={profile.avatar_url} alt="Avatar" className="object-cover w-full h-full" />
                 ) : (
                   <span className="text-3xl font-bold">{profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}</span>
                 )}
