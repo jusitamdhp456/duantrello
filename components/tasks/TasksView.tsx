@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { Task, TaskStatus, TaskPriority, getTasks, createTask, updateTask, updateTaskStatus, deleteTask } from "@/app/actions/tasks";
+import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask } from "@/app/actions/tasks";
+import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
 import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw } from "lucide-react";
 import { isPast, isToday } from "date-fns";
 
