@@ -21,6 +21,25 @@ export async function getTasks(workspaceId: string) {
     throw new Error(error.message);
   }
 
+  if (data && data.length > 0) {
+    const assigneeIds = [...new Set(data.map(t => t.assignee_id).filter(Boolean))];
+    if (assigneeIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', assigneeIds);
+        
+      if (profiles && profiles.length > 0) {
+        const profileMap = Object.fromEntries(profiles.map(p => [p.id, p.full_name]));
+        for (const task of data) {
+          if (task.assignee_id && profileMap[task.assignee_id]) {
+            task.assignee_name = profileMap[task.assignee_id];
+          }
+        }
+      }
+    }
+  }
+
   return data as Task[];
 }
 
