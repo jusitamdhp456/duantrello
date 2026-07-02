@@ -115,7 +115,7 @@ export async function claimTask(taskId: string) {
 
   if (error) {
     console.error("Error claiming task:", error);
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath("/tasks");

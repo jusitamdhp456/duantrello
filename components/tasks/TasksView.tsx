@@ -190,7 +190,11 @@ export default function TasksView() {
   const handleClaimTask = async (id: string) => {
     if (!confirm("Bạn muốn nhận công việc này?")) return;
     try {
-      await claimTask(id);
+      const res = await claimTask(id);
+      if (res && res.error) {
+        alert("Lỗi: " + res.error);
+        return;
+      }
       // Reload tasks to get the updated assignee_id and assignee_name
       if (activeWorkspaceId) {
         const data = await getTasks(activeWorkspaceId);
