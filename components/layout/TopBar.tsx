@@ -3,23 +3,29 @@
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { logout } from "@/app/auth/actions";
 import LanguageToggle from "@/components/layout/LanguageToggle";
-import { Search, Bell, LogOut, User } from "lucide-react";
+import { Search, Bell, LogOut, User, Menu } from "lucide-react";
 
 export default function TopBar({ userEmail }: { userEmail: string | undefined }) {
   const { t } = useLanguage();
 
   return (
-    <header className="h-20 flex items-center justify-between px-8 bg-neu-base mb-6 rounded-3xl shadow-neu-convex mx-4 mt-4">
-      {/* Search Bar */}
-      <div className="flex-1 max-w-md relative">
-        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-          <Search size={18} className="text-gray-400" />
+    <header className="h-20 flex items-center justify-between px-4 md:px-8 bg-neu-base mb-6 rounded-3xl shadow-neu-convex mx-4 mt-4 relative z-10">
+      <div className="flex items-center gap-2 flex-1 md:flex-none">
+        <label htmlFor="mobile-menu" className="md:hidden p-2.5 mr-1 rounded-full text-gray-500 hover:text-purple-600 shadow-neu-convex hover:shadow-neu-concave transition-all cursor-pointer flex-shrink-0">
+          <Menu size={20} />
+        </label>
+        
+        {/* Search Bar */}
+        <div className="flex-1 max-w-md relative hidden sm:block">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <Search size={18} className="text-gray-400" />
+          </div>
+          <input 
+            type="text" 
+            placeholder={t("search_placeholder" as any) || "Tìm kiếm..."} 
+            className="w-full bg-neu-base shadow-neu-concave border-none rounded-full py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-purple-400 outline-none transition-all"
+          />
         </div>
-        <input 
-          type="text" 
-          placeholder={t("search_placeholder" as any) || "Tìm kiếm..."} 
-          className="w-full bg-neu-base shadow-neu-concave border-none rounded-full py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-purple-400 outline-none transition-all"
-        />
       </div>
 
       {/* Right Actions */}
