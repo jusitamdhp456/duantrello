@@ -8,7 +8,7 @@ import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
 import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare, Hand } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-const isOverdue = (deadlineStr: string | null) => {
+const isOverdue = (deadlineStr: string | null | undefined) => {
   if (!deadlineStr) return false;
   const deadlineDate = new Date(deadlineStr);
   deadlineDate.setHours(0, 0, 0, 0);
