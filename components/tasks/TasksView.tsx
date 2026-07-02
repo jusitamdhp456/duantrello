@@ -347,7 +347,7 @@ export default function TasksView() {
                           className="flex items-center gap-1.5 text-sm px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full font-medium hover:bg-blue-100 transition-colors"
                         >
                           <Link2 size={14} />
-                          Sản phẩm
+                          Sản phẩm đã xong
                         </a>
                       )}
 
