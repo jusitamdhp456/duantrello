@@ -92,103 +92,88 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-4">
+    <div className="p-4 md:p-8 w-full mx-auto space-y-6">
       {/* Banner */}
-      <div className="bg-[#13a884] rounded-2xl p-6 text-white shadow-md relative overflow-hidden flex flex-col justify-between min-h-[160px]">
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="w-14 h-14 bg-white/20 rounded-lg overflow-hidden border border-white/30 backdrop-blur-sm flex items-center justify-center">
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-[2rem] p-8 text-white shadow-neu-convex relative overflow-hidden flex flex-col justify-between min-h-[160px]">
+        <div className="flex items-center gap-5 relative z-10">
+          <div className="w-16 h-16 bg-white/20 rounded-2xl overflow-hidden border border-white/30 backdrop-blur-sm flex items-center justify-center shadow-inner">
             {profile?.avatar_url ? (
-              <Image src={profile.avatar_url} alt="Avatar" width={56} height={56} className="object-cover" />
+              <Image src={profile.avatar_url} alt="Avatar" width={64} height={64} className="object-cover" />
             ) : (
-              <span className="text-2xl font-bold">{profile?.full_name?.charAt(0)?.toUpperCase()}</span>
+              <span className="text-3xl font-bold">{profile?.full_name?.charAt(0)?.toUpperCase()}</span>
             )}
           </div>
           <div>
-            <p className="text-xs text-teal-50 font-medium">Xin chào 👋</p>
-            <h2 className="text-lg font-bold">{profile?.full_name || 'Người dùng'}</h2>
-            <p className="text-[10px] text-teal-100 mt-0.5">Editor · Outsource</p>
-          </div>
-        </div>
-        
-        <div className="flex justify-between items-end mt-8 relative z-10">
-          <div>
-            <p className="text-[10px] text-teal-100/80 mb-1">Lương cơ bản</p>
-            <div className="flex items-center gap-2">
-              <p className="text-xs font-semibold tracking-wider">
-                {showSalary ? "5.000.000 ₫" : "••••••••"}
-              </p>
-              <button onClick={() => setShowSalary(!showSalary)} className="text-teal-100 hover:text-white transition">
-                {showSalary ? <EyeOff size={12} /> : <Eye size={12} />}
-              </button>
+            <p className="text-sm text-purple-100 font-medium mb-1">Xin chào 👋</p>
+            <h2 className="text-2xl font-bold tracking-wide">{profile?.full_name || 'Người dùng'}</h2>
+            <div className="flex items-center gap-3 mt-1.5">
+              <p className="text-xs text-purple-200 font-medium bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">Editor · Outsource</p>
+              <p className="text-xs text-green-300 font-bold bg-green-500/20 px-3 py-1 rounded-full backdrop-blur-sm border border-green-400/30">Trạng thái: Chính thức</p>
             </div>
-          </div>
-          <div className="text-right">
-            <p className="text-[10px] text-teal-100/80 mb-1">Trạng thái</p>
-            <p className="text-xs font-bold">Chính thức</p>
           </div>
         </div>
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {/* Card 1 */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
-          <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center mb-1">
-            <Trophy className="w-5 h-5 text-orange-400" />
+        <div className="bg-white rounded-2xl shadow-neu-convex p-6 flex flex-col items-center justify-center gap-3 hover:shadow-neu-concave transition-all duration-300 transform hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center mb-1 shadow-inner border border-orange-100">
+            <Trophy className="w-6 h-6 text-orange-400" />
           </div>
-          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Clip Win (Tháng)</p>
-          <p className="text-lg font-bold text-gray-700">
-            {metrics.win} <span className="text-xs font-normal text-gray-400 normal-case">clip</span>
+          <p className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">Clip Win (Tháng)</p>
+          <p className="text-2xl font-bold text-gray-700">
+            {metrics.win} <span className="text-sm font-normal text-gray-400 normal-case">clip</span>
           </p>
         </div>
 
         {/* Card 2 */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
-          <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-1">
-            <Scissors className="w-5 h-5 text-blue-500" />
+        <div className="bg-white rounded-2xl shadow-neu-convex p-6 flex flex-col items-center justify-center gap-3 hover:shadow-neu-concave transition-all duration-300 transform hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-1 shadow-inner border border-blue-100">
+            <Scissors className="w-6 h-6 text-blue-500" />
           </div>
-          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Đang xử lý</p>
-          <p className="text-lg font-bold text-gray-700">
-            {metrics.processing} <span className="text-xs font-normal text-gray-400 normal-case">clip</span>
+          <p className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">Đang xử lý</p>
+          <p className="text-2xl font-bold text-gray-700">
+            {metrics.processing} <span className="text-sm font-normal text-gray-400 normal-case">clip</span>
           </p>
         </div>
 
         {/* Card 3 */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
-          <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center mb-1">
-            <CheckCircle2 className="w-5 h-5 text-purple-500" />
+        <div className="bg-white rounded-2xl shadow-neu-convex p-6 flex flex-col items-center justify-center gap-3 hover:shadow-neu-concave transition-all duration-300 transform hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center mb-1 shadow-inner border border-purple-100">
+            <CheckCircle2 className="w-6 h-6 text-purple-500" />
           </div>
-          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Clip đã duyệt</p>
-          <p className="text-lg font-bold text-gray-700">
-            {metrics.approved} <span className="text-xs font-normal text-gray-400 normal-case">clip</span>
+          <p className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">Clip đã duyệt</p>
+          <p className="text-2xl font-bold text-gray-700">
+            {metrics.approved} <span className="text-sm font-normal text-gray-400 normal-case">clip</span>
           </p>
         </div>
 
         {/* Card 4 */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
-          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-1">
-            <Target className="w-5 h-5 text-red-500" />
+        <div className="bg-white rounded-2xl shadow-neu-convex p-6 flex flex-col items-center justify-center gap-3 hover:shadow-neu-concave transition-all duration-300 transform hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center mb-1 shadow-inner border border-red-100">
+            <Target className="w-6 h-6 text-red-500" />
           </div>
-          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Điểm ADS TB (Tháng)</p>
-          <p className="text-lg font-bold text-gray-700">
-            {metrics.avgScore} <span className="text-xs font-normal text-gray-400 normal-case">/10</span>
+          <p className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">Điểm ADS TB (Tháng)</p>
+          <p className="text-2xl font-bold text-gray-700">
+            {metrics.avgScore} <span className="text-sm font-normal text-gray-400 normal-case">/10</span>
           </p>
         </div>
 
         {/* Card 5 */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center gap-2 hover:shadow-md transition">
-          <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mb-1">
-            <Wallet className="w-5 h-5 text-emerald-500" />
+        <div className="bg-white rounded-2xl shadow-neu-convex p-6 flex flex-col items-center justify-center gap-3 hover:shadow-neu-concave transition-all duration-300 transform hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center mb-1 shadow-inner border border-emerald-100">
+            <Wallet className="w-6 h-6 text-emerald-500" />
           </div>
-          <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Tổng lương (Tháng)</p>
-          <p className="text-lg font-bold text-gray-700">
-            {new Intl.NumberFormat("vi-VN").format(metrics.totalSalary)} <span className="text-xs font-normal text-gray-400 normal-case">₫</span>
+          <p className="text-[11px] font-bold text-gray-400 tracking-widest uppercase">Tổng lương (Tháng)</p>
+          <p className="text-2xl font-bold text-purple-600">
+            {new Intl.NumberFormat("vi-VN").format(metrics.totalSalary)} <span className="text-sm font-normal text-gray-400 normal-case">₫</span>
           </p>
         </div>
       </div>
 
       <div className="text-center pt-8">
-        <p className="text-xs text-gray-300 font-medium capitalize">{currentDate}</p>
+        <p className="text-sm text-gray-400 font-medium capitalize tracking-wide">{currentDate}</p>
       </div>
     </div>
   );
