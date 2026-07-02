@@ -102,10 +102,12 @@ export default function DashboardPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      const { error } = await supabase.from('profiles').update({ 
+      const { error } = await supabase.from('profiles').upsert({ 
+        id: user.id,
+        email: user.email,
         full_name: editName,
         avatar_url: editAvatarUrl
-      }).eq('id', user.id);
+      });
       
       if (error) throw error;
       
