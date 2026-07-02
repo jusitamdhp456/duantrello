@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import WorkspaceSwitcher from "@/components/layout/WorkspaceSwitcher";
@@ -21,11 +22,16 @@ export default function Sidebar() {
     <aside className="w-64 bg-neu-base shadow-neu-convex flex flex-col justify-between z-10 m-4 rounded-[2rem] overflow-hidden">
       <div className="flex flex-col h-full">
         {/* Logo Area */}
-        <div className="h-28 flex flex-col items-center justify-center relative">
-          <div className="font-extrabold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-purple-400 tracking-tighter drop-shadow-sm">
-            CreativeOS
+        <div className="h-28 flex flex-col items-center justify-center relative pt-4">
+          <div className="flex items-center justify-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl overflow-hidden shadow-neu-convex flex items-center justify-center bg-white p-0.5 border border-purple-100">
+              <Image src="/logo.png" alt="CreativeOS Logo" width={32} height={32} className="rounded-lg object-contain" />
+            </div>
+            <div className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-500 tracking-tighter drop-shadow-sm">
+              CreativeOS
+            </div>
           </div>
-          <div className="text-[10px] uppercase tracking-[0.3em] text-gray-400 mt-1 font-semibold">Workspace</div>
+          <div className="text-[10px] uppercase tracking-[0.3em] text-gray-400 mt-2 font-semibold">Workspace</div>
         </div>
 
         {/* Workspace Switcher */}
