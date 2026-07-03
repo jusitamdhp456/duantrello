@@ -48,18 +48,19 @@ export default function MeetingList({ initialMeetings }: Props) {
     agenda?: AgendaItem[];
   }) => {
     if (!activeWorkspaceId) throw new Error("Vui lòng chọn workspace trước");
-    const newMeeting = await createMeeting(activeWorkspaceId, payload);
-    setMeetings((prev) => [newMeeting, ...prev]);
+    const result = await createMeeting(activeWorkspaceId, payload);
+    if (result.error) throw new Error(result.error);
+    if (result.data) setMeetings((prev) => [result.data!, ...prev]);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Bạn có chắc muốn xóa cuộc họp này?")) return;
-    try {
-      await deleteMeeting(id);
-      setMeetings((prev) => prev.filter((m) => m.id !== id));
-    } catch (err: any) {
-      alert(err.message);
+    const result = await deleteMeeting(id);
+    if (result.error) {
+      alert("Lỗi: " + result.error);
+      return;
     }
+    setMeetings((prev) => prev.filter((m) => m.id !== id));
   };
 
   if (!activeWorkspaceId) {

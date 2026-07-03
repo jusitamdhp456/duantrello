@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getMeetings } from "@/app/actions/meetings";
 import MeetingList from "@/components/meetings/MeetingList";
-import { WorkspaceProvider } from "@/components/providers/WorkspaceProvider";
 
 export const metadata = {
   title: "Meetings | CreativeOS",

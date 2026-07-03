@@ -69,20 +69,18 @@ export default function MeetingRoom({ meeting: initialMeeting, workspaceId, curr
   };
 
   const handleStart = async () => {
-    try {
-      const updated = await startMeeting(meeting.id);
-      setMeeting(updated);
-    } catch (err: any) {
-      alert(err.message);
-    }
+    const result = await startMeeting(meeting.id);
+    if (result.error) { alert("Lỗi: " + result.error); return; }
+    if (result.data) setMeeting(result.data);
   };
 
   const handleEnd = async () => {
     if (!confirm("Bạn có chắc muốn kết thúc cuộc họp này?")) return;
     try {
       setEnding(true);
-      const updated = await endMeeting(meeting.id, meeting.started_at);
-      setMeeting(updated);
+      const result = await endMeeting(meeting.id, meeting.started_at);
+      if (result.error) { alert("Lỗi: " + result.error); return; }
+      if (result.data) setMeeting(result.data);
     } catch (err: any) {
       alert(err.message);
     } finally {
@@ -91,44 +89,47 @@ export default function MeetingRoom({ meeting: initialMeeting, workspaceId, curr
   };
 
   const handleSaveSummary = async () => {
-    try {
-      const updated = await saveMeetingSummary(meeting.id, summary);
-      setMeeting(updated);
-      setShowSummaryEdit(false);
-    } catch (err: any) {
-      alert(err.message);
-    }
+    const result = await saveMeetingSummary(meeting.id, summary);
+    if (result.error) { alert("Lỗi: " + result.error); return; }
+    if (result.data) setMeeting(result.data);
+    setShowSummaryEdit(false);
   };
 
   // Notes handlers
   const handleAddNote = useCallback(async (content: string, authorName: string) => {
-    const note = await createMeetingNote(meeting.id, content, authorName);
-    setNotes((prev) => [...prev, note]);
+    const result = await createMeetingNote(meeting.id, content, authorName);
+    if (result.error) throw new Error(result.error);
+    if (result.data) setNotes((prev) => [...prev, result.data!]);
   }, [meeting.id]);
 
   const handleUpdateNote = useCallback(async (noteId: string, content: string) => {
-    const updated = await updateMeetingNote(noteId, content);
-    setNotes((prev) => prev.map((n) => n.id === noteId ? updated : n));
+    const result = await updateMeetingNote(noteId, content);
+    if (result.error) throw new Error(result.error);
+    if (result.data) setNotes((prev) => prev.map((n) => n.id === noteId ? result.data! : n));
   }, []);
 
   const handleDeleteNote = useCallback(async (noteId: string) => {
-    await deleteMeetingNote(noteId);
+    const result = await deleteMeetingNote(noteId);
+    if (result.error) throw new Error(result.error);
     setNotes((prev) => prev.filter((n) => n.id !== noteId));
   }, []);
 
   // Action item handlers
   const handleAddActionItem = useCallback(async (payload: { title: string; assignee_name?: string; due_date?: string }) => {
-    const item = await createMeetingActionItem(meeting.id, workspaceId, payload);
-    setActionItems((prev) => [...prev, item]);
+    const result = await createMeetingActionItem(meeting.id, workspaceId, payload);
+    if (result.error) throw new Error(result.error);
+    if (result.data) setActionItems((prev) => [...prev, result.data!]);
   }, [meeting.id, workspaceId]);
 
   const handleToggleItem = useCallback(async (itemId: string, isCompleted: boolean) => {
-    const updated = await toggleActionItemComplete(itemId, isCompleted);
-    setActionItems((prev) => prev.map((i) => i.id === itemId ? updated : i));
+    const result = await toggleActionItemComplete(itemId, isCompleted);
+    if (result.error) throw new Error(result.error);
+    if (result.data) setActionItems((prev) => prev.map((i) => i.id === itemId ? result.data! : i));
   }, []);
 
   const handleDeleteItem = useCallback(async (itemId: string) => {
-    await deleteMeetingActionItem(itemId);
+    const result = await deleteMeetingActionItem(itemId);
+    if (result.error) throw new Error(result.error);
     setActionItems((prev) => prev.filter((i) => i.id !== itemId));
   }, []);
 
