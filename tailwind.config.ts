@@ -22,6 +22,20 @@ const config: Config = {
         'neu-concave': 'inset 6px 6px 10px 0 rgba(207, 200, 218, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8)',
         'neu-pressed': 'inset 4px 4px 6px 0 rgba(207, 200, 218, 0.7), inset -4px -4px 6px 0 rgba(255, 255, 255, 0.8)',
       },
+      keyframes: {
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "fade-in-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        }
+      },
+      animation: {
+        "fade-in": "fade-in 0.5s ease-out forwards",
+        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+      }
     },
   },
   plugins: [],
