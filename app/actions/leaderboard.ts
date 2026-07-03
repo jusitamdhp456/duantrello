@@ -19,9 +19,6 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
       return { error: "Bạn chưa đăng nhập" };
     }
 
-    // Thay vì gọi RPC function, ta sẽ tự fetch và tính toán bằng JS
-    // Điều này giúp tránh lỗi "Could not find function..." nếu người dùng quên chạy script SQL.
-    
     const { data: tasksData, error: tasksError } = await supabase
       .from("tasks")
       .select("id, assignee_id, status, review_status")
@@ -35,7 +32,6 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
 
     const validTasks = tasksData?.filter(t => t.status === "completed" || t.review_status === "approved") || [];
 
-    // Đếm số task hoàn thành theo từng user
     const userCounts: Record<string, number> = {};
     for (const task of validTasks) {
       const uid = task.assignee_id;
@@ -50,7 +46,6 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
       return { data: [] };
     }
 
-    // Lấy thông tin profile (Tên, Avatar) của những người này
     const { data: profilesData, error: profilesError } = await supabase
       .from("profiles")
       .select("id, full_name, avatar_url")
@@ -66,19 +61,16 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
       profileMap[p.id] = p;
     }
 
-    // Ghép dữ liệu lại
     let leaderboard: LeaderboardEntry[] = uniqueUserIds.map(uid => ({
       user_id: uid,
       full_name: profileMap[uid]?.full_name || "Ẩn danh",
       avatar_url: profileMap[uid]?.avatar_url || null,
       completed_tasks: userCounts[uid],
-      rank_num: 0 // Sẽ tính ở dưới
+      rank_num: 0
     }));
 
-    // Sắp xếp giảm dần theo số task
     leaderboard.sort((a, b) => b.completed_tasks - a.completed_tasks);
 
-    // Tính thứ hạng (Rank)
     let currentRank = 1;
     for (let i = 0; i < leaderboard.length; i++) {
       if (i > 0 && leaderboard[i].completed_tasks < leaderboard[i - 1].completed_tasks) {
@@ -90,6 +82,6 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
     return { data: leaderboard };
   } catch (err: any) {
     console.error("Lỗi khi lấy Leaderboard (catch):", err);
-    return { error: err.message || "Đã xảy ra lỗi không xác định" };
+    return { error: err.message || "Lỗi không xác định" };
   }
 }
