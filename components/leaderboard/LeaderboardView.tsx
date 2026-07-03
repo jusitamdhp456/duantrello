@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { getWorkspaceLeaderboard } from "@/app/actions/leaderboard";
 import type { LeaderboardEntry } from "@/app/actions/leaderboard";
-import Podium from "./Podium";
 import LeaderboardList from "./LeaderboardList";
 import { Award, Loader2 } from "lucide-react";
 
