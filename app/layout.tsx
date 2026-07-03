@@ -6,8 +6,8 @@ import { LanguageProvider } from "@/components/providers/LanguageProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Marketing Creative OS",
-  description: "Marketing Creative OS - Manage ads, creatives, media, and people.",
+  title: "Checklist CV DUKE",
+  description: "Checklist CV DUKE - Manage tasks, creatives, media, and people.",
 };
 
 export default function RootLayout({
