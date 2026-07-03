@@ -44,17 +44,17 @@ export default function LeaderboardView() {
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-gradient-to-br from-[#0B1A2C] via-[#0D2942] to-[#0A4D6B] text-white">
-      <div className="flex-shrink-0 flex items-center gap-3 mb-2 p-4 border-b border-white/10">
-        <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 border border-cyan-500/30">
-          <Award size={24} />
+      <div className="flex-shrink-0 flex items-center gap-2 sm:gap-3 mb-2 p-3 sm:p-4 border-b border-white/10">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 border border-cyan-500/30">
+          <Award className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
         <div>
-          <h2 className="font-bold text-white text-xl tracking-wide uppercase">Bảng Xếp Hạng</h2>
-          <p className="text-xs text-cyan-200/70 uppercase tracking-widest mt-0.5">Top Thành Tích Hoàn Thành</p>
+          <h2 className="font-bold text-white text-base sm:text-xl tracking-wide uppercase">Bảng Xếp Hạng</h2>
+          <p className="text-[10px] sm:text-xs text-cyan-200/70 uppercase tracking-widest mt-0.5">Top Thành Tích Hoàn Thành</p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 sm:px-6 pb-12 pt-4">
+      <div className="flex-1 overflow-y-auto px-2 sm:px-6 pb-12 pt-2 sm:pt-4">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <Loader2 className="w-8 h-8 animate-spin text-cyan-500" />
