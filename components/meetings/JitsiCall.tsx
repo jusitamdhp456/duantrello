@@ -128,19 +128,6 @@ export default function JitsiCall({ roomName, displayName, isOngoing }: Props) {
 
   return (
     <div className="relative w-full h-full rounded-2xl overflow-hidden bg-gray-900">
-      {/* Loading overlay */}
-      {!loaded && (
-        <div className="absolute inset-0 bg-gray-900 flex flex-col items-center justify-center gap-4 z-10">
-          <div className="flex gap-2">
-            <span className="w-3 h-3 bg-purple-400 rounded-full animate-bounce [animation-delay:0ms]" />
-            <span className="w-3 h-3 bg-purple-400 rounded-full animate-bounce [animation-delay:150ms]" />
-            <span className="w-3 h-3 bg-purple-400 rounded-full animate-bounce [animation-delay:300ms]" />
-          </div>
-          <p className="text-white/70 text-sm">Đang kết nối phòng họp...</p>
-          <p className="text-white/40 text-xs">Camera & Mic sẽ được yêu cầu quyền truy cập</p>
-        </div>
-      )}
-
       {/* Participant count badge */}
       {loaded && (
         <div className="absolute top-3 left-3 z-10 bg-black/50 backdrop-blur text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5">
