@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import type { LeaderboardEntry } from "@/app/actions/leaderboard";
 import { CheckSquare } from "lucide-react";
 
@@ -45,11 +44,10 @@ export default function LeaderboardList({ users }: Props) {
                   style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)' }}
                 >
                   {user.avatar_url ? (
-                    <Image 
+                    <img 
                       src={user.avatar_url} 
                       alt={user.full_name || ""} 
-                      fill 
-                      className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                     />
                   ) : (
                     <span className="text-cyan-400 font-bold text-2xl">
