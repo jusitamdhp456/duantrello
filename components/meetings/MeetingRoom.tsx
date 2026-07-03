@@ -234,11 +234,11 @@ export default function MeetingRoom({ meeting: initialMeeting, workspaceId, curr
       </div>
 
       {/* ── Main content ─────────────────────────────────────────── */}
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex relative min-h-0 overflow-hidden">
 
         {/* Video area */}
         <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${isEnded ? "hidden" : ""}`}>
-          <div className="flex-1 min-h-0 p-3">
+          <div className="flex-1 min-h-0 p-0 sm:p-3">
             <JitsiCall
               roomName={jitsiRoomName}
               displayName={currentUserName || currentUserEmail}
@@ -295,10 +295,22 @@ export default function MeetingRoom({ meeting: initialMeeting, workspaceId, curr
         )}
 
         {/* ── Side panel ──────────────────────────────────────────── */}
-        {sideOpen && (
-          <div className="w-80 xl:w-96 flex flex-col border-l border-white/5 bg-gray-900 flex-shrink-0">
+        {!isEnded && sideOpen && (
+          <div className="absolute inset-0 z-20 md:static md:w-[320px] lg:w-[360px] md:border-l md:border-white/5 flex flex-col bg-gray-900/95 md:bg-gray-900/50 backdrop-blur-xl md:backdrop-blur-none flex-shrink-0 animate-fade-in md:animate-none">
+            
+            {/* Mobile Panel Header */}
+            <div className="flex md:hidden items-center justify-between p-3 border-b border-white/5">
+              <span className="text-white font-semibold text-sm">Công cụ hỗ trợ</span>
+              <button 
+                onClick={() => setSideOpen(false)}
+                className="p-1.5 bg-white/10 rounded-full text-white/70 hover:text-white transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
             {/* Tabs */}
-            <div className="flex gap-1 p-3 border-b border-white/5 flex-shrink-0">
+            <div className="flex gap-1 p-2 md:p-3 border-b border-white/5 flex-shrink-0 overflow-x-auto no-scrollbar">
               {([
                 { key: "notes" as PanelTab, label: "Ghi chú", icon: <StickyNote size={13} />, count: notes.length },
                 { key: "actions" as PanelTab, label: "Tasks", icon: <CheckSquare size={13} />, count: actionItems.length },
