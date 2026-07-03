@@ -24,9 +24,8 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
     
     const { data: tasksData, error: tasksError } = await supabase
       .from("tasks")
-      .select("id, assignee_id")
+      .select("id, assignee_id, status, review_status")
       .eq("workspace_id", workspaceId)
-      .eq("status", "completed")
       .not("assignee_id", "is", null);
 
     if (tasksError) {
@@ -34,9 +33,11 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
       return { error: tasksError.message };
     }
 
+    const validTasks = tasksData?.filter(t => t.status === "completed" || t.review_status === "approved") || [];
+
     // Đếm số task hoàn thành theo từng user
     const userCounts: Record<string, number> = {};
-    for (const task of tasksData || []) {
+    for (const task of validTasks) {
       const uid = task.assignee_id;
       if (uid) {
         userCounts[uid] = (userCounts[uid] || 0) + 1;
