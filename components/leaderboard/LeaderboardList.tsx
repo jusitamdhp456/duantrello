@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { CheckCircle2 } from "lucide-react";
 import type { LeaderboardEntry } from "@/app/actions/leaderboard";
+import { CheckSquare } from "lucide-react";
 
 interface Props {
   users: LeaderboardEntry[];
@@ -16,41 +16,68 @@ export default function LeaderboardList({ users }: Props) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full max-w-3xl mx-auto">
-      <div className="p-4 bg-gray-50 border-b border-gray-100">
-        <h3 className="font-semibold text-gray-700">Các hạng tiếp theo</h3>
-      </div>
-      <div className="divide-y divide-gray-50">
-        {users.map((user) => (
-          <div key={user.user_id} className="flex items-center gap-4 p-4 hover:bg-gray-50/50 transition-colors">
+    <div className="w-full flex flex-col gap-4">
+      {users.map((user, index) => {
+        // Thêm animation delay mượt mà
+        const delay = index * 100;
+        
+        return (
+          <div 
+            key={user.user_id} 
+            className="flex items-center gap-4 sm:gap-6 w-full opacity-0 animate-fade-in-up fill-mode-forwards group hover:bg-white/5 p-2 rounded-xl transition-colors"
+            style={{ animationDelay: `${delay}ms` }}
+          >
             {/* Rank Number */}
-            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-500 flex-shrink-0">
-              {user.rank_num}
+            <div className="w-12 sm:w-16 flex-shrink-0 text-right">
+              <span className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-md">
+                {user.rank_num.toString().padStart(2, '0')}
+              </span>
             </div>
             
-            {/* Avatar */}
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-purple-100 flex items-center justify-center flex-shrink-0">
-              {user.avatar_url ? (
-                <Image src={user.avatar_url} alt={user.full_name || ""} width={40} height={40} className="object-cover" />
-              ) : (
-                <span className="text-purple-600 font-bold text-lg">{getAvatarInitials(user.full_name)}</span>
-              )}
+            {/* Sci-fi Avatar */}
+            <div className="relative flex-shrink-0">
+              <div 
+                className="w-16 h-16 sm:w-20 sm:h-20 bg-cyan-400 p-[2px] transition-all duration-300 group-hover:bg-cyan-300 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]"
+                style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)' }}
+              >
+                <div 
+                  className="w-full h-full bg-[#0A1A2F] flex items-center justify-center relative overflow-hidden"
+                  style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%)' }}
+                >
+                  {user.avatar_url ? (
+                    <Image 
+                      src={user.avatar_url} 
+                      alt={user.full_name || ""} 
+                      fill 
+                      className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                    />
+                  ) : (
+                    <span className="text-cyan-400 font-bold text-2xl">
+                      {getAvatarInitials(user.full_name)}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Name */}
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-gray-800 truncate">{user.full_name || "Ẩn danh"}</p>
+              <p className="font-bold text-lg sm:text-xl text-white truncate uppercase tracking-wider">
+                {user.full_name || "Ẩn danh"}
+              </p>
             </div>
 
-            {/* Score */}
-            <div className="flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1.5 rounded-full flex-shrink-0">
-              <CheckCircle2 size={16} className="text-green-600" />
-              <span className="font-bold">{user.completed_tasks}</span>
-              <span className="text-xs hidden sm:inline">sản phẩm</span>
+            {/* Score box */}
+            <div className="flex-shrink-0">
+              <div className="flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 border border-cyan-500/30 rounded-lg bg-cyan-950/40 backdrop-blur-sm group-hover:bg-cyan-900/60 transition-colors">
+                <CheckSquare size={20} className="text-cyan-400 mb-1" />
+                <span className="text-xs text-cyan-200/70 uppercase font-semibold">S.Phẩm</span>
+                <span className="text-lg font-bold text-white leading-none mt-0.5">{user.completed_tasks}</span>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }

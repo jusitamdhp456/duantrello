@@ -44,39 +44,35 @@ export default function LeaderboardView() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <div className="flex-shrink-0 flex items-center gap-2 mb-2 p-2">
-        <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
-          <Award size={18} />
+    <div className="flex-1 flex flex-col min-h-0 bg-gradient-to-br from-[#0B1A2C] via-[#0D2942] to-[#0A4D6B] text-white">
+      <div className="flex-shrink-0 flex items-center gap-3 mb-2 p-4 border-b border-white/10">
+        <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center text-cyan-400 border border-cyan-500/30">
+          <Award size={24} />
         </div>
         <div>
-          <h2 className="font-bold text-gray-800 text-lg">Bảng Xếp Hạng</h2>
-          <p className="text-xs text-gray-500">Thành tích làm việc của các thành viên (theo số sản phẩm hoàn thành)</p>
+          <h2 className="font-bold text-white text-xl tracking-wide uppercase">Bảng Xếp Hạng</h2>
+          <p className="text-xs text-cyan-200/70 uppercase tracking-widest mt-0.5">Top Thành Tích Hoàn Thành</p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 pb-12">
+      <div className="flex-1 overflow-y-auto px-2 sm:px-6 pb-12 pt-4">
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+            <Loader2 className="w-8 h-8 animate-spin text-cyan-500" />
           </div>
         ) : error ? (
-          <div className="flex items-center justify-center h-64 text-red-500">
+          <div className="flex items-center justify-center h-64 text-red-400 bg-red-500/10 rounded-xl p-4 border border-red-500/20">
             {error}
           </div>
         ) : entries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-            <Award size={48} className="mb-4 opacity-20" />
-            <p>Chưa có ai hoàn thành sản phẩm nào.</p>
-            <p className="text-sm">Hãy tạo và hoàn thành công việc để lọt vào bảng xếp hạng!</p>
+          <div className="flex flex-col items-center justify-center h-64 text-cyan-200/40">
+            <Award size={64} className="mb-4 opacity-20" />
+            <p className="text-lg">Chưa có dữ liệu xếp hạng</p>
+            <p className="text-sm mt-2 opacity-60">Các sản phẩm hoàn thành sẽ được vinh danh tại đây</p>
           </div>
         ) : (
-          <div className="space-y-8 animate-fade-in">
-            {/* Top 3 Podium */}
-            <Podium topUsers={entries.filter(u => u.rank_num <= 3)} />
-
-            {/* Rest of the leaderboard */}
-            <LeaderboardList users={entries.filter(u => u.rank_num > 3)} />
+          <div className="animate-fade-in w-full max-w-4xl mx-auto">
+            <LeaderboardList users={entries} />
           </div>
         )}
       </div>
