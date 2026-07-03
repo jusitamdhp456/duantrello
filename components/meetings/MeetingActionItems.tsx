@@ -9,9 +9,16 @@ interface Props {
   onAdd: (payload: { title: string; assignee_name?: string; due_date?: string }) => Promise<void>;
   onToggle: (itemId: string, isCompleted: boolean) => Promise<void>;
   onDelete: (itemId: string) => Promise<void>;
+  darkMode?: boolean;
 }
 
-export default function MeetingActionItems({ items, onAdd, onToggle, onDelete }: Props) {
+export default function MeetingActionItems({ items, onAdd, onToggle, onDelete, darkMode = false }: Props) {
+  const text = darkMode ? "text-white/80" : "text-gray-700";
+  const textMuted = darkMode ? "text-white/40" : "text-gray-400";
+  const card = darkMode ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-100";
+  const input = darkMode
+    ? "bg-white/5 border border-white/10 text-white placeholder-white/30 focus:ring-purple-500"
+    : "bg-neu-base shadow-neu-concave border-none focus:ring-purple-400";
   const [title, setTitle] = useState("");
   const [assignee, setAssignee] = useState("");
   const [dueDate, setDueDate] = useState("");

@@ -10,9 +10,16 @@ interface Props {
   onAdd: (content: string, authorName: string) => Promise<void>;
   onUpdate: (noteId: string, content: string) => Promise<void>;
   onDelete: (noteId: string) => Promise<void>;
+  darkMode?: boolean;
 }
 
-export default function MeetingNotes({ notes, currentUserName, onAdd, onUpdate, onDelete }: Props) {
+export default function MeetingNotes({ notes, currentUserName, onAdd, onUpdate, onDelete, darkMode = false }: Props) {
+  const text = darkMode ? "text-white/80" : "text-gray-700";
+  const textMuted = darkMode ? "text-white/40" : "text-gray-400";
+  const input = darkMode
+    ? "bg-white/5 border border-white/10 text-white placeholder-white/30 focus:ring-purple-500"
+    : "bg-neu-base shadow-neu-concave border-none focus:ring-purple-400";
+  const card = darkMode ? "bg-white/5 rounded-xl" : "bg-gray-50 rounded-xl";
   const [newNote, setNewNote] = useState("");
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -50,9 +57,9 @@ export default function MeetingNotes({ notes, currentUserName, onAdd, onUpdate, 
     <div className="flex flex-col h-full gap-4">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <StickyNote size={16} className="text-yellow-500" />
-        <h3 className="font-semibold text-gray-700 text-sm">Ghi chú cuộc họp</h3>
-        <span className="ml-auto text-xs bg-yellow-100 text-yellow-600 px-2 py-0.5 rounded-full font-medium">
+        <StickyNote size={16} className="text-yellow-400" />
+        <h3 className={`font-semibold text-sm ${text}`}>Ghi chú cuộc họp</h3>
+        <span className="ml-auto text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full font-medium">
           {notes.length} ghi chú
         </span>
       </div>
@@ -61,30 +68,30 @@ export default function MeetingNotes({ notes, currentUserName, onAdd, onUpdate, 
       <div className="flex-1 overflow-y-auto space-y-3 pr-1">
         {notes.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-32 text-center">
-            <StickyNote size={32} className="text-gray-200 mb-2" />
-            <p className="text-xs text-gray-400">Chưa có ghi chú nào</p>
-            <p className="text-xs text-gray-300">Ghi lại những điểm quan trọng trong cuộc họp</p>
+            <StickyNote size={32} className="text-gray-500 mb-2" />
+            <p className={`text-xs ${textMuted}`}>Chưa có ghi chú nào</p>
+            <p className={`text-xs ${textMuted} opacity-60`}>Ghi lại những điểm quan trọng trong cuộc họp</p>
           </div>
         ) : (
           notes.map((note) => (
-            <div key={note.id} className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl p-4 border border-yellow-100 group">
+            <div key={note.id} className={`${card} p-4 border ${darkMode ? "border-white/10" : "border-yellow-100"} group`}>
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-5 h-5 rounded-full bg-yellow-200 text-yellow-700 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                  <div className="w-5 h-5 rounded-full bg-yellow-500/30 text-yellow-400 text-[10px] font-bold flex items-center justify-center flex-shrink-0">
                     {(note.author_name || "?").charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-xs font-semibold text-gray-600">{note.author_name || "Ẩn danh"}</span>
+                  <span className={`text-xs font-semibold ${darkMode ? "text-white/60" : "text-gray-600"}`}>{note.author_name || "Ẩn danh"}</span>
                 </div>
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => startEdit(note)}
-                    className="p-1 text-gray-400 hover:text-blue-500 rounded-lg transition-colors"
+                    className={`p-1 rounded-lg transition-colors ${darkMode ? "text-white/30 hover:text-blue-400" : "text-gray-400 hover:text-blue-500"}`}
                   >
                     <Edit2 size={12} />
                   </button>
                   <button
                     onClick={() => onDelete(note.id)}
-                    className="p-1 text-gray-400 hover:text-red-500 rounded-lg transition-colors"
+                    className={`p-1 rounded-lg transition-colors ${darkMode ? "text-white/30 hover:text-red-400" : "text-gray-400 hover:text-red-500"}`}
                   >
                     <Trash2 size={12} />
                   </button>
@@ -96,30 +103,36 @@ export default function MeetingNotes({ notes, currentUserName, onAdd, onUpdate, 
                   <textarea
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
-                    className="w-full text-sm text-gray-700 bg-white rounded-lg p-2 border border-yellow-200 outline-none focus:ring-2 focus:ring-yellow-300 resize-none"
+                    className={`w-full text-sm rounded-lg p-2 outline-none focus:ring-2 resize-none ${
+                      darkMode
+                        ? "bg-white/10 text-white border border-white/20 focus:ring-purple-500"
+                        : "bg-white text-gray-700 border border-yellow-200 focus:ring-yellow-300"
+                    }`}
                     rows={3}
                     autoFocus
                   />
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleUpdate(note.id)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-green-500 text-white rounded-lg text-xs font-medium hover:bg-green-600 transition-colors"
+                      className="flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700 transition-colors"
                     >
                       <Check size={12} /> Lưu
                     </button>
                     <button
                       onClick={() => setEditingId(null)}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors"
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        darkMode ? "bg-white/10 text-white/70 hover:bg-white/20" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      }`}
                     >
                       <X size={12} /> Hủy
                     </button>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{note.content}</p>
+                <p className={`text-sm whitespace-pre-wrap leading-relaxed ${text}`}>{note.content}</p>
               )}
 
-              <p className="text-[10px] text-gray-400 mt-2">
+              <p className={`text-[10px] mt-2 ${textMuted}`}>
                 {new Date(note.created_at).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
               </p>
             </div>
@@ -128,7 +141,7 @@ export default function MeetingNotes({ notes, currentUserName, onAdd, onUpdate, 
       </div>
 
       {/* Add note input */}
-      <div className="flex-shrink-0 border-t border-gray-100 pt-4">
+      <div className={`flex-shrink-0 border-t pt-4 ${darkMode ? "border-white/10" : "border-gray-100"}`}>
         <textarea
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
@@ -137,12 +150,12 @@ export default function MeetingNotes({ notes, currentUserName, onAdd, onUpdate, 
           }}
           placeholder="Ghi chú điểm quan trọng... (Ctrl+Enter để lưu)"
           rows={3}
-          className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-yellow-300 outline-none text-gray-700 placeholder-gray-300 resize-none"
+          className={`w-full rounded-xl px-4 py-3 text-sm focus:ring-2 outline-none resize-none ${input}`}
         />
         <button
           onClick={handleAdd}
           disabled={!newNote.trim() || adding}
-          className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-yellow-400 to-amber-400 text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-all disabled:opacity-50"
+          className="mt-2 w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-500 text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-all disabled:opacity-50"
         >
           <Plus size={16} />
           {adding ? "Đang lưu..." : "Thêm ghi chú"}

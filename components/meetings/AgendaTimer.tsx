@@ -6,9 +6,10 @@ import type { AgendaItem } from "@/app/actions/meetings";
 
 interface Props {
   agenda: AgendaItem[];
+  darkMode?: boolean;
 }
 
-export default function AgendaTimer({ agenda }: Props) {
+export default function AgendaTimer({ agenda, darkMode = false }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
