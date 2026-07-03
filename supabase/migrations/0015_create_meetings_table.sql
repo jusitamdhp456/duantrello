@@ -9,9 +9,9 @@ CREATE TYPE meeting_status AS ENUM ('scheduled', 'ongoing', 'ended', 'cancelled'
 -- =============================================
 -- meetings table
 -- =============================================
-CREATE TABLE meetings (
+CREATE TABLE public.meetings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+  workspace_id UUID NOT NULL REFERENCES public.workspaces(id) ON DELETE CASCADE,
   host_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,
@@ -31,9 +31,9 @@ CREATE TABLE meetings (
 -- =============================================
 -- meeting_participants table
 -- =============================================
-CREATE TABLE meeting_participants (
+CREATE TABLE public.meeting_participants (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  meeting_id UUID NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
+  meeting_id UUID NOT NULL REFERENCES public.meetings(id) ON DELETE CASCADE,
   user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   display_name TEXT NOT NULL,
   joined_at TIMESTAMPTZ,
@@ -44,9 +44,9 @@ CREATE TABLE meeting_participants (
 -- =============================================
 -- meeting_notes table
 -- =============================================
-CREATE TABLE meeting_notes (
+CREATE TABLE public.meeting_notes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  meeting_id UUID NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
+  meeting_id UUID NOT NULL REFERENCES public.meetings(id) ON DELETE CASCADE,
   author_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   author_name TEXT,
   content TEXT NOT NULL,
@@ -57,10 +57,10 @@ CREATE TABLE meeting_notes (
 -- =============================================
 -- meeting_action_items table
 -- =============================================
-CREATE TABLE meeting_action_items (
+CREATE TABLE public.meeting_action_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  meeting_id UUID NOT NULL REFERENCES meetings(id) ON DELETE CASCADE,
-  task_id UUID REFERENCES tasks(id) ON DELETE SET NULL, -- linked to tasks table
+  meeting_id UUID NOT NULL REFERENCES public.meetings(id) ON DELETE CASCADE,
+  task_id UUID REFERENCES public.tasks(id) ON DELETE SET NULL, -- linked to tasks table
   title TEXT NOT NULL,
   assignee_name TEXT,
   due_date DATE,
