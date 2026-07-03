@@ -32,8 +32,7 @@ export default async function MeetingRoomPage({ params }: Props) {
   const workspaceId = meeting.workspace_id;
 
   return (
-    // Full-screen: no padding, fills the entire app area
-    <div className="flex-1 flex flex-col -m-4 md:-m-6 lg:-m-8 h-[calc(100vh-0px)]">
+    <div className="flex-1 flex flex-col min-h-0">
       <MeetingRoom
         meeting={meeting}
         workspaceId={workspaceId}

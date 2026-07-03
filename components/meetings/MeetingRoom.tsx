@@ -142,7 +142,7 @@ export default function MeetingRoom({ meeting: initialMeeting, workspaceId, curr
   const isEnded = meeting.status === "ended";
 
   return (
-    <div className="flex flex-col h-[calc(100vh-2rem)] gap-0 bg-gray-950 rounded-3xl overflow-hidden">
+    <div className="flex flex-col h-full min-h-[600px] gap-0 bg-gray-950 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
       
       {/* ── Top Bar (Google Meet style) ──────────────────────────── */}
       <div className="flex items-center justify-between px-5 py-3 bg-gray-950 border-b border-white/5 flex-shrink-0">
