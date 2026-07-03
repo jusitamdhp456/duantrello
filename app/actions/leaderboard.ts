@@ -19,16 +19,74 @@ export async function getWorkspaceLeaderboard(workspaceId: string): Promise<{ da
       return { error: "Bạn chưa đăng nhập" };
     }
 
-    // Call the RPC function
-    const { data, error } = await supabase
-      .rpc('get_workspace_leaderboard', { p_workspace_id: workspaceId });
+    // Thay vì gọi RPC function, ta sẽ tự fetch và tính toán bằng JS
+    // Điều này giúp tránh lỗi "Could not find function..." nếu người dùng quên chạy script SQL.
+    
+    const { data: tasksData, error: tasksError } = await supabase
+      .from("tasks")
+      .select("id, assignee_id")
+      .eq("workspace_id", workspaceId)
+      .eq("status", "completed")
+      .not("assignee_id", "is", null);
 
-    if (error) {
-      console.error("Lỗi khi lấy Leaderboard:", error);
-      return { error: error.message };
+    if (tasksError) {
+      console.error("Lỗi khi lấy Tasks:", tasksError);
+      return { error: tasksError.message };
     }
 
-    return { data: data as LeaderboardEntry[] };
+    // Đếm số task hoàn thành theo từng user
+    const userCounts: Record<string, number> = {};
+    for (const task of tasksData || []) {
+      const uid = task.assignee_id;
+      if (uid) {
+        userCounts[uid] = (userCounts[uid] || 0) + 1;
+      }
+    }
+
+    const uniqueUserIds = Object.keys(userCounts);
+    
+    if (uniqueUserIds.length === 0) {
+      return { data: [] };
+    }
+
+    // Lấy thông tin profile (Tên, Avatar) của những người này
+    const { data: profilesData, error: profilesError } = await supabase
+      .from("profiles")
+      .select("id, full_name, avatar_url")
+      .in("id", uniqueUserIds);
+      
+    if (profilesError) {
+      console.error("Lỗi khi lấy Profiles:", profilesError);
+      return { error: profilesError.message };
+    }
+
+    const profileMap: Record<string, any> = {};
+    for (const p of profilesData || []) {
+      profileMap[p.id] = p;
+    }
+
+    // Ghép dữ liệu lại
+    let leaderboard: LeaderboardEntry[] = uniqueUserIds.map(uid => ({
+      user_id: uid,
+      full_name: profileMap[uid]?.full_name || "Ẩn danh",
+      avatar_url: profileMap[uid]?.avatar_url || null,
+      completed_tasks: userCounts[uid],
+      rank_num: 0 // Sẽ tính ở dưới
+    }));
+
+    // Sắp xếp giảm dần theo số task
+    leaderboard.sort((a, b) => b.completed_tasks - a.completed_tasks);
+
+    // Tính thứ hạng (Rank)
+    let currentRank = 1;
+    for (let i = 0; i < leaderboard.length; i++) {
+      if (i > 0 && leaderboard[i].completed_tasks < leaderboard[i - 1].completed_tasks) {
+        currentRank = i + 1;
+      }
+      leaderboard[i].rank_num = currentRank;
+    }
+
+    return { data: leaderboard };
   } catch (err: any) {
     console.error("Lỗi khi lấy Leaderboard (catch):", err);
     return { error: err.message || "Đã xảy ra lỗi không xác định" };
