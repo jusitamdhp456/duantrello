@@ -14,6 +14,7 @@ interface TaskCommentsModalProps {
 export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalProps) {
   const [comments, setComments] = useState<TaskComment[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -72,11 +73,11 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa nhận xét này?")) return;
+  const confirmDeleteComment = async () => {
+    if (!commentToDelete) return;
     try {
-      await deleteTaskComment(commentId);
-      // Comments will reload automatically via realtime subscription
+      await deleteTaskComment(commentToDelete);
+      setCommentToDelete(null);
     } catch (error: any) {
       alert("Lỗi khi xóa: " + error.message);
     }
@@ -152,10 +153,33 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div 
-        className="w-full max-w-2xl rounded-2xl overflow-hidden flex flex-col max-h-[90vh] border border-white/10"
+        className="w-full max-w-2xl rounded-2xl overflow-hidden flex flex-col max-h-[90vh] border border-white/10 relative"
         style={{background: 'linear-gradient(135deg, #0D2657 0%, #0A1E45 100%)', boxShadow: '0 25px 50px rgba(0,0,0,0.5)'}}
         onClick={(e) => e.stopPropagation()}
       >
+        {commentToDelete && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div className="bg-[#0D2657] border border-blue-500/30 p-6 rounded-2xl shadow-2xl max-w-sm w-[90%] text-center">
+              <h3 className="text-lg font-semibold text-white mb-2">Xóa nhận xét</h3>
+              <p className="text-blue-200 mb-6 text-sm">Bạn có chắc chắn muốn xóa nhận xét này?</p>
+              <div className="flex gap-3 justify-center">
+                <button 
+                  onClick={() => setCommentToDelete(null)}
+                  className="px-6 py-2.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors text-sm font-medium"
+                >
+                  Hủy
+                </button>
+                <button 
+                  onClick={confirmDeleteComment}
+                  className="px-6 py-2.5 rounded-full bg-red-500/80 text-white hover:bg-red-500 transition-colors text-sm font-medium shadow-lg shadow-red-500/20"
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="p-4 sm:p-6 border-b border-white/10 flex justify-between items-center shrink-0" style={{background: 'rgba(255,255,255,0.02)'}}>
           <div>
@@ -192,7 +216,7 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
                     </span>
                     {comment.user_id === currentUserId && (
                       <button 
-                        onClick={() => handleDeleteComment(comment.id)}
+                        onClick={() => setCommentToDelete(comment.id)}
                         className="text-red-400/70 hover:text-red-400 hover:bg-red-400/10 p-1 rounded transition-colors"
                         title="Xóa nhận xét"
                       >
