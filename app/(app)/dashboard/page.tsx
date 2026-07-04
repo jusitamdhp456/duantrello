@@ -243,7 +243,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
         {/* Card 1 */}
         <div className="bg-white rounded-[1.25rem] sm:rounded-2xl shadow-neu-convex p-4 sm:p-6 flex flex-col items-center justify-center gap-2 sm:gap-3 hover:shadow-neu-concave transition-all duration-300 transform hover:-translate-y-1 text-center">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-[1rem] sm:rounded-2xl bg-orange-50 flex items-center justify-center mb-0 sm:mb-1 shadow-inner border border-orange-100 shrink-0">
@@ -288,16 +288,6 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Card 5 - Takes full width on mobile or just normal on col-span depending. Actually, it's 5 cards so 1 will be alone on row 3. Let's make it col-span-2 on mobile */}
-        <div className="bg-white rounded-[1.25rem] sm:rounded-2xl shadow-neu-convex p-4 sm:p-6 flex flex-col items-center justify-center gap-2 sm:gap-3 hover:shadow-neu-concave transition-all duration-300 transform hover:-translate-y-1 text-center col-span-2 md:col-span-1 lg:col-span-1">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-[1rem] sm:rounded-2xl bg-emerald-50 flex items-center justify-center mb-0 sm:mb-1 shadow-inner border border-emerald-100 shrink-0">
-            <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
-          </div>
-          <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 tracking-widest uppercase">Tổng lương (Tháng)</p>
-          <p className="text-xl sm:text-2xl font-bold text-purple-600">
-            {new Intl.NumberFormat("vi-VN").format(metrics.totalSalary)} <span className="text-[10px] sm:text-sm font-normal text-gray-400 normal-case">₫</span>
-          </p>
-        </div>
       </div>
 
       <div className="text-center pt-8">

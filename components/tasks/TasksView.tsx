@@ -50,6 +50,11 @@ export default function TasksView() {
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [selectedTaskForComments, setSelectedTaskForComments] = useState<Task | null>(null);
+  const [reviewConfirm, setReviewConfirm] = useState<{
+    task: Task;
+    action: 'approved' | 'rejected';
+    message: string;
+  } | null>(null);
 
   // Form state
   const [title, setTitle] = useState("");
@@ -240,11 +245,22 @@ export default function TasksView() {
     }
   };
 
-  const handleReviewAction = async (task: Task, action: 'approved' | 'rejected') => {
+  const handleReviewAction = (task: Task, action: 'approved' | 'rejected') => {
     if (!activeWorkspaceId) return;
     
     if (action === 'approved' && task.review_status !== 'approved') {
-      if (!confirm("Bạn có chắc chắn muốn duyệt và tính lương cho sản phẩm này?")) return;
+      setReviewConfirm({ task, action, message: "Bạn có chắc chắn muốn duyệt và tính lương cho sản phẩm này?" });
+    } else if (action === 'rejected' && task.review_status === 'approved') {
+      setReviewConfirm({ task, action, message: "Bạn có chắc chắn muốn HỦY duyệt? Tiền lương của sản phẩm này sẽ bị trừ đi." });
+    } else if (action === 'rejected' && task.review_status !== 'approved') {
+      executeReviewAction(task, action);
+    }
+  };
+
+  const executeReviewAction = async (task: Task, action: 'approved' | 'rejected') => {
+    if (!activeWorkspaceId) return;
+    
+    if (action === 'approved' && task.review_status !== 'approved') {
       try {
         const res = await approveTaskAndPay(task.id, activeWorkspaceId, task.title);
         if (res && res.error) {
@@ -257,7 +273,6 @@ export default function TasksView() {
         alert(err.message);
       }
     } else if (action === 'rejected' && task.review_status === 'approved') {
-      if (!confirm("Bạn có chắc chắn muốn HỦY duyệt? Tiền lương của sản phẩm này sẽ bị trừ đi.")) return;
       try {
         const res = await revokeTaskApprovalAndDeduct(task.id, task.title);
         if (res && res.error) {
@@ -277,6 +292,7 @@ export default function TasksView() {
         alert(err.message);
       }
     }
+    setReviewConfirm(null);
   };
 
   const getStatusColor = (s: TaskStatus) => {
@@ -794,6 +810,36 @@ export default function TasksView() {
           task={selectedTaskForComments} 
           onClose={() => setSelectedTaskForComments(null)} 
         />
+      )}
+
+      {reviewConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-[#0D2657] border border-blue-500/30 p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
+            style={{boxShadow: '0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)'}}
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-blue-600"></div>
+            <h3 className="text-xl font-bold text-white mb-3 tracking-wide">Xác nhận</h3>
+            <p className="text-blue-100/80 mb-8 text-sm leading-relaxed">{reviewConfirm.message}</p>
+            <div className="flex gap-3 justify-center">
+              <button 
+                onClick={() => setReviewConfirm(null)}
+                className="flex-1 px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all font-medium"
+              >
+                Hủy
+              </button>
+              <button 
+                onClick={() => executeReviewAction(reviewConfirm.task, reviewConfirm.action)}
+                className="flex-1 px-6 py-3 rounded-xl text-white transition-all font-medium"
+                style={{
+                  background: reviewConfirm.action === 'approved' ? 'linear-gradient(135deg, #059669, #047857)' : 'linear-gradient(135deg, #DC2626, #B91C1C)',
+                  boxShadow: reviewConfirm.action === 'approved' ? '0 4px 15px rgba(5,150,105,0.4)' : '0 4px 15px rgba(220,38,38,0.4)'
+                }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
