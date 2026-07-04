@@ -16,7 +16,6 @@ export default function Sidebar() {
     { href: "/tasks", label: "nav_todo", icon: CheckSquare },
     { href: "/leaderboard", label: "nav_leaderboard", icon: Award },
     { href: "/meetings", label: "nav_meetings", icon: Video },
-    { href: "/my-salary", label: "nav_my_salary", icon: DollarSign },
   ];
 
   return (
