@@ -56,6 +56,7 @@ export default function TasksView() {
   const [priority, setPriority] = useState<TaskPriority>("medium");
   const [status, setStatus] = useState<TaskStatus>("pending");
   const [videoUrl, setVideoUrl] = useState("");
+  const [videoUrl2, setVideoUrl2] = useState("");
   const [productUrl, setProductUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -110,6 +111,7 @@ export default function TasksView() {
     setPriority("medium");
     setStatus("pending");
     setVideoUrl("");
+    setVideoUrl2("");
     setProductUrl("");
     setModalMode('create');
   };
@@ -122,6 +124,7 @@ export default function TasksView() {
     setPriority(task.priority);
     setStatus(task.status);
     setVideoUrl(task.video_url || "");
+    setVideoUrl2(task.video_url_2 || "");
     setProductUrl(task.product_url || "");
     setModalMode('edit');
   };
@@ -145,6 +148,7 @@ export default function TasksView() {
           priority,
           status,
           video_url: videoUrl || null,
+          video_url_2: videoUrl2 || null,
           product_url: productUrl || null,
         });
         setTasks(prev => [...prev, newTask]);
@@ -156,6 +160,7 @@ export default function TasksView() {
           priority,
           status,
           video_url: videoUrl || null,
+          video_url_2: videoUrl2 || null,
           product_url: productUrl || null,
         });
         setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
@@ -599,7 +604,7 @@ export default function TasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Link Video (Source)</label>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Link Video (Source 1)</label>
                 <div className="flex gap-2">
                   <input 
                     type="url" 
@@ -612,6 +617,31 @@ export default function TasksView() {
                   {videoUrl && (
                     <a 
                       href={videoUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="px-4 py-3 bg-purple-50 text-purple-600 rounded-xl font-medium hover:bg-purple-100 transition-colors flex items-center justify-center whitespace-nowrap"
+                      title="Mở link này"
+                    >
+                      Mở link
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Link Video (Source 2)</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="url" 
+                    disabled={!isAdmin}
+                    value={videoUrl2}
+                    onChange={(e) => setVideoUrl2(e.target.value)}
+                    className="flex-1 bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                    placeholder="https://..."
+                  />
+                  {videoUrl2 && (
+                    <a 
+                      href={videoUrl2} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="px-4 py-3 bg-purple-50 text-purple-600 rounded-xl font-medium hover:bg-purple-100 transition-colors flex items-center justify-center whitespace-nowrap"
