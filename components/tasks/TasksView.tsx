@@ -212,7 +212,6 @@ export default function TasksView() {
   };
 
   const handleUnclaimTask = async (id: string) => {
-    if (!confirm("Bạn có chắc chắn muốn bỏ nhận công việc này không?")) return;
     try {
       const res = await unclaimTask(id);
       if (res && res.error) {
