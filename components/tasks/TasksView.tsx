@@ -405,21 +405,21 @@ export default function TasksView() {
                       {getPriorityIcon(task.priority)}
                     </div>
                     <div className="flex flex-col min-w-0 flex-1">
-                      <h3 className="text-sky-100 font-medium text-base sm:text-lg flex flex-wrap items-center gap-2">
+                      <h3 className="text-white font-semibold text-base sm:text-lg flex flex-wrap items-center gap-2">
                         <span className="truncate">{task.title}</span>
                         {isTaskOverdue && (
-                          <span className="text-[10px] sm:text-xs bg-red-900/50 text-red-300 px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0">
+                          <span className="text-[10px] sm:text-xs bg-red-500/30 text-red-300 px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 border border-red-500/40">
                             <AlertCircle size={12} /> {t("task_overdue")}
                           </span>
                         )}
                       </h3>
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-blue-400/80 mt-1.5">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/60 mt-1.5">
                         <span className="flex items-center gap-1">
-                          <Eye size={14} className="text-blue-500/60" />
+                          <Eye size={14} className="text-white/40" />
                           <span className="truncate max-w-[120px] sm:max-w-none">{task.assignee_name || "Chưa giao"}</span>
                         </span>
-                        <span className={`flex items-center gap-1 ${isTaskOverdue ? 'text-red-400 font-medium' : ''}`}>
-                          <Clock size={14} className={isTaskOverdue ? 'text-red-400' : 'text-blue-500/60'} />
+                        <span className={`flex items-center gap-1 ${isTaskOverdue ? 'text-red-300 font-medium' : ''}`}>
+                          <Clock size={14} className={isTaskOverdue ? 'text-red-300' : 'text-white/40'} />
                           {task.deadline ? new Date(task.deadline).toLocaleDateString('vi-VN') : "Không có"}
                         </span>
                       </div>
@@ -433,8 +433,8 @@ export default function TasksView() {
                           href={task.video_url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-colors"
-                          style={{background: 'rgba(43,116,177,0.2)', color: '#93C5E8', border: '1px solid rgba(44,116,177,0.3)'}}
+                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                          style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
                         >
                           Xem source 1
                         </a>
@@ -445,8 +445,8 @@ export default function TasksView() {
                           href={task.video_url_2} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-colors"
-                          style={{background: 'rgba(67,172,223,0.2)', color: '#67D8F5', border: '1px solid rgba(67,172,223,0.3)'}}
+                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                          style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
                         >
                           Xem source 2
                         </a>
@@ -454,8 +454,8 @@ export default function TasksView() {
 
                       <button
                         onClick={() => setSelectedTaskForComments(task)}
-                        className="flex items-center gap-1.5 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-colors"
-                        style={{background: 'rgba(13,38,87,0.6)', color: '#7EC8EF', border: '1px solid rgba(44,116,177,0.25)'}}
+                        className="flex items-center gap-1.5 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                        style={{background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.18)'}}
                       >
                         <MessageCircle size={14} />
                         Nhận xét
@@ -467,7 +467,8 @@ export default function TasksView() {
                             href={task.product_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full font-medium hover:bg-blue-100 transition-colors whitespace-nowrap"
+                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                            style={{background: 'rgba(34,197,94,0.2)', color: '#86EFAC', border: '1px solid rgba(34,197,94,0.3)'}}
                           >
                             <Link2 size={14} />
                             SP hoàn thành
@@ -475,7 +476,7 @@ export default function TasksView() {
                           {(isAdmin || task.assignee_id === currentUser?.id) && (
                             <button
                               onClick={() => handleSubmitProductUrl(task)}
-                              className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                              className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
                               title="Sửa link sản phẩm"
                             >
                               <Edit2 size={14} />
@@ -486,7 +487,8 @@ export default function TasksView() {
                         (isAdmin || task.assignee_id === currentUser?.id) && (
                           <button
                             onClick={() => handleSubmitProductUrl(task)}
-                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-gray-100 text-gray-600 rounded-full font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors whitespace-nowrap border border-dashed border-gray-300"
+                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
+                            style={{background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.2)'}}
                           >
                             <Plus size={14} />
                             Nộp SP
@@ -498,7 +500,7 @@ export default function TasksView() {
                         value={task.status}
                         disabled={!isAdmin && task.assignee_id !== currentUser?.id}
                         onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
-                        className={`text-[11px] sm:text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 disabled:opacity-70 disabled:cursor-not-allowed ${getStatusColor(task.status)}`}
+                        className={`text-[11px] sm:text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed ${getStatusColor(task.status)}`}
                       >
                         <option value="pending">{t("task_status_pending")}</option>
                         <option value="in_progress">{t("task_status_in_progress")}</option>
@@ -512,7 +514,7 @@ export default function TasksView() {
                         {(isAdmin || task.assignee_id === currentUser?.id) && (
                           <button 
                             onClick={() => openEditModal(task)}
-                            className="p-1.5 text-gray-400 hover:text-purple-500 hover:bg-purple-50 rounded-full transition-colors"
+                            className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
                             title={t("task_edit")}
                           >
                             <Edit2 size={16} />
@@ -521,7 +523,7 @@ export default function TasksView() {
                         {isAdmin && (
                           <button 
                             onClick={() => handleDelete(task.id)}
-                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                            className="p-1.5 text-white/40 hover:text-red-400 hover:bg-red-500/20 rounded-full transition-colors"
                             title={t("task_delete")}
                           >
                             <Trash2 size={16} />
@@ -530,7 +532,8 @@ export default function TasksView() {
                         {!isAdmin && !task.assignee_id && (
                           <button
                             onClick={() => handleClaimTask(task.id)}
-                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-white bg-purple-500 hover:bg-purple-600 rounded-full transition-colors shadow-sm"
+                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-white rounded-full transition-colors shadow-sm"
+                            style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 2px 8px rgba(43,145,206,0.4)'}}
                             title="Nhận việc"
                           >
                             <Hand size={14} /> Nhận việc
@@ -539,7 +542,8 @@ export default function TasksView() {
                         {task.assignee_id === currentUser?.id && (
                           <button
                             onClick={() => handleUnclaimTask(task.id)}
-                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-gray-600 bg-gray-100 hover:bg-red-50 hover:text-red-500 rounded-full transition-colors shadow-sm border border-gray-200 hover:border-red-200"
+                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-white/70 rounded-full transition-all hover:text-red-300 hover:bg-red-500/20 shadow-sm border"
+                            style={{background: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.2)'}}
                             title="Bỏ nhận việc"
                           >
                             <XCircle size={14} /> Bỏ nhận
@@ -549,14 +553,14 @@ export default function TasksView() {
                     </div>
 
                     {task.product_url && (
-                      <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-xl border border-gray-200 lg:mr-[72px] w-full sm:w-auto">
+                      <div className="flex items-center gap-1 p-1 rounded-xl border lg:mr-[72px] w-full sm:w-auto" style={{background: 'rgba(255,255,255,0.07)', borderColor: 'rgba(255,255,255,0.15)'}}>
                         <button
                           onClick={() => isAdmin && task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
                           disabled={!isAdmin}
                           className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status === 'approved' 
                               ? 'bg-green-500 text-white shadow-md scale-100' 
-                              : `text-gray-400 scale-95 ${isAdmin ? 'hover:text-green-600 hover:bg-green-50' : ''}`
+                              : `text-white/40 scale-95 ${isAdmin ? 'hover:text-green-400 hover:bg-green-500/20' : ''}`
                           } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
                           <CheckSquare size={14} />
@@ -568,7 +572,7 @@ export default function TasksView() {
                           className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status !== 'approved' 
                               ? 'bg-red-500 text-white shadow-md scale-100' 
-                              : `text-gray-400 scale-95 ${isAdmin ? 'hover:text-red-500 hover:bg-red-50' : ''}`
+                              : `text-white/40 scale-95 ${isAdmin ? 'hover:text-red-400 hover:bg-red-500/20' : ''}`
                           } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
                           <XCircle size={14} />
@@ -585,61 +589,65 @@ export default function TasksView() {
       </div>
 
       {modalMode && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-neu-base rounded-[2rem] w-full max-w-md p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="rounded-[2rem] w-full max-w-md p-6 border border-white/10" style={{background: 'linear-gradient(135deg, #0D2657 0%, #0A1E45 100%)', boxShadow: '0 25px 60px rgba(8,23,64,0.7)'}}>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-800">
+              <h2 className="text-xl font-bold text-white">
                 {modalMode === 'create' ? t("task_create") : t("task_edit")}
               </h2>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">
+              <button onClick={closeModal} className="text-white/40 hover:text-white transition-colors">
                 <XCircle size={24} />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_title")}</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">{t("task_title")}</label>
                 <input 
                   type="text" 
                   required
                   disabled={!isAdmin}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
+                  style={{background: 'rgba(255,255,255,0.08)'}}
                   placeholder="Tên công việc..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_assignee")}</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">{t("task_assignee")}</label>
                 <input 
                   type="text" 
                   disabled={!isAdmin}
                   value={assignee}
                   onChange={(e) => setAssignee(e.target.value)}
-                  className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
+                  style={{background: 'rgba(255,255,255,0.08)'}}
                   placeholder="Người phụ trách..."
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_deadline")}</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">{t("task_deadline")}</label>
                   <input 
                     type="date" 
                     disabled={!isAdmin}
                     value={deadline}
                     onChange={(e) => setDeadline(e.target.value)}
-                    className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none text-gray-600 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
+                    style={{background: 'rgba(255,255,255,0.08)', colorScheme: 'dark'}}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_priority")}</label>
+                  <label className="block text-sm font-medium text-white/70 mb-1">{t("task_priority")}</label>
                   <select 
                     value={priority}
                     disabled={!isAdmin}
                     onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                    className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none text-gray-600 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
+                    style={{background: '#0D2A6B'}}
                   >
                     <option value="low">{t("task_priority_low")}</option>
                     <option value="medium">{t("task_priority_medium")}</option>
@@ -650,11 +658,12 @@ export default function TasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">{t("task_status")}</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">{t("task_status")}</label>
                 <select 
                   value={status}
                   onChange={(e) => setStatus(e.target.value as TaskStatus)}
-                  className="w-full bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none text-gray-600"
+                  className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none border border-white/10"
+                  style={{background: '#0D2A6B'}}
                 >
                   <option value="pending">{t("task_status_pending")}</option>
                   <option value="in_progress">{t("task_status_in_progress")}</option>
@@ -666,14 +675,15 @@ export default function TasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Link Video (Source 1)</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Link Video (Source 1)</label>
                 <div className="flex gap-2">
                   <input 
                     type="url" 
                     disabled={!isAdmin}
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
-                    className="flex-1 bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
+                    style={{background: 'rgba(255,255,255,0.08)'}}
                     placeholder="https://..."
                   />
                   {videoUrl && (
@@ -681,7 +691,8 @@ export default function TasksView() {
                       href={videoUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="px-4 py-3 bg-purple-50 text-purple-600 rounded-xl font-medium hover:bg-purple-100 transition-colors flex items-center justify-center whitespace-nowrap"
+                      className="px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center whitespace-nowrap text-sm text-white hover:opacity-90"
+                      style={{background: 'rgba(44,145,206,0.3)', border: '1px solid rgba(44,145,206,0.4)'}}
                       title="Mở link này"
                     >
                       Mở link
@@ -691,14 +702,15 @@ export default function TasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Link Video (Source 2)</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Link Video (Source 2)</label>
                 <div className="flex gap-2">
                   <input 
                     type="url" 
                     disabled={!isAdmin}
                     value={videoUrl2}
                     onChange={(e) => setVideoUrl2(e.target.value)}
-                    className="flex-1 bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-purple-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
+                    style={{background: 'rgba(255,255,255,0.08)'}}
                     placeholder="https://..."
                   />
                   {videoUrl2 && (
@@ -706,7 +718,8 @@ export default function TasksView() {
                       href={videoUrl2} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="px-4 py-3 bg-purple-50 text-purple-600 rounded-xl font-medium hover:bg-purple-100 transition-colors flex items-center justify-center whitespace-nowrap"
+                      className="px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center whitespace-nowrap text-sm text-white hover:opacity-90"
+                      style={{background: 'rgba(44,145,206,0.3)', border: '1px solid rgba(44,145,206,0.4)'}}
                       title="Mở link này"
                     >
                       Mở link
@@ -716,13 +729,14 @@ export default function TasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Link sản phẩm hoàn thành</label>
+                <label className="block text-sm font-medium text-white/70 mb-1">Link sản phẩm hoàn thành</label>
                 <div className="flex gap-2">
                   <input 
                     type="url" 
                     value={productUrl}
                     onChange={(e) => setProductUrl(e.target.value)}
-                    className="flex-1 bg-neu-base shadow-neu-concave border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none border border-white/10"
+                    style={{background: 'rgba(255,255,255,0.08)'}}
                     placeholder="https://... (Link Google Drive, YouTube, Tiktok...)"
                   />
                   {productUrl && (
@@ -730,14 +744,15 @@ export default function TasksView() {
                       href={productUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="px-4 py-3 bg-blue-50 text-blue-600 rounded-xl font-medium hover:bg-blue-100 transition-colors flex items-center justify-center whitespace-nowrap"
+                      className="px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center whitespace-nowrap text-sm text-white hover:opacity-90"
+                      style={{background: 'rgba(34,197,94,0.2)', border: '1px solid rgba(34,197,94,0.3)'}}
                       title="Mở link sản phẩm"
                     >
                       Mở link
                     </a>
                   )}
                 </div>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-white/30 mt-2">
                   * Khi điền link sản phẩm, quản lý có thể duyệt để tự động tính lương.
                 </p>
               </div>
@@ -746,14 +761,16 @@ export default function TasksView() {
                 <button 
                   type="button" 
                   onClick={closeModal}
-                  className="flex-1 py-3 bg-neu-base rounded-xl text-gray-600 font-medium shadow-neu-convex hover:shadow-neu-concave transition-all"
+                  className="flex-1 py-3 rounded-xl text-white/70 font-medium transition-all hover:text-white border border-white/10"
+                  style={{background: 'rgba(255,255,255,0.07)'}}
                 >
                   {t("task_cancel")}
                 </button>
                 <button 
                   type="submit" 
                   disabled={submitting}
-                  className="flex-1 py-3 bg-purple-500 rounded-xl text-white font-medium shadow-neu-convex hover:shadow-neu-concave transition-all disabled:opacity-50"
+                  className="flex-1 py-3 rounded-xl text-white font-medium transition-all disabled:opacity-50"
+                  style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
                 >
                   {submitting ? t("loading") : t("task_save")}
                 </button>
