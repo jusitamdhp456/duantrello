@@ -268,7 +268,7 @@ export default function TasksView() {
           alert("Lỗi: " + res.error);
           return;
         }
-        setSuccessAlert(`Đã duyệt! Sản phẩm được tính lương với đơn giá ${res.rate?.toLocaleString('vi-VN')} đ (Clip #${res.nextCount} trong tháng).`);
+        setSuccessAlert(`Đã duyệt! Em làm tốt lắm`);
         setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'approved' } : t));
       } catch (err: any) {
         alert(err.message);
