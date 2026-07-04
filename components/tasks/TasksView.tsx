@@ -91,6 +91,8 @@ export default function TasksView() {
     let filtered = tasks;
     if (statusFilter !== 'all') {
       filtered = filtered.filter(t => t.status === statusFilter);
+    } else {
+      filtered = filtered.filter(t => t.review_status !== 'approved');
     }
     return filtered.sort((a, b) => {
       if (!a.deadline) return 1;
@@ -100,7 +102,7 @@ export default function TasksView() {
   }, [tasks, statusFilter]);
 
   const stats = useMemo(() => {
-    const total = tasks.length;
+    const total = tasks.filter(t => t.review_status !== 'approved').length;
     const inProgress = tasks.filter(t => t.status === 'in_progress').length;
     const review = tasks.filter(t => t.status === 'review').length;
     const overdue = tasks.filter(t => {
@@ -377,7 +379,9 @@ export default function TasksView() {
 
       <div className="flex gap-2 md:gap-3 mb-6 px-2 overflow-x-auto pb-3 snap-x scrollbar-hide">
         {(['all', 'pending', 'in_progress', 'review', 'revision', 'completed', 'cancelled'] as const).map(s => {
-          const count = s === 'all' ? tasks.length : tasks.filter(t => t.status === s).length;
+          const count = s === 'all' 
+            ? tasks.filter(t => t.review_status !== 'approved').length 
+            : tasks.filter(t => t.status === s).length;
           return (
           <button
             key={s}
