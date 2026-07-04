@@ -5,8 +5,9 @@ import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay, revokeTaskApprovalAndDeduct, claimTask } from "@/app/actions/tasks";
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
-import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare, Hand } from "lucide-react";
+import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare, Hand, MessageCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import TaskCommentsModal from "@/components/tasks/TaskCommentsModal";
 
 const isOverdue = (deadlineStr: string | null | undefined) => {
   if (!deadlineStr) return false;
@@ -48,6 +49,7 @@ export default function TasksView() {
   // Modal state
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [selectedTaskForComments, setSelectedTaskForComments] = useState<Task | null>(null);
 
   // Form state
   const [title, setTitle] = useState("");
@@ -417,6 +419,14 @@ export default function TasksView() {
                           Xem source 2
                         </a>
                       )}
+
+                      <button
+                        onClick={() => setSelectedTaskForComments(task)}
+                        className="flex items-center gap-1.5 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-gray-50 text-gray-600 rounded-full font-medium hover:bg-gray-100 transition-colors whitespace-nowrap"
+                      >
+                        <MessageCircle size={14} />
+                        Nhận xét
+                      </button>
                       
                       {task.product_url ? (
                         <div className="flex items-center gap-1">
@@ -709,6 +719,13 @@ export default function TasksView() {
             </form>
           </div>
         </div>
+      )}
+
+      {selectedTaskForComments && (
+        <TaskCommentsModal 
+          task={selectedTaskForComments} 
+          onClose={() => setSelectedTaskForComments(null)} 
+        />
       )}
     </div>
   );

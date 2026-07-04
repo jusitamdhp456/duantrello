@@ -309,3 +309,56 @@ export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: str
   revalidatePath("/my-salary");
   return { success: true };
 }
+
+export async function getTaskComments(taskId: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { data, error } = await supabase
+    .from("task_comments")
+    .select("*")
+    .eq("task_id", taskId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching task comments:", error);
+    return [];
+  }
+
+  return data;
+}
+
+export async function addTaskComment(taskId: string, content: string, imageUrl: string | null = null) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  // Get user profile to get full_name
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user.id)
+    .single();
+    
+  const fullName = profile?.full_name || user.email?.split('@')[0] || "Unknown";
+
+  const { data, error } = await supabase
+    .from("task_comments")
+    .insert({
+      task_id: taskId,
+      user_id: user.id,
+      user_name: fullName,
+      content,
+      image_url: imageUrl,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error adding task comment:", error);
+    throw new Error(error.message);
+  }
+
+  return data;
+}
