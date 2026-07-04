@@ -193,7 +193,6 @@ export default function TasksView() {
   };
 
   const handleClaimTask = async (id: string) => {
-    if (!confirm("Bạn muốn nhận công việc này?")) return;
     try {
       const res = await claimTask(id);
       if (res && res.error) {
