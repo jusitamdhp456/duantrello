@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay, revokeTaskApprovalAndDeduct, claimTask } from "@/app/actions/tasks";
+import { getTasks, createTask, updateTask, updateTaskStatus, deleteTask, approveTaskAndPay, revokeTaskApprovalAndDeduct, claimTask, unclaimTask } from "@/app/actions/tasks";
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
 import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare, Hand, MessageCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -202,6 +202,24 @@ export default function TasksView() {
         return;
       }
       // Reload tasks to get the updated assignee_id and assignee_name
+      if (activeWorkspaceId) {
+        const data = await getTasks(activeWorkspaceId);
+        setTasks(data);
+      }
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const handleUnclaimTask = async (id: string) => {
+    if (!confirm("Bạn có chắc chắn muốn bỏ nhận công việc này không?")) return;
+    try {
+      const res = await unclaimTask(id);
+      if (res && res.error) {
+        alert("Lỗi: " + res.error);
+        return;
+      }
+      // Reload tasks
       if (activeWorkspaceId) {
         const data = await getTasks(activeWorkspaceId);
         setTasks(data);
@@ -501,6 +519,15 @@ export default function TasksView() {
                             title="Nhận việc"
                           >
                             <Hand size={14} /> Nhận việc
+                          </button>
+                        )}
+                        {task.assignee_id === currentUser?.id && (
+                          <button
+                            onClick={() => handleUnclaimTask(task.id)}
+                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-gray-600 bg-gray-100 hover:bg-red-50 hover:text-red-500 rounded-full transition-colors shadow-sm border border-gray-200 hover:border-red-200"
+                            title="Bỏ nhận việc"
+                          >
+                            <XCircle size={14} /> Bỏ nhận
                           </button>
                         )}
                       </div>

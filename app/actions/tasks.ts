@@ -362,3 +362,26 @@ export async function addTaskComment(taskId: string, content: string, imageUrl: 
 
   return data;
 }
+
+export async function unclaimTask(taskId: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("tasks")
+    .update({
+      assignee_id: null,
+      assignee_name: null,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", taskId);
+
+  if (error) {
+    console.error("Error unclaiming task:", error);
+    return { error: error.message };
+  }
+
+  revalidatePath("/tasks");
+  return { success: true };
+}
