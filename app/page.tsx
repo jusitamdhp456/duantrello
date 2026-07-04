@@ -1,7 +1,23 @@
-import Link from "next/link";
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleEnter = () => {
+    try {
+      const audio = new Audio('/0704_1.mp3');
+      audio.play().catch(e => console.log("Audio autoplay prevented", e));
+    } catch (err) {
+      console.log(err);
+    }
+    
+    // Navigate immediately - since it's client side routing, audio should keep playing
+    router.push('/dashboard');
+  };
+
   return (
     <main 
       className="flex min-h-screen flex-col items-center justify-center relative overflow-hidden" 
@@ -24,8 +40,8 @@ export default function Home() {
 
         {/* Enter Button */}
         <div className="flex justify-center">
-          <Link 
-            href="/dashboard" 
+          <button 
+            onClick={handleEnter}
             className="px-10 py-3 rounded-full text-white/90 text-sm md:text-base font-semibold tracking-wide transition-all duration-300 hover:bg-white/10 hover:text-white active:scale-95"
             style={{
               background: 'rgba(255, 255, 255, 0.08)',
@@ -35,7 +51,7 @@ export default function Home() {
             }}
           >
             Chạm để mở
-          </Link>
+          </button>
         </div>
         
       </div>
