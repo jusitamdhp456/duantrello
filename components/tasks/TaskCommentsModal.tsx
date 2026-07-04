@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { X, Image as ImageIcon, Send, Loader2 } from "lucide-react";
+import { X, Image as ImageIcon, Send, Loader2, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { getTaskComments, addTaskComment } from "@/app/actions/tasks";
+import { getTaskComments, addTaskComment, deleteTaskComment } from "@/app/actions/tasks";
 import type { Task, TaskComment } from "@/types/tasks";
 
 interface TaskCommentsModalProps {
@@ -13,6 +13,7 @@ interface TaskCommentsModalProps {
 
 export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalProps) {
   const [comments, setComments] = useState<TaskComment[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -25,6 +26,10 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
   const supabase = createClient();
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setCurrentUserId(data.user.id);
+    });
+
     loadComments();
     
     // Subscribe to realtime changes
@@ -64,6 +69,16 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
       console.error("Failed to load comments:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xóa nhận xét này?")) return;
+    try {
+      await deleteTaskComment(commentId);
+      // Comments will reload automatically via realtime subscription
+    } catch (error: any) {
+      alert("Lỗi khi xóa: " + error.message);
     }
   };
 
@@ -171,9 +186,20 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
               <div key={comment.id} className="p-4 rounded-xl" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)'}}>
                 <div className="flex justify-between items-start mb-2">
                   <span className="font-semibold text-white">{comment.user_name || 'Người dùng'}</span>
-                  <span className="text-xs text-white/40">
-                    {new Date(comment.created_at).toLocaleString('vi-VN')}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-white/40">
+                      {new Date(comment.created_at).toLocaleString('vi-VN')}
+                    </span>
+                    {comment.user_id === currentUserId && (
+                      <button 
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="text-red-400/70 hover:text-red-400 hover:bg-red-400/10 p-1 rounded transition-colors"
+                        title="Xóa nhận xét"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 {comment.content && (
                   <p className="text-white/80 whitespace-pre-wrap text-sm sm:text-base">{comment.content}</p>

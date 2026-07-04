@@ -385,3 +385,22 @@ export async function unclaimTask(taskId: string) {
   revalidatePath("/tasks");
   return { success: true };
 }
+
+export async function deleteTaskComment(commentId: string) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not authenticated");
+
+  const { error } = await supabase
+    .from("task_comments")
+    .delete()
+    .eq("id", commentId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("Error deleting comment:", error);
+    throw new Error(error.message);
+  }
+
+  return { success: true };
+}
