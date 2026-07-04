@@ -56,6 +56,7 @@ export default function TasksView() {
     action: 'approved' | 'rejected';
     message: string;
   } | null>(null);
+  const [successAlert, setSuccessAlert] = useState<string | null>(null);
 
   // Form state
   const [title, setTitle] = useState("");
@@ -267,7 +268,7 @@ export default function TasksView() {
           alert("Lỗi: " + res.error);
           return;
         }
-        alert(`Đã duyệt! Sản phẩm được tính lương với đơn giá ${res.rate?.toLocaleString('vi-VN')} đ (Clip #${res.nextCount} trong tháng).`);
+        setSuccessAlert(`Đã duyệt! Sản phẩm được tính lương với đơn giá ${res.rate?.toLocaleString('vi-VN')} đ (Clip #${res.nextCount} trong tháng).`);
         setTasks(prev => prev.map(t => t.id === task.id ? { ...t, review_status: 'approved' } : t));
       } catch (err: any) {
         alert(err.message);
@@ -854,6 +855,31 @@ export default function TasksView() {
                 OK
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {successAlert && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-[#0D2657] border border-green-500/30 p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
+            style={{boxShadow: '0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)'}}
+          >
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-600"></div>
+            <div className="w-16 h-16 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3 tracking-wide">Thành công!</h3>
+            <p className="text-green-100/80 mb-8 text-sm leading-relaxed">{successAlert}</p>
+            <button 
+              onClick={() => setSuccessAlert(null)}
+              className="w-full py-3 rounded-xl text-white transition-all font-medium"
+              style={{
+                background: 'linear-gradient(135deg, #059669, #047857)',
+                boxShadow: '0 4px 15px rgba(5,150,105,0.4)'
+              }}
+            >
+              OK
+            </button>
           </div>
         </div>
       )}
