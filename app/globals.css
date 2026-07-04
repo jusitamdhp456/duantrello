@@ -4,25 +4,26 @@
 
 @layer base {
   :root {
-    --background: #EAE6F0;
-    --foreground: #4a5568;
-    --card: #EAE6F0;
-    --card-foreground: #4a5568;
-    --popover: #EAE6F0;
-    --popover-foreground: #4a5568;
-    --primary: #a855f7;
+    /* Ocean Blue Dark Theme */
+    --background: #87CEEB;       /* Sky blue app bg - matching image outer */
+    --foreground: #E0F4FF;       /* Light blue text */
+    --card: #0D2657;             /* Dark navy cards */
+    --card-foreground: #E0F4FF;
+    --popover: #0D2657;
+    --popover-foreground: #E0F4FF;
+    --primary: #2B91CE;          /* Medium blue accent */
     --primary-foreground: #ffffff;
-    --secondary: #EAE6F0;
-    --secondary-foreground: #4a5568;
-    --muted: #CFC8DA;
-    --muted-foreground: #718096;
-    --accent: #CFC8DA;
-    --accent-foreground: #4a5568;
+    --secondary: #1A3A7C;        /* Mid-dark blue */
+    --secondary-foreground: #B8E3F9;
+    --muted: #0D4A8A;
+    --muted-foreground: #7EC8EF;
+    --accent: #2B74B1;
+    --accent-foreground: #E0F4FF;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
-    --border: transparent;
-    --input: transparent;
-    --ring: #a855f7;
+    --border: rgba(44, 116, 177, 0.2);
+    --input: rgba(44, 116, 177, 0.15);
+    --ring: #2B91CE;
     --radius: 1rem;
   }
 }
@@ -32,9 +33,26 @@
     border-color: var(--border);
   }
   body {
-    background-color: var(--background);
+    background: linear-gradient(135deg, #87CEEB 0%, #5BADE2 40%, #87CEEB 100%);
+    min-height: 100vh;
     color: var(--foreground);
-    /* Basic text shadow for Neumorphism feel */
     -webkit-font-smoothing: antialiased;
   }
+}
+
+/* Scrollbar styling for dark blue theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A1E45;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2B74B1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #44ACDF;
 }

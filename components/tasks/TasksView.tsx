@@ -281,13 +281,13 @@ export default function TasksView() {
 
   const getStatusColor = (s: TaskStatus) => {
     switch (s) {
-      case 'pending': return 'bg-gray-100 text-gray-600';
-      case 'in_progress': return 'bg-purple-100 text-purple-600';
-      case 'review': return 'bg-purple-100 text-purple-600';
-      case 'revision': return 'bg-orange-100 text-orange-600';
-      case 'completed': return 'bg-green-100 text-green-600';
-      case 'cancelled': return 'bg-red-100 text-red-600';
-      default: return 'bg-gray-100 text-gray-600';
+      case 'pending': return 'bg-blue-900/50 text-blue-200';
+      case 'in_progress': return 'bg-sky-700/50 text-sky-200';
+      case 'review': return 'bg-indigo-700/50 text-indigo-200';
+      case 'revision': return 'bg-orange-800/50 text-orange-300';
+      case 'completed': return 'bg-green-800/50 text-green-300';
+      case 'cancelled': return 'bg-red-900/50 text-red-300';
+      default: return 'bg-blue-900/50 text-blue-200';
     }
   };
 
@@ -302,24 +302,24 @@ export default function TasksView() {
 
   if (!activeWorkspaceId) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-neu-base rounded-[2rem] m-4 shadow-neu-concave p-8">
-        <div className="text-gray-500">{t("select_workspace")}</div>
+      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(13,38,87,0.7)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
+        <div className="text-blue-300">{t("select_workspace")}</div>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-neu-base rounded-[2rem] m-4 shadow-neu-concave p-8">
-        <div className="animate-spin text-purple-500"><RotateCcw size={32} /></div>
+      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(13,38,87,0.7)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
+        <div className="animate-spin text-sky-400"><RotateCcw size={32} /></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-neu-base rounded-[2rem] m-4 shadow-neu-concave p-8">
-        <div className="text-red-500">{error}</div>
+      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(13,38,87,0.7)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
+        <div className="text-red-400">{error}</div>
       </div>
     );
   }
@@ -327,11 +327,12 @@ export default function TasksView() {
   return (
     <div className="flex-1 flex flex-col m-4 overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 px-2">
-        <h1 className="text-2xl font-bold text-gray-700 tracking-wide">{t("nav_todo")}</h1>
+        <h1 className="text-2xl font-bold text-sky-100 tracking-wide">{t("nav_todo")}</h1>
         {isAdmin && (
           <button 
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-2.5 bg-purple-500 text-white rounded-full shadow-neu-convex hover:shadow-neu-concave transition-all duration-200"
+            className="flex items-center gap-2 px-5 py-2.5 text-white rounded-full transition-all duration-200"
+            style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
           >
             <Plus size={18} />
             <span className="text-sm font-medium">{t("task_add")}</span>
@@ -340,21 +341,21 @@ export default function TasksView() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 px-2">
-        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
-          <div className="text-gray-500 text-xs md:text-sm font-medium">{t("task_total")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-gray-700 mt-2">{stats.total}</div>
+        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-xs md:text-sm font-medium">{t("task_total")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-sky-100 mt-2">{stats.total}</div>
         </div>
-        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
-          <div className="text-gray-500 text-xs md:text-sm font-medium">{t("task_status_in_progress")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-purple-600 mt-2">{stats.inProgress}</div>
+        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-xs md:text-sm font-medium">{t("task_status_in_progress")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-sky-300 mt-2">{stats.inProgress}</div>
         </div>
-        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
-          <div className="text-gray-500 text-xs md:text-sm font-medium">{t("task_status_review")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-purple-600 mt-2">{stats.review}</div>
+        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-xs md:text-sm font-medium">{t("task_status_review")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-sky-300 mt-2">{stats.review}</div>
         </div>
-        <div className="bg-neu-base rounded-3xl p-4 md:p-5 shadow-neu-convex flex flex-col justify-between">
+        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
           <div className="text-red-400 text-xs md:text-sm font-medium">{t("task_overdue")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-red-500 mt-2">{stats.overdue}</div>
+          <div className="text-2xl md:text-3xl font-bold text-red-400 mt-2">{stats.overdue}</div>
         </div>
       </div>
 
@@ -363,11 +364,17 @@ export default function TasksView() {
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
-            className={`px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap snap-start flex-shrink-0 ${
-              statusFilter === s 
-                ? 'bg-purple-500 text-white shadow-neu-convex' 
-                : 'bg-neu-base text-gray-600 hover:shadow-neu-concave shadow-neu-convex'
-            }`}
+            className={`px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap snap-start flex-shrink-0 border`}
+            style={statusFilter === s ? {
+              background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)',
+              color: 'white',
+              boxShadow: '0 4px 15px rgba(43,145,206,0.4)',
+              borderColor: 'rgba(44,145,206,0.3)'
+            } : {
+              background: 'rgba(13,38,87,0.6)',
+              color: '#93C5E8',
+              borderColor: 'rgba(44,116,177,0.3)'
+            }}
           >
             {s === 'all' ? "Tất cả" : (t(`task_status_${s}` as any) || s)}
           </button>
@@ -376,9 +383,9 @@ export default function TasksView() {
 
       <div className="flex-1 overflow-y-auto px-2 pb-6">
         {filteredTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 bg-neu-base rounded-[2rem] shadow-neu-concave">
-            <CheckCircle2 size={48} className="text-gray-300 mb-4" />
-            <p className="text-gray-500">{t("task_empty")}</p>
+          <div className="flex flex-col items-center justify-center h-64 rounded-[2rem]" style={{background: 'rgba(13,38,87,0.6)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
+            <CheckCircle2 size={48} className="text-blue-700 mb-4" />
+            <p className="text-blue-400">{t("task_empty")}</p>
           </div>
         ) : (
           <div className="grid gap-4">
@@ -386,41 +393,48 @@ export default function TasksView() {
               const isTaskOverdue = isOverdue(task.deadline) && task.status !== 'completed' && task.status !== 'cancelled';
               
               return (
-                <div key={task.id} className="bg-neu-base rounded-[1.5rem] p-4 md:p-5 shadow-neu-convex hover:shadow-[12px_12px_24px_rgba(207,200,218,0.8),-12px_-12px_24px_rgba(255,255,255,1)] hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between border-l-4 border-transparent hover:border-purple-400 gap-4">
+                <div key={task.id} className="rounded-[1.5rem] p-4 md:p-5 hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
+                  style={{
+                    background: 'linear-gradient(135deg, #0D2657 0%, #0D3E8A 100%)',
+                    boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -3px -3px 8px rgba(30,70,140,0.3)',
+                    borderLeft: `4px solid ${isTaskOverdue ? '#f87171' : 'rgba(44,145,206,0.6)'}`
+                  }}
+                >
                   <div className="flex items-start md:items-center gap-3 sm:gap-5 flex-1 w-full lg:w-auto overflow-hidden">
-                    <div className="w-8 h-8 rounded-full bg-neu-base shadow-neu-concave flex items-center justify-center flex-shrink-0 mt-1 md:mt-0">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 md:mt-0" style={{background: 'rgba(13,38,87,0.8)', boxShadow: 'inset 2px 2px 4px rgba(8,23,64,0.6), inset -2px -2px 4px rgba(30,70,140,0.3)'}}>
                       {getPriorityIcon(task.priority)}
                     </div>
                     <div className="flex flex-col min-w-0 flex-1">
-                      <h3 className="text-gray-800 font-medium text-base sm:text-lg flex flex-wrap items-center gap-2">
+                      <h3 className="text-sky-100 font-medium text-base sm:text-lg flex flex-wrap items-center gap-2">
                         <span className="truncate">{task.title}</span>
                         {isTaskOverdue && (
-                          <span className="text-[10px] sm:text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0">
+                          <span className="text-[10px] sm:text-xs bg-red-900/50 text-red-300 px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0">
                             <AlertCircle size={12} /> {t("task_overdue")}
                           </span>
                         )}
                       </h3>
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mt-1.5">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-blue-400/80 mt-1.5">
                         <span className="flex items-center gap-1">
-                          <Eye size={14} className="text-gray-400" />
+                          <Eye size={14} className="text-blue-500/60" />
                           <span className="truncate max-w-[120px] sm:max-w-none">{task.assignee_name || "Chưa giao"}</span>
                         </span>
-                        <span className={`flex items-center gap-1 ${isTaskOverdue ? 'text-red-500 font-medium' : ''}`}>
-                          <Clock size={14} className={isTaskOverdue ? 'text-red-500' : 'text-gray-400'} />
+                        <span className={`flex items-center gap-1 ${isTaskOverdue ? 'text-red-400 font-medium' : ''}`}>
+                          <Clock size={14} className={isTaskOverdue ? 'text-red-400' : 'text-blue-500/60'} />
                           {task.deadline ? new Date(task.deadline).toLocaleDateString('vi-VN') : "Không có"}
                         </span>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-3 w-full lg:w-auto pt-3 lg:pt-0 border-t border-gray-100 lg:border-t-0">
+                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-3 w-full lg:w-auto pt-3 lg:pt-0 border-t border-blue-700/30 lg:border-t-0">
                     <div className="flex flex-wrap items-center gap-2 justify-start sm:justify-end w-full lg:w-auto">
                       {task.video_url && (
                         <a 
                           href={task.video_url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full font-medium hover:bg-purple-100 transition-colors whitespace-nowrap"
+                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-colors"
+                          style={{background: 'rgba(43,116,177,0.2)', color: '#93C5E8', border: '1px solid rgba(44,116,177,0.3)'}}
                         >
                           Xem source 1
                         </a>
@@ -431,7 +445,8 @@ export default function TasksView() {
                           href={task.video_url_2} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-violet-50 text-violet-600 rounded-full font-medium hover:bg-violet-100 transition-colors whitespace-nowrap"
+                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-colors"
+                          style={{background: 'rgba(67,172,223,0.2)', color: '#67D8F5', border: '1px solid rgba(67,172,223,0.3)'}}
                         >
                           Xem source 2
                         </a>
@@ -439,7 +454,8 @@ export default function TasksView() {
 
                       <button
                         onClick={() => setSelectedTaskForComments(task)}
-                        className="flex items-center gap-1.5 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-gray-50 text-gray-600 rounded-full font-medium hover:bg-gray-100 transition-colors whitespace-nowrap"
+                        className="flex items-center gap-1.5 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-colors"
+                        style={{background: 'rgba(13,38,87,0.6)', color: '#7EC8EF', border: '1px solid rgba(44,116,177,0.25)'}}
                       >
                         <MessageCircle size={14} />
                         Nhận xét

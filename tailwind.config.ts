@@ -12,15 +12,30 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         neu: {
-          base: "#EAE6F0",
-          dark: "#CFC8DA",
-          light: "#FFFFFF"
-        }
+          base: "#0D2657",
+          dark: "#0A1E45",
+          light: "#1A3A7C",
+        },
+        ocean: {
+          50:  "#E0F4FF",
+          100: "#B8E3F9",
+          200: "#7EC8EF",
+          300: "#44ACDF",
+          400: "#2B91CE",
+          500: "#1A76B8",
+          600: "#0D5FA3",
+          700: "#0D4A8A",
+          800: "#0D2657",
+          900: "#081740",
+        },
       },
       boxShadow: {
-        'neu-convex': '9px 9px 16px rgba(207, 200, 218, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.7)',
-        'neu-concave': 'inset 6px 6px 10px 0 rgba(207, 200, 218, 0.7), inset -6px -6px 10px 0 rgba(255, 255, 255, 0.8)',
-        'neu-pressed': 'inset 4px 4px 6px 0 rgba(207, 200, 218, 0.7), inset -4px -4px 6px 0 rgba(255, 255, 255, 0.8)',
+        // Blue dark neumorphism
+        'neu-convex': '6px 6px 14px rgba(8, 23, 64, 0.5), -6px -6px 14px rgba(30, 70, 140, 0.4)',
+        'neu-concave': 'inset 5px 5px 10px rgba(8, 23, 64, 0.6), inset -5px -5px 10px rgba(30, 70, 140, 0.4)',
+        'neu-pressed': 'inset 3px 3px 7px rgba(8, 23, 64, 0.6), inset -3px -3px 7px rgba(30, 70, 140, 0.4)',
+        'neu-flat': '0px 2px 8px rgba(8, 23, 64, 0.35)',
+        'card-glow': '0 0 20px rgba(44, 116, 177, 0.25)',
       },
       keyframes: {
         "fade-in": {
