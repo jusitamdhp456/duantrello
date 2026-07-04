@@ -395,8 +395,13 @@ export default function TasksView() {
               return (
                 <div key={task.id} className="rounded-[1.5rem] p-4 md:p-5 hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
                   style={{
-                    background: 'linear-gradient(135deg, #0D2657 0%, #0D3E8A 100%)',
-                    boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -3px -3px 8px rgba(30,70,140,0.3)',
+                    background: task.assignee_id 
+                      ? 'linear-gradient(135deg, #0D2657 0%, #0D3E8A 100%)' 
+                      : 'linear-gradient(135deg, rgba(43,145,206,0.15) 0%, rgba(26,92,176,0.1) 100%)',
+                    boxShadow: task.assignee_id 
+                      ? '6px 6px 14px rgba(8,23,64,0.5), -3px -3px 8px rgba(30,70,140,0.3)'
+                      : 'inset 0 0 15px rgba(43,145,206,0.1)',
+                    border: task.assignee_id ? 'none' : '1px dashed rgba(43,145,206,0.5)',
                     borderLeft: `4px solid ${isTaskOverdue ? '#f87171' : 'rgba(44,145,206,0.6)'}`
                   }}
                 >
