@@ -14,7 +14,7 @@ export default function Home() {
         {/* Animated Logo */}
         <div className="relative w-64 h-64 md:w-80 md:h-80 mb-20 animate-float">
           <Image
-            src="/logo.png" 
+            src="/chibi-transparent.png" 
             alt="Logo Intro"
             fill
             className="object-contain animate-wink drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]"
