@@ -42,6 +42,7 @@ export default function TasksView() {
   }, [supabase.auth]);
 
   const isAdmin = currentUser?.email === 'jusitamd999@gmail.com';
+  const canReview = isAdmin || currentUser?.email === 'haphuongta@gmail.com';
   
   // Filter state
   const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
@@ -581,13 +582,13 @@ export default function TasksView() {
                     {task.product_url && (
                       <div className="flex items-center gap-1 p-1 rounded-xl border lg:mr-[72px] w-full sm:w-auto" style={{background: 'rgba(255,255,255,0.07)', borderColor: 'rgba(255,255,255,0.15)'}}>
                         <button
-                          onClick={() => isAdmin && task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
-                          disabled={!isAdmin}
+                          onClick={() => canReview && task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
+                          disabled={!canReview}
                           className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status === 'approved' 
                               ? 'bg-green-500 text-white shadow-md scale-100' 
-                              : `text-white/40 scale-95 ${isAdmin ? 'hover:text-green-400 hover:bg-green-500/20' : ''}`
-                          } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
+                              : `text-white/40 scale-95 ${canReview ? 'hover:text-green-400 hover:bg-green-500/20' : ''}`
+                          } ${!canReview ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
                           <div className="flex items-center gap-1.5">
                             <CheckSquare size={14} />
@@ -600,13 +601,13 @@ export default function TasksView() {
                           )}
                         </button>
                         <button
-                          onClick={() => isAdmin && task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
-                          disabled={!isAdmin}
+                          onClick={() => canReview && task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
+                          disabled={!canReview}
                           className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status !== 'approved' 
                               ? 'bg-red-500 text-white shadow-md scale-100' 
-                              : `text-white/40 scale-95 ${isAdmin ? 'hover:text-red-400 hover:bg-red-500/20' : ''}`
-                          } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
+                              : `text-white/40 scale-95 ${canReview ? 'hover:text-red-400 hover:bg-red-500/20' : ''}`
+                          } ${!canReview ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
                           <div className="flex items-center gap-1.5">
                             <XCircle size={14} />
