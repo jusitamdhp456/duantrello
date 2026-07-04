@@ -343,36 +343,36 @@ export default function TasksView() {
 
   return (
     <div className="flex-1 flex flex-col m-4 overflow-hidden">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 px-2">
-        <h1 className="text-2xl font-bold text-sky-100 tracking-wide">{t("nav_todo")}</h1>
+      <div className="flex flex-row justify-between items-center gap-2 sm:gap-4 mb-4 sm:mb-6 px-2">
+        <h1 className="text-xl sm:text-2xl font-bold text-sky-100 tracking-wide truncate">{t("nav_todo")}</h1>
         {isAdmin && (
           <button 
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-2.5 text-white rounded-full transition-all duration-200"
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-white rounded-full transition-all duration-200 shrink-0"
             style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
           >
-            <Plus size={18} />
-            <span className="text-sm font-medium">{t("task_add")}</span>
+            <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
+            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{t("task_add")}</span>
           </button>
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 px-2">
-        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-xs md:text-sm font-medium">{t("task_total")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-sky-100 mt-2">{stats.total}</div>
+      <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-6 mb-6 sm:mb-8 px-2">
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_total")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-100 mt-1 sm:mt-2">{stats.total}</div>
         </div>
-        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-xs md:text-sm font-medium">{t("task_status_in_progress")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-sky-300 mt-2">{stats.inProgress}</div>
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_status_in_progress")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2">{stats.inProgress}</div>
         </div>
-        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-xs md:text-sm font-medium">{t("task_status_review")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-sky-300 mt-2">{stats.review}</div>
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_status_review")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2">{stats.review}</div>
         </div>
-        <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
-          <div className="text-green-400 text-xs md:text-sm font-medium">{t("task_status_completed")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-green-400 mt-2">{stats.completed}</div>
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-green-400 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_status_completed")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-green-400 mt-1 sm:mt-2">{stats.completed}</div>
         </div>
       </div>
 

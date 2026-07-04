@@ -1,9 +1,9 @@
 "use client";
 
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
-import { Plus } from "lucide-react";
+import { Plus, Edit2 } from "lucide-react";
 import { useState } from "react";
-import { createWorkspace } from "@/app/actions/workspaces";
+import { createWorkspace, updateWorkspaceName } from "@/app/actions/workspaces";
 
 export default function WorkspaceSwitcher() {
   const { workspaces, activeWorkspaceId, setActiveWorkspaceId, isLoading } = useWorkspace();
@@ -24,6 +24,26 @@ export default function WorkspaceSwitcher() {
       window.location.reload();
     } catch (error) {
       alert("Failed to create workspace");
+      console.error(error);
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleEdit = async () => {
+    if (!activeWorkspaceId) return;
+    const currentWorkspace = workspaces.find(w => w.id === activeWorkspaceId);
+    if (!currentWorkspace) return;
+    
+    const newName = window.prompt("Enter new workspace name:", currentWorkspace.name);
+    if (!newName || newName === currentWorkspace.name) return;
+    
+    try {
+      setIsCreating(true); // Reusing the loading state
+      await updateWorkspaceName(activeWorkspaceId, newName);
+      window.location.reload();
+    } catch (error) {
+      alert("Failed to update workspace name. You might not have permission.");
       console.error(error);
     } finally {
       setIsCreating(false);
@@ -52,14 +72,24 @@ export default function WorkspaceSwitcher() {
         <label htmlFor="workspace-select" className="text-xs font-medium text-gray-500 uppercase tracking-wider block">
           Workspace
         </label>
-        <button 
-          onClick={handleCreate}
-          disabled={isCreating}
-          className="text-gray-400 hover:text-purple-500 transition-colors p-1"
-          title="Create Workspace"
-        >
-          <Plus size={16} />
-        </button>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={handleEdit}
+            disabled={isCreating}
+            className="text-gray-400 hover:text-blue-400 transition-colors p-1"
+            title="Edit Workspace Name"
+          >
+            <Edit2 size={14} />
+          </button>
+          <button 
+            onClick={handleCreate}
+            disabled={isCreating}
+            className="text-gray-400 hover:text-blue-400 transition-colors p-1"
+            title="Create Workspace"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
       </div>
       <select
         id="workspace-select"
