@@ -30,10 +30,10 @@ export default function Sidebar() {
         <div className="h-28 flex flex-col items-center justify-center relative pt-4">
           <div className="flex items-center justify-center gap-2.5">
             <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center bg-white/10 backdrop-blur p-0.5 border border-blue-400/30">
-              <Image src="/logo.png" alt="CreativeOS Logo" width={32} height={32} className="rounded-lg object-contain" />
+              <Image src="/chibi-doctor.png" alt="BS.TA PHUONG Logo" width={32} height={32} className="rounded-lg object-contain" />
             </div>
-            <div className="font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-blue-200 tracking-tighter drop-shadow-sm">
-              CreativeOS
+            <div className="font-extrabold text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-blue-200 tracking-tighter drop-shadow-sm truncate">
+              BS.TA PHUONG
             </div>
           </div>
           <div className="text-[10px] uppercase tracking-[0.3em] text-blue-300/60 mt-2 font-semibold">Workspace</div>
