@@ -9,10 +9,10 @@ export default function Home() {
         background: 'radial-gradient(circle at center, #2C4B8C 0%, #1A2E5E 50%, #0D1B3E 100%)'
       }}
     >
-      <div className="flex flex-col items-center justify-center z-10 w-full max-w-md px-6">
+      <div className="flex flex-col items-center justify-center z-10 w-full max-w-md px-6 gap-8 md:gap-12 mt-12">
         
         {/* Animated Logo */}
-        <div className="relative w-64 h-64 md:w-80 md:h-80 mb-20 animate-float">
+        <div className="relative w-72 h-72 md:w-96 md:h-96 animate-float">
           <Image
             src="/chibi-transparent.png" 
             alt="Logo Intro"
@@ -23,7 +23,7 @@ export default function Home() {
         </div>
 
         {/* Enter Button */}
-        <div className="absolute bottom-16 md:bottom-24 w-full flex justify-center">
+        <div className="flex justify-center">
           <Link 
             href="/dashboard" 
             className="px-10 py-3 rounded-full text-white/90 text-sm md:text-base font-semibold tracking-wide transition-all duration-300 hover:bg-white/10 hover:text-white active:scale-95"
