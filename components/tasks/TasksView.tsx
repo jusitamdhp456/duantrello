@@ -105,12 +105,9 @@ export default function TasksView() {
     const total = tasks.filter(t => t.review_status !== 'approved').length;
     const inProgress = tasks.filter(t => t.status === 'in_progress').length;
     const review = tasks.filter(t => t.status === 'review').length;
-    const overdue = tasks.filter(t => {
-      if (t.status === 'completed' || t.status === 'cancelled') return false;
-      return isOverdue(t.deadline);
-    }).length;
+    const completed = tasks.filter(t => t.status === 'completed').length;
 
-    return { total, inProgress, review, overdue };
+    return { total, inProgress, review, completed };
   }, [tasks]);
 
   const openCreateModal = () => {
@@ -372,8 +369,8 @@ export default function TasksView() {
           <div className="text-2xl md:text-3xl font-bold text-sky-300 mt-2">{stats.review}</div>
         </div>
         <div className="rounded-3xl p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '6px 6px 14px rgba(8,23,64,0.5), -4px -4px 10px rgba(30,70,140,0.3)'}}>
-          <div className="text-red-400 text-xs md:text-sm font-medium">{t("task_overdue")}</div>
-          <div className="text-2xl md:text-3xl font-bold text-red-400 mt-2">{stats.overdue}</div>
+          <div className="text-green-400 text-xs md:text-sm font-medium">{t("task_status_completed")}</div>
+          <div className="text-2xl md:text-3xl font-bold text-green-400 mt-2">{stats.completed}</div>
         </div>
       </div>
 
@@ -586,26 +583,40 @@ export default function TasksView() {
                         <button
                           onClick={() => isAdmin && task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
                           disabled={!isAdmin}
-                          className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                          className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status === 'approved' 
                               ? 'bg-green-500 text-white shadow-md scale-100' 
                               : `text-white/40 scale-95 ${isAdmin ? 'hover:text-green-400 hover:bg-green-500/20' : ''}`
                           } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
-                          <CheckSquare size={14} />
-                          Đã duyệt
+                          <div className="flex items-center gap-1.5">
+                            <CheckSquare size={14} />
+                            Đã duyệt
+                          </div>
+                          {task.review_status === 'approved' && (
+                            <span className="text-[10px] font-normal opacity-90 block sm:inline">
+                              ({new Date(task.updated_at).toLocaleDateString('vi-VN')})
+                            </span>
+                          )}
                         </button>
                         <button
                           onClick={() => isAdmin && task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
                           disabled={!isAdmin}
-                          className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                          className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status !== 'approved' 
                               ? 'bg-red-500 text-white shadow-md scale-100' 
                               : `text-white/40 scale-95 ${isAdmin ? 'hover:text-red-400 hover:bg-red-500/20' : ''}`
                           } ${!isAdmin ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
-                          <XCircle size={14} />
-                          Chưa duyệt
+                          <div className="flex items-center gap-1.5">
+                            <XCircle size={14} />
+                            Chưa duyệt
+                          </div>
+                          {task.review_status === 'rejected' && (
+                            <span className="text-[10px] font-normal opacity-90 block sm:inline">
+                              ({new Date(task.updated_at).toLocaleDateString('vi-VN')})
+                            </span>
+                          )}
                         </button>
                       </div>
                     )}
