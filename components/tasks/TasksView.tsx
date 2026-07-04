@@ -360,7 +360,9 @@ export default function TasksView() {
       </div>
 
       <div className="flex gap-2 md:gap-3 mb-6 px-2 overflow-x-auto pb-3 snap-x scrollbar-hide">
-        {(['all', 'pending', 'in_progress', 'review', 'revision', 'completed', 'cancelled'] as const).map(s => (
+        {(['all', 'pending', 'in_progress', 'review', 'revision', 'completed', 'cancelled'] as const).map(s => {
+          const count = s === 'all' ? tasks.length : tasks.filter(t => t.status === s).length;
+          return (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
@@ -377,8 +379,9 @@ export default function TasksView() {
             }}
           >
             {s === 'all' ? "Tất cả" : (t(`task_status_${s}` as any) || s)}
+            {statusFilter === s ? ` (${count})` : ''}
           </button>
-        ))}
+        )})}
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 pb-6">
