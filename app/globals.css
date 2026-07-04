@@ -56,3 +56,20 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #44ACDF;
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes wink-scale {
+  0%, 48%, 52%, 100% { transform: scale(1); }
+  50% { transform: scale(0.95) rotate(-2deg); }
+}
+.animate-wink {
+  animation: wink-scale 3s infinite;
+}
+
