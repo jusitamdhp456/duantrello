@@ -404,7 +404,18 @@ export default function TasksView() {
                           rel="noopener noreferrer"
                           className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-purple-50 text-purple-600 rounded-full font-medium hover:bg-purple-100 transition-colors whitespace-nowrap"
                         >
-                          Xem source
+                          Xem source 1
+                        </a>
+                      )}
+
+                      {task.video_url_2 && (
+                        <a 
+                          href={task.video_url_2} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 bg-violet-50 text-violet-600 rounded-full font-medium hover:bg-violet-100 transition-colors whitespace-nowrap"
+                        >
+                          Xem source 2
                         </a>
                       )}
                       
