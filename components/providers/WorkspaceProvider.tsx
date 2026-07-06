@@ -11,7 +11,7 @@ interface Workspace {
 interface WorkspaceContextType {
   workspaces: Workspace[];
   activeWorkspaceId: string | null;
-  activeRole: 'owner' | 'admin' | 'manager' | 'member' | 'guest';
+  activeRole: 'admin' | 'manager' | 'member' | 'guest';
   setActiveWorkspaceId: (id: string) => void;
   isLoading: boolean;
 }
@@ -20,7 +20,7 @@ const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefin
 
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [roles, setRoles] = useState<Record<string, 'owner' | 'admin' | 'manager' | 'member' | 'guest'>>({});
+  const [roles, setRoles] = useState<Record<string, 'admin' | 'manager' | 'member' | 'guest'>>({});
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
@@ -54,7 +54,7 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           const validData = data.filter(item => item.workspaces !== null);
           
           const wsList = validData.map(item => item.workspaces as unknown as Workspace);
-          const roleMap: Record<string, 'owner' | 'admin' | 'manager' | 'member' | 'guest'> = {};
+          const roleMap: Record<string, 'admin' | 'manager' | 'member' | 'guest'> = {};
           
           validData.forEach(item => {
             const ws = item.workspaces as unknown as Workspace;
