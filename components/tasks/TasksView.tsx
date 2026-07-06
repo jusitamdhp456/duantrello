@@ -97,6 +97,14 @@ export default function TasksView() {
       filtered = filtered.filter(t => t.review_status !== 'approved');
     }
     return filtered.sort((a, b) => {
+      // Ưu tiên sản phẩm đã hoàn thành (có link sản phẩm) lên đầu
+      const aHasProduct = !!a.product_url;
+      const bHasProduct = !!b.product_url;
+      if (aHasProduct && !bHasProduct) return -1;
+      if (!aHasProduct && bHasProduct) return 1;
+
+      // Sau đó sắp xếp theo deadline
+      if (!a.deadline && !b.deadline) return 0;
       if (!a.deadline) return 1;
       if (!b.deadline) return -1;
       return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
@@ -410,61 +418,61 @@ export default function TasksView() {
             <p className="text-blue-400">{t("task_empty")}</p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-1.5 sm:gap-3">
             {filteredTasks.map(task => {
               const isTaskOverdue = isOverdue(task.deadline) && task.status !== 'completed' && task.status !== 'cancelled';
               
               return (
                 <div key={task.id} 
-                  className="rounded-[1.5rem] p-4 md:p-5 hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
+                  className="rounded-[1rem] md:rounded-[1.2rem] py-2 px-2.5 md:py-3 md:px-4 hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-1.5 md:gap-3"
                   style={{
                     background: task.assignee_id 
                       ? 'linear-gradient(135deg, #0D2657 0%, #0D3E8A 100%)' 
                       : 'linear-gradient(135deg, #4c1d95 0%, #2e1065 100%)',
                     boxShadow: task.assignee_id 
-                      ? '6px 6px 14px rgba(8,23,64,0.5), -3px -3px 8px rgba(30,70,140,0.3)'
-                      : '6px 6px 14px rgba(8,23,64,0.5), -3px -3px 8px rgba(76,29,149,0.3)',
+                      ? '2px 2px 8px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'
+                      : '2px 2px 8px rgba(8,23,64,0.5), -1px -1px 4px rgba(76,29,149,0.3)',
                     border: task.assignee_id ? 'none' : '1px solid rgba(139,92,246,0.3)',
-                    borderLeft: `4px solid ${isTaskOverdue ? '#f87171' : (task.assignee_id ? 'rgba(44,145,206,0.6)' : 'rgba(167,139,250,0.6)')}`
+                    borderLeft: `3px solid ${isTaskOverdue ? '#f87171' : (task.assignee_id ? 'rgba(44,145,206,0.6)' : 'rgba(167,139,250,0.6)')}`
                   }}
                 >
-                  <div className="flex items-start md:items-center gap-3 sm:gap-5 flex-1 w-full lg:w-auto overflow-hidden">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 md:mt-0" style={{background: 'rgba(13,38,87,0.8)', boxShadow: 'inset 2px 2px 4px rgba(8,23,64,0.6), inset -2px -2px 4px rgba(30,70,140,0.3)'}}>
+                  <div className="flex items-start md:items-center gap-2 sm:gap-3 flex-1 w-full lg:w-auto overflow-hidden">
+                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 md:mt-0" style={{background: 'rgba(13,38,87,0.8)', boxShadow: 'inset 2px 2px 4px rgba(8,23,64,0.6), inset -2px -2px 4px rgba(30,70,140,0.3)'}}>
                       {getPriorityIcon(task.priority)}
                     </div>
                     <div className="flex flex-col min-w-0 flex-1">
-                      <h3 className="text-white font-semibold text-base sm:text-lg flex flex-wrap items-center gap-2">
-                        <span className="truncate">{task.title}</span>
+                      <h3 className="text-white font-semibold text-[13px] sm:text-base flex flex-wrap items-center gap-1.5">
+                        <span className="truncate max-w-full">{task.title}</span>
                         {isTaskOverdue && (
-                          <span className="text-[10px] sm:text-xs bg-red-500/30 text-red-300 px-2 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 border border-red-500/40">
-                            <AlertCircle size={12} /> {t("task_overdue")}
+                          <span className="text-[8px] sm:text-[10px] bg-red-500/30 text-red-300 px-1.5 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 border border-red-500/40">
+                            <AlertCircle size={10} /> {t("task_overdue")}
                           </span>
                         )}
                       </h3>
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-white/60 mt-1.5">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-white/60 mt-0.5">
                         <span className="flex items-center gap-1">
-                          <Eye size={14} className="text-white/40" />
-                          <span className="truncate max-w-[120px] sm:max-w-none">{task.assignee_name || "Chưa giao"}</span>
+                          <Eye size={10} className="text-white/40 sm:w-3 sm:h-3" />
+                          <span className="truncate max-w-[90px] sm:max-w-none">{task.assignee_name || "Chưa giao"}</span>
                         </span>
                         <span className={`flex items-center gap-1 ${isTaskOverdue ? 'text-red-300 font-medium' : ''}`}>
-                          <Clock size={14} className={isTaskOverdue ? 'text-red-300' : 'text-white/40'} />
+                          <Clock size={10} className={`sm:w-3 sm:h-3 ${isTaskOverdue ? 'text-red-300' : 'text-white/40'}`} />
                           {task.deadline ? new Date(task.deadline).toLocaleDateString('vi-VN') : "Không có"}
                         </span>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-3 w-full lg:w-auto pt-3 lg:pt-0 border-t border-blue-700/30 lg:border-t-0">
-                    <div className="flex flex-wrap items-center gap-2 justify-start sm:justify-end w-full lg:w-auto">
+                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-1.5 w-full lg:w-auto pt-1.5 lg:pt-0 border-t border-blue-700/30 lg:border-t-0 mt-0.5 lg:mt-0">
+                    <div className="flex flex-wrap items-center gap-1.5 justify-start sm:justify-end w-full lg:w-auto">
                       {task.video_url && (
                         <a 
                           href={task.video_url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                          className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center"
                           style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
                         >
-                          Xem source 1
+                          Source 1
                         </a>
                       )}
 
@@ -473,41 +481,41 @@ export default function TasksView() {
                           href={task.video_url_2} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                          className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center"
                           style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
                         >
-                          Xem source 2
+                          Source 2
                         </a>
                       )}
 
                       <button
                         onClick={() => setSelectedTaskForComments(task)}
-                        className="flex items-center gap-1.5 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                        className="flex items-center gap-1 text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
                         style={{background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.18)'}}
                       >
-                        <MessageCircle size={14} />
+                        <MessageCircle size={10} className="sm:w-3 sm:h-3" />
                         Nhận xét
                       </button>
                       
                       {task.product_url ? (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-0.5">
                           <a 
                             href={task.product_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                            className="flex items-center gap-1 text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
                             style={{background: 'rgba(34,197,94,0.2)', color: '#86EFAC', border: '1px solid rgba(34,197,94,0.3)'}}
                           >
-                            <Link2 size={14} />
+                            <Link2 size={10} className="sm:w-3 sm:h-3" />
                             SP hoàn thành
                           </a>
                           {(isAdmin || task.assignee_id === currentUser?.id) && (
                             <button
                               onClick={() => handleSubmitProductUrl(task)}
-                              className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                              className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
                               title="Sửa link sản phẩm"
                             >
-                              <Edit2 size={14} />
+                              <Edit2 size={10} className="sm:w-3 sm:h-3" />
                             </button>
                           )}
                         </div>
@@ -515,10 +523,10 @@ export default function TasksView() {
                         (isAdmin || task.assignee_id === currentUser?.id) && (
                           <button
                             onClick={() => handleSubmitProductUrl(task)}
-                            className="flex items-center gap-1 text-[11px] sm:text-sm px-3 sm:px-4 py-1.5 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
+                            className="flex items-center gap-1 text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
                             style={{background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.2)'}}
                           >
-                            <Plus size={14} />
+                            <Plus size={10} className="sm:w-3 sm:h-3" />
                             Nộp SP
                           </button>
                         )
@@ -528,7 +536,7 @@ export default function TasksView() {
                         value={task.status}
                         disabled={!isAdmin && task.assignee_id !== currentUser?.id}
                         onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
-                        className={`text-[11px] sm:text-sm px-3 py-1.5 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed ${getStatusColor(task.status)}`}
+                        className={`text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed ${getStatusColor(task.status)}`}
                       >
                         <option value="pending">{t("task_status_pending")}</option>
                         <option value="in_progress">{t("task_status_in_progress")}</option>
@@ -538,65 +546,65 @@ export default function TasksView() {
                         <option value="cancelled">{t("task_status_cancelled")}</option>
                       </select>
 
-                      <div className="flex items-center gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-0.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                         {(isAdmin || task.assignee_id === currentUser?.id) && (
                           <button 
                             onClick={() => openEditModal(task)}
-                            className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                            className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
                             title={t("task_edit")}
                           >
-                            <Edit2 size={16} />
+                            <Edit2 size={12} className="sm:w-[14px] sm:h-[14px]" />
                           </button>
                         )}
                         {isAdmin && (
                           <button 
                             onClick={() => handleDelete(task.id)}
-                            className="p-1.5 text-white/40 hover:text-red-400 hover:bg-red-500/20 rounded-full transition-colors"
+                            className="p-1 text-white/40 hover:text-red-400 hover:bg-red-500/20 rounded-full transition-colors"
                             title={t("task_delete")}
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={12} className="sm:w-[14px] sm:h-[14px]" />
                           </button>
                         )}
                         {!isAdmin && !task.assignee_id && (
                           <button
                             onClick={() => handleClaimTask(task.id)}
-                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-white rounded-full transition-colors shadow-sm"
+                            className="flex items-center gap-1 px-1.5 py-0.5 sm:py-1 text-[9px] sm:text-xs font-bold text-white rounded-full transition-colors shadow-sm"
                             style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 2px 8px rgba(43,145,206,0.4)'}}
                             title="Nhận việc"
                           >
-                            <Hand size={14} /> Nhận việc
+                            <Hand size={10} className="sm:w-3 sm:h-3" /> Nhận việc
                           </button>
                         )}
                         {task.assignee_id === currentUser?.id && (
                           <button
                             onClick={() => handleUnclaimTask(task.id)}
-                            className="flex items-center gap-1 px-3 py-1 text-[11px] sm:text-xs font-bold text-white/70 rounded-full transition-all hover:text-red-300 hover:bg-red-500/20 shadow-sm border"
+                            className="flex items-center gap-1 px-1.5 py-0.5 sm:py-1 text-[9px] sm:text-xs font-bold text-white/70 rounded-full transition-all hover:text-red-300 hover:bg-red-500/20 shadow-sm border"
                             style={{background: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.2)'}}
                             title="Bỏ nhận việc"
                           >
-                            <XCircle size={14} /> Bỏ nhận
+                            <XCircle size={10} className="sm:w-3 sm:h-3" /> Bỏ nhận
                           </button>
                         )}
                       </div>
                     </div>
 
                     {task.product_url && (
-                      <div className="flex items-center gap-1 p-1 rounded-xl border lg:mr-[72px] w-full sm:w-auto" style={{background: 'rgba(255,255,255,0.07)', borderColor: 'rgba(255,255,255,0.15)'}}>
+                      <div className="flex items-center gap-1 p-0.5 rounded-xl border lg:mr-[60px] w-full sm:w-auto mt-0.5" style={{background: 'rgba(255,255,255,0.07)', borderColor: 'rgba(255,255,255,0.15)'}}>
                         <button
                           onClick={() => canReview && task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
                           disabled={!canReview}
-                          className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                          className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 px-1.5 py-0.5 sm:py-1 text-[9px] sm:text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status === 'approved' 
-                              ? 'bg-green-500 text-white shadow-md scale-100' 
+                              ? 'bg-green-500 text-white shadow-sm scale-100' 
                               : `text-white/40 scale-95 ${canReview ? 'hover:text-green-400 hover:bg-green-500/20' : ''}`
                           } ${!canReview ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
-                          <div className="flex items-center gap-1.5">
-                            <CheckSquare size={14} />
+                          <div className="flex items-center gap-0.5">
+                            <CheckSquare size={10} className="sm:w-3 sm:h-3" />
                             Đã duyệt
                           </div>
                           {task.review_status === 'approved' && (
-                            <span className="text-[10px] font-normal opacity-90 block sm:inline">
+                            <span className="text-[8px] sm:text-[9px] font-normal opacity-90 block sm:inline">
                               ({new Date(task.updated_at).toLocaleDateString('vi-VN')})
                             </span>
                           )}
@@ -604,18 +612,18 @@ export default function TasksView() {
                         <button
                           onClick={() => canReview && task.review_status !== 'rejected' && handleReviewAction(task, 'rejected')}
                           disabled={!canReview}
-                          className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-300 ${
+                          className={`flex-1 sm:flex-none flex flex-col sm:flex-row items-center justify-center gap-1 px-1.5 py-0.5 sm:py-1 text-[9px] sm:text-xs font-bold rounded-lg transition-all duration-300 ${
                             task.review_status !== 'approved' 
-                              ? 'bg-red-500 text-white shadow-md scale-100' 
+                              ? 'bg-red-500 text-white shadow-sm scale-100' 
                               : `text-white/40 scale-95 ${canReview ? 'hover:text-red-400 hover:bg-red-500/20' : ''}`
                           } ${!canReview ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
                         >
-                          <div className="flex items-center gap-1.5">
-                            <XCircle size={14} />
+                          <div className="flex items-center gap-0.5">
+                            <XCircle size={10} className="sm:w-3 sm:h-3" />
                             Chưa duyệt
                           </div>
                           {task.review_status === 'rejected' && (
-                            <span className="text-[10px] font-normal opacity-90 block sm:inline">
+                            <span className="text-[8px] sm:text-[9px] font-normal opacity-90 block sm:inline">
                               ({new Date(task.updated_at).toLocaleDateString('vi-VN')})
                             </span>
                           )}
