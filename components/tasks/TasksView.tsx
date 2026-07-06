@@ -41,8 +41,8 @@ export default function TasksView() {
     loadUser();
   }, [supabase.auth]);
 
-  const isAdmin = activeRole === 'admin';
-  const canReview = activeRole === 'admin' || activeRole === 'manager';
+  const isAdmin = activeRole === 'admin' || activeRole === 'owner';
+  const canReview = activeRole === 'admin' || activeRole === 'manager' || activeRole === 'owner';
   const isGuest = activeRole === 'guest';
   const isMember = activeRole === 'member';
   
@@ -523,7 +523,7 @@ export default function TasksView() {
                             <Link2 size={12} className="sm:w-3 sm:h-3" />
                             SP hoàn thành
                           </a>
-                          {activeRole !== 'guest' && (task.assignee_id === currentUser?.id || activeRole === 'admin') && (
+                          {activeRole !== 'guest' && (task.assignee_id === currentUser?.id || isAdmin) && (
                             <button
                               onClick={() => handleSubmitProductUrl(task)}
                               className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
@@ -534,7 +534,7 @@ export default function TasksView() {
                           )}
                         </div>
                       ) : (
-                        activeRole !== 'guest' && (task.assignee_id === currentUser?.id || activeRole === 'admin') && (
+                        activeRole !== 'guest' && (task.assignee_id === currentUser?.id || isAdmin) && (
                           <button
                             onClick={() => handleSubmitProductUrl(task)}
                             className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
@@ -548,7 +548,7 @@ export default function TasksView() {
 
                       <select 
                         value={task.status}
-                        disabled={activeRole === 'guest' || (activeRole !== 'admin' && task.assignee_id !== currentUser?.id)}
+                        disabled={activeRole === 'guest' || (!isAdmin && task.assignee_id !== currentUser?.id)}
                         onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
                         className={`text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed ${getStatusColor(task.status)}`}
                       >
@@ -561,7 +561,7 @@ export default function TasksView() {
                       </select>
 
                       <div className="flex items-center gap-0.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                        {activeRole !== 'guest' && (task.assignee_id === currentUser?.id || activeRole === 'admin') && (
+                        {activeRole !== 'guest' && (task.assignee_id === currentUser?.id || isAdmin) && (
                           <button 
                             onClick={() => openEditModal(task)}
                             className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
@@ -570,7 +570,7 @@ export default function TasksView() {
                             <Edit2 size={12} className="sm:w-[14px] sm:h-[14px]" />
                           </button>
                         )}
-                        {activeRole === 'admin' && (
+                        {isAdmin && (
                           <button 
                             onClick={() => handleDelete(task.id)}
                             className="p-1 text-white/40 hover:text-red-400 hover:bg-red-500/20 rounded-full transition-colors"
