@@ -517,19 +517,19 @@ export default function TasksView() {
                             href={task.product_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                            className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
                             style={{background: 'rgba(34,197,94,0.2)', color: '#86EFAC', border: '1px solid rgba(34,197,94,0.3)'}}
                           >
-                            <Link2 size={10} className="sm:w-3 sm:h-3" />
+                            <Link2 size={12} className="sm:w-3 sm:h-3" />
                             SP hoàn thành
                           </a>
                           {activeRole !== 'guest' && (task.assignee_id === currentUser?.id || activeRole === 'admin') && (
                             <button
                               onClick={() => handleSubmitProductUrl(task)}
-                              className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                              className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
                               title="Sửa link sản phẩm"
                             >
-                              <Edit2 size={10} className="sm:w-3 sm:h-3" />
+                              <Edit2 size={12} className="sm:w-3 sm:h-3" />
                             </button>
                           )}
                         </div>
@@ -537,10 +537,10 @@ export default function TasksView() {
                         activeRole !== 'guest' && (task.assignee_id === currentUser?.id || activeRole === 'admin') && (
                           <button
                             onClick={() => handleSubmitProductUrl(task)}
-                            className="flex items-center gap-1 text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
+                            className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
                             style={{background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.2)'}}
                           >
-                            <Plus size={10} className="sm:w-3 sm:h-3" />
+                            <Plus size={12} className="sm:w-3 sm:h-3" />
                             Nộp SP
                           </button>
                         )
