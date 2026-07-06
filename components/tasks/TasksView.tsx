@@ -377,22 +377,22 @@ export default function TasksView() {
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-2 sm:gap-4 md:gap-6 mb-6 sm:mb-8 px-2">
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_total")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-100 mt-1 sm:mt-2">{stats.total}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 md:gap-6 mb-6 sm:mb-8 px-2">
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_total")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-100 mt-1 sm:mt-2 truncate min-w-0">{stats.total}</div>
         </div>
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_status_in_progress")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2">{stats.inProgress}</div>
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_in_progress")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2 truncate min-w-0">{stats.inProgress}</div>
         </div>
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_status_review")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2">{stats.review}</div>
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_review")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2 truncate min-w-0">{stats.review}</div>
         </div>
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-green-400 text-[10px] sm:text-xs md:text-sm font-medium truncate">{t("task_status_completed")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-green-400 mt-1 sm:mt-2">{stats.completed}</div>
+        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
+          <div className="text-green-400 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_completed")}</div>
+          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-green-400 mt-1 sm:mt-2 truncate min-w-0">{stats.completed}</div>
         </div>
       </div>
 
@@ -436,7 +436,7 @@ export default function TasksView() {
               
               return (
                 <div key={task.id} 
-                  className="rounded-[1rem] md:rounded-[1.2rem] py-2 px-2.5 md:py-3 md:px-4 hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-1.5 md:gap-3"
+                  className="min-w-0 rounded-[1rem] md:rounded-[1.2rem] py-2 px-2.5 md:py-3 md:px-4 hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-1.5 md:gap-3"
                   style={{
                     background: task.assignee_id 
                       ? 'linear-gradient(135deg, #0D2657 0%, #0D3E8A 100%)' 
@@ -448,13 +448,13 @@ export default function TasksView() {
                     borderLeft: `3px solid ${isTaskOverdue ? '#f87171' : (task.assignee_id ? 'rgba(44,145,206,0.6)' : 'rgba(167,139,250,0.6)')}`
                   }}
                 >
-                  <div className="flex items-start md:items-center gap-2 sm:gap-3 flex-1 w-full lg:w-auto overflow-hidden">
+                  <div className="flex items-start md:items-center gap-2 sm:gap-3 flex-1 w-full lg:w-auto overflow-hidden min-w-0">
                     <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 md:mt-0" style={{background: 'rgba(13,38,87,0.8)', boxShadow: 'inset 2px 2px 4px rgba(8,23,64,0.6), inset -2px -2px 4px rgba(30,70,140,0.3)'}}>
                       {getPriorityIcon(task.priority)}
                     </div>
                     <div className="flex flex-col min-w-0 flex-1">
-                      <h3 className="text-white font-semibold text-[13px] sm:text-base flex flex-wrap items-center gap-1.5">
-                        <span className="truncate max-w-full">{task.title}</span>
+                      <h3 className="text-white font-semibold text-[13px] sm:text-base flex flex-wrap items-center gap-1.5 min-w-0">
+                        <span className="truncate min-w-0 max-w-full">{task.title}</span>
                         {isTaskOverdue && (
                           <span className="text-[8px] sm:text-[10px] bg-red-500/30 text-red-300 px-1.5 py-0.5 rounded-full flex items-center gap-1 flex-shrink-0 border border-red-500/40">
                             <AlertCircle size={10} /> {t("task_overdue")}
@@ -474,8 +474,8 @@ export default function TasksView() {
                     </div>
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-1.5 w-full lg:w-auto pt-1.5 lg:pt-0 border-t border-blue-700/30 lg:border-t-0 mt-0.5 lg:mt-0">
-                    <div className="flex flex-wrap items-center gap-1.5 justify-start sm:justify-end w-full lg:w-auto">
+                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-1.5 w-full lg:w-auto pt-1.5 lg:pt-0 border-t border-blue-700/30 lg:border-t-0 mt-0.5 lg:mt-0 min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5 justify-start sm:justify-end w-full lg:w-auto min-w-0">
                       {task.video_url && (
                         <a 
                           href={task.video_url} 
