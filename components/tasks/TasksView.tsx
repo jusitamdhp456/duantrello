@@ -377,22 +377,22 @@ export default function TasksView() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 md:gap-6 mb-6 sm:mb-8 px-2">
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_total")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-100 mt-1 sm:mt-2 truncate min-w-0">{stats.total}</div>
+      <div className="grid grid-cols-4 gap-1.5 sm:gap-4 md:gap-6 mb-4 sm:mb-8 px-1 sm:px-2">
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_total")}</div>
+          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-sky-100 mt-0.5 sm:mt-2 truncate min-w-0">{stats.total}</div>
         </div>
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_in_progress")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2 truncate min-w-0">{stats.inProgress}</div>
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_in_progress")}</div>
+          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-sky-300 mt-0.5 sm:mt-2 truncate min-w-0">{stats.inProgress}</div>
         </div>
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_review")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-sky-300 mt-1 sm:mt-2 truncate min-w-0">{stats.review}</div>
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
+          <div className="text-blue-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_review")}</div>
+          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-sky-300 mt-0.5 sm:mt-2 truncate min-w-0">{stats.review}</div>
         </div>
-        <div className="rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '4px 4px 10px rgba(8,23,64,0.5), -2px -2px 6px rgba(30,70,140,0.3)'}}>
-          <div className="text-green-400 text-[10px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_completed")}</div>
-          <div className="text-lg sm:text-2xl md:text-3xl font-bold text-green-400 mt-1 sm:mt-2 truncate min-w-0">{stats.completed}</div>
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
+          <div className="text-green-400 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_completed")}</div>
+          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-green-400 mt-0.5 sm:mt-2 truncate min-w-0">{stats.completed}</div>
         </div>
       </div>
 
