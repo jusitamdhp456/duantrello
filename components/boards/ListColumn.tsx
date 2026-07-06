@@ -86,7 +86,7 @@ export default function ListColumn({ list, cards, index, onAddCard, onCardClick,
                   onClick={() => setIsAdding(true)}
                   className="flex items-center text-gray-500 hover:text-gray-700 hover:bg-neu-base hover:shadow-neu-concave p-3 rounded-[1.5rem] w-full text-sm font-bold transition-all duration-200 mt-2 uppercase tracking-widest"
                 >
-                  <Plus className="w-5 h-5 mr-2" /> {t("add_a_card")}
+                  <Plus className="w-5 h-5 mr-2" /> {t("add_another_card")}
                 </button>
               )}
             </div>
