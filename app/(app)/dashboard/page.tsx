@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Loader2, Trophy, Scissors, CheckCircle2, Target, Wallet, Eye, EyeOff, Upload } from 'lucide-react';
 import Image from 'next/image';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+
 
 export default function DashboardPage() {
   const { activeWorkspaceId, isLoading: wsLoading } = useWorkspace();
@@ -25,6 +27,9 @@ export default function DashboardPage() {
     win: 0,
     avgScore: "0.0",
   });
+  
+  const [taskStatusData, setTaskStatusData] = useState<any[]>([]);
+  const [tasksByDayData, setTasksByDayData] = useState<any[]>([]);
   
   const supabase = createClient();
 
@@ -84,6 +89,67 @@ export default function DashboardPage() {
           win: 0,
           avgScore: "0.0",
         });
+
+        // Tính toán dữ liệu cho Biểu đồ tròn (Pie Chart - Task Status)
+        if (tasks) {
+          const statusCounts = {
+            pending: 0,
+            in_progress: 0,
+            review: 0,
+            completed: 0,
+            cancelled: 0
+          };
+          tasks.forEach(t => {
+            if (t.status === 'completed') statusCounts.completed++;
+            else if (t.status === 'cancelled') statusCounts.cancelled++;
+            else if (t.status === 'in_progress') statusCounts.in_progress++;
+            else if (t.status === 'review' || t.review_status === 'review') statusCounts.review++;
+            else statusCounts.pending++;
+          });
+          
+          setTaskStatusData([
+            { name: 'Mới', value: statusCounts.pending, color: '#94a3b8' },
+            { name: 'Đang làm', value: statusCounts.in_progress, color: '#38bdf8' },
+            { name: 'Chờ duyệt', value: statusCounts.review, color: '#f59e0b' },
+            { name: 'Hoàn thành', value: statusCounts.completed, color: '#4ade80' },
+            { name: 'Đã hủy', value: statusCounts.cancelled, color: '#f87171' }
+          ].filter(d => d.value > 0));
+
+          // Mocking tasks by day data for Bar Chart
+          // Lấy 7 ngày gần nhất
+          const last7Days = Array.from({length: 7}, (_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - (6 - i));
+            return {
+              name: d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
+              date: d.toISOString().split('T')[0],
+              HoànThành: 0,
+              NhậnMới: 0
+            };
+          });
+
+          // Fetch recent tasks to populate bar chart
+          const { data: recentTasks } = await supabase
+            .from('tasks')
+            .select('created_at, status, updated_at')
+            .eq('workspace_id', activeWorkspaceId)
+            .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
+          if (recentTasks) {
+            recentTasks.forEach(rt => {
+              const createdDate = rt.created_at.split('T')[0];
+              const dayObj = last7Days.find(d => d.date === createdDate);
+              if (dayObj) dayObj.NhậnMới++;
+
+              if (rt.status === 'completed') {
+                const updatedDate = rt.updated_at?.split('T')[0] || createdDate;
+                const completedDayObj = last7Days.find(d => d.date === updatedDate);
+                if (completedDayObj) completedDayObj.HoànThành++;
+              }
+            });
+          }
+          setTasksByDayData(last7Days);
+        }
       }
 
       setIsLoading(false);
@@ -289,6 +355,76 @@ export default function DashboardPage() {
         </div>
 
       </div>
+
+      {/* Analytics Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <div className="bg-white rounded-[1.25rem] sm:rounded-2xl shadow-neu-convex p-4 sm:p-6 flex flex-col hover:shadow-neu-concave transition-all duration-300">
+          <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-100">
+              <Scissors className="w-4 h-4 text-blue-500" />
+            </div>
+            Tiến độ 7 ngày qua
+          </h3>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={tasksByDayData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                <RechartsTooltip 
+                  cursor={{ fill: '#f1f5f9' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
+                <Bar dataKey="NhậnMới" name="Nhận mới" fill="#94a3b8" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                <Bar dataKey="HoànThành" name="Hoàn thành" fill="#4ade80" radius={[4, 4, 0, 0]} maxBarSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[1.25rem] sm:rounded-2xl shadow-neu-convex p-4 sm:p-6 flex flex-col hover:shadow-neu-concave transition-all duration-300">
+          <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center border border-purple-100">
+              <Target className="w-4 h-4 text-purple-500" />
+            </div>
+            Tỷ lệ Trạng thái
+          </h3>
+          <div className="h-64 w-full flex items-center justify-center">
+            {taskStatusData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={taskStatusData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={5}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {taskStatusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip 
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    itemStyle={{ color: '#1e293b' }}
+                  />
+                  <Legend iconType="circle" layout="vertical" verticalAlign="middle" align="right" wrapperStyle={{ fontSize: '12px' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="text-sm text-gray-400 flex flex-col items-center justify-center h-full">
+                <CheckCircle2 className="w-8 h-8 text-gray-200 mb-2" />
+                <p>Chưa có dữ liệu trạng thái</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
 
       <div className="text-center pt-8">
         <p className="text-sm text-gray-400 font-medium capitalize tracking-wide">{currentDate}</p>

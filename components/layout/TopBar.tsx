@@ -4,6 +4,7 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 import { logout } from "@/app/auth/actions";
 import LanguageToggle from "@/components/layout/LanguageToggle";
 import { Search, Bell, LogOut, User, Menu } from "lucide-react";
+import NotificationsDropdown from "@/components/layout/NotificationsDropdown";
 
 export default function TopBar({ userEmail }: { userEmail: string | undefined }) {
   const { t } = useLanguage();
@@ -40,9 +41,7 @@ export default function TopBar({ userEmail }: { userEmail: string | undefined })
 
       {/* Right Actions */}
       <div className="flex items-center gap-6">
-        <button className="p-3 rounded-full text-blue-300 hover:text-white hover:bg-white/10 transition-all">
-          <Bell size={20} />
-        </button>
+        <NotificationsDropdown />
 
         <div className="h-8 w-px bg-blue-500/30"></div>
 

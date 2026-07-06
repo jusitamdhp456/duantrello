@@ -5,6 +5,39 @@ import { revalidatePath } from "next/cache";
 
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
 
+// Helper function to create a notification
+async function createNotification(supabase: any, {
+  userId,
+  actorId,
+  workspaceId,
+  type,
+  title,
+  message = null,
+  linkUrl = null
+}: {
+  userId: string;
+  actorId: string | null;
+  workspaceId: string | null;
+  type: string;
+  title: string;
+  message?: string | null;
+  linkUrl?: string | null;
+}) {
+  try {
+    await supabase.from('notifications').insert({
+      user_id: userId,
+      actor_id: actorId,
+      workspace_id: workspaceId,
+      type,
+      title,
+      message,
+      link_url: linkUrl
+    });
+  } catch (err) {
+    console.error("Failed to create notification", err);
+  }
+}
+
 export async function getTasks(workspaceId: string) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -94,6 +127,29 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
   if (data.video_url_2 !== undefined) payload.video_url_2 = data.video_url_2;
   if (data.product_url !== undefined) payload.product_url = data.product_url;
   if (data.review_status !== undefined) payload.review_status = data.review_status;
+
+  // Lấy assignee cũ để check nếu thay đổi người được giao
+  let oldAssigneeId = null;
+  let workspaceId = null;
+  if (data.assignee_id !== undefined) {
+    const { data: oldTask } = await supabase.from("tasks").select("assignee_id, workspace_id, title").eq("id", taskId).single();
+    if (oldTask) {
+      oldAssigneeId = oldTask.assignee_id;
+      workspaceId = oldTask.workspace_id;
+      // Thông báo cho người mới được giao
+      if (data.assignee_id && data.assignee_id !== oldAssigneeId && data.assignee_id !== user.id) {
+        await createNotification(supabase, {
+          userId: data.assignee_id,
+          actorId: user.id,
+          workspaceId: workspaceId,
+          type: 'assign_task',
+          title: `Bạn được giao công việc: ${data.title || oldTask.title}`,
+          message: 'Hãy kiểm tra danh sách công việc của bạn.',
+          linkUrl: '/tasks'
+        });
+      }
+    }
+  }
 
   const { data: updatedTask, error } = await supabase
     .from("tasks")
@@ -256,6 +312,17 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
     return { error: "Lỗi khi cộng lương: " + salaryError.message };
   }
 
+  // Create notification
+  await createNotification(supabase, {
+    userId: targetUserId,
+    actorId: user.id,
+    workspaceId: workspaceId,
+    type: 'review_approved',
+    title: `Sản phẩm được duyệt: ${taskTitle}`,
+    message: `Thưởng lương: ${rate.toLocaleString()}đ`,
+    linkUrl: '/tasks'
+  });
+
   revalidatePath("/tasks");
   revalidatePath("/my-salary");
   return { success: true, rate, nextCount };
@@ -304,6 +371,17 @@ export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: str
   if (deleteError) {
     console.error("Error deleting salary record:", deleteError);
   }
+
+  // Create notification
+  await createNotification(supabase, {
+    userId: targetUserId,
+    actorId: user.id,
+    workspaceId: null,
+    type: 'review_rejected',
+    title: `Sản phẩm bị TỪ CHỐI duyệt: ${taskTitle}`,
+    message: `Lương tương ứng đã bị thu hồi.`,
+    linkUrl: '/tasks'
+  });
 
   revalidatePath("/tasks");
   revalidatePath("/my-salary");
@@ -364,9 +442,21 @@ export async function addTaskComment(taskId: string, content: string, imageUrl: 
   // Lấy thông tin task để gửi thông báo cho rõ ràng
   const { data: taskInfo } = await supabase
     .from("tasks")
-    .select("title")
+    .select("title, assignee_id, workspace_id")
     .eq("id", taskId)
     .single();
+
+  if (taskInfo && taskInfo.assignee_id && taskInfo.assignee_id !== user.id) {
+    await createNotification(supabase, {
+      userId: taskInfo.assignee_id,
+      actorId: user.id,
+      workspaceId: taskInfo.workspace_id,
+      type: 'comment',
+      title: `${fullName} đã nhận xét về: ${taskInfo.title}`,
+      message: content,
+      linkUrl: '/tasks'
+    });
+  }
 
   // Gửi thông báo Telegram nếu có cấu hình
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
