@@ -515,6 +515,7 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
                     </button>
                   </div>
                 </div>
+              </div>
               )}
             </div>
           )}
