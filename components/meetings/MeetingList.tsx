@@ -22,7 +22,7 @@ interface Props {
 }
 
 export default function MeetingList({ initialMeetings }: Props) {
-  const { activeWorkspaceId } = useWorkspace();
+  const { activeWorkspaceId, activeRole } = useWorkspace();
   const [meetings, setMeetings] = useState<Meeting[]>(initialMeetings);
   const [filter, setFilter] = useState<FilterTab>("all");
   const [showCreate, setShowCreate] = useState(false);
@@ -84,13 +84,15 @@ export default function MeetingList({ initialMeetings }: Props) {
           </h1>
           <p className="text-sm text-gray-400 mt-1 ml-12">Lên lịch, ghi chú và theo dõi cuộc họp của team</p>
         </div>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full shadow-lg hover:opacity-90 active:scale-95 transition-all duration-200 text-sm font-semibold"
-        >
-          <Plus size={18} />
-          Tạo cuộc họp
-        </button>
+        {activeRole !== 'guest' && (
+          <button
+            onClick={() => setShowCreate(true)}
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full shadow-lg hover:opacity-90 active:scale-95 transition-all duration-200 text-sm font-semibold"
+          >
+            <Plus size={18} />
+            Tạo cuộc họp
+          </button>
+        )}
       </div>
 
       {/* Stats */}

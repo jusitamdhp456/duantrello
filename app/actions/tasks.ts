@@ -5,6 +5,17 @@ import { revalidatePath } from "next/cache";
 
 import type { Task, TaskStatus, TaskPriority } from "@/types/tasks";
 
+// Helper function to get user role
+async function getUserRole(supabase: any, userId: string, workspaceId: string) {
+  const { data } = await supabase
+    .from("workspace_members")
+    .select("role")
+    .eq("workspace_id", workspaceId)
+    .eq("user_id", userId)
+    .single();
+  return data?.role || 'guest';
+}
+
 // Helper function to create a notification
 async function createNotification(supabase: any, {
   userId,
@@ -81,6 +92,11 @@ export async function createTask(workspaceId: string, data: Partial<Task>) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  const role = await getUserRole(supabase, user.id, workspaceId);
+  if (role === 'guest') {
+    throw new Error("Khách không có quyền tạo công việc.");
+  }
+
   const payload: any = {
     workspace_id: workspaceId,
     title: data.title,
@@ -116,6 +132,15 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  // Get workspaceId of the task
+  const { data: taskInfo } = await supabase.from("tasks").select("workspace_id").eq("id", taskId).single();
+  if (!taskInfo) throw new Error("Task not found");
+  
+  const role = await getUserRole(supabase, user.id, taskInfo.workspace_id);
+  if (role === 'guest') {
+    throw new Error("Khách không có quyền chỉnh sửa công việc.");
+  }
+
   const payload: any = { updated_at: new Date().toISOString() };
   if (data.title !== undefined) payload.title = data.title;
   if (data.assignee_name !== undefined) payload.assignee_name = data.assignee_name;
@@ -126,7 +151,15 @@ export async function updateTask(taskId: string, data: Partial<Task>) {
   if (data.video_url !== undefined) payload.video_url = data.video_url;
   if (data.video_url_2 !== undefined) payload.video_url_2 = data.video_url_2;
   if (data.product_url !== undefined) payload.product_url = data.product_url;
-  if (data.review_status !== undefined) payload.review_status = data.review_status;
+  if (data.review_status !== undefined) {
+    if (role === 'member') {
+      // Member can only change review_status to 'review', not 'approved'/'rejected'
+      if (data.review_status === 'approved' || data.review_status === 'rejected') {
+        throw new Error("Nhân viên không có quyền duyệt công việc.");
+      }
+    }
+    payload.review_status = data.review_status;
+  }
 
   // Lấy assignee cũ để check nếu thay đổi người được giao
   let oldAssigneeId = null;
@@ -245,6 +278,11 @@ export async function approveTaskAndPay(taskId: string, workspaceId: string, tas
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  const role = await getUserRole(supabase, user.id, workspaceId);
+  if (role === 'member' || role === 'guest') {
+    throw new Error("Bạn không có quyền duyệt công việc.");
+  }
+
   // Lấy assignee_id từ task
   const { data: taskData, error: taskError } = await supabase
     .from("tasks")
@@ -333,18 +371,22 @@ export async function revokeTaskApprovalAndDeduct(taskId: string, taskTitle: str
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  // Lấy assignee_id từ task
+  // Lấy thông tin task để lấy workspaceId
   const { data: taskData, error: taskError } = await supabase
     .from("tasks")
-    .select("assignee_id")
+    .select("assignee_id, workspace_id")
     .eq("id", taskId)
     .single();
-    
-  if (taskError || !taskData?.assignee_id) {
-    console.error("Error getting assignee_id:", taskError);
-    return { error: "Không tìm thấy người làm nhiệm vụ này để thu hồi lương." };
+
+  if (taskError || !taskData) {
+    throw new Error("Task not found");
   }
-  
+
+  const role = await getUserRole(supabase, user.id, taskData.workspace_id);
+  if (role === 'member' || role === 'guest') {
+    throw new Error("Bạn không có quyền từ chối công việc.");
+  }
+
   const targetUserId = taskData.assignee_id;
 
   // 1. Cập nhật review_status thành 'rejected'

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import { createList, createCard, updateCardPosition, updateListPosition } from "@/app/actions/boards";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 
 interface KanbanBoardProps {
   boardId: string;
@@ -23,6 +24,7 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
   // Hack to fix hydration issues with react-beautiful-dnd
   const [isBrowser, setIsBrowser] = useState(false);
   const { t } = useLanguage();
+  const { activeRole } = useWorkspace();
 
   useEffect(() => {
     setIsBrowser(true);
@@ -113,40 +115,43 @@ export default function KanbanBoard({ boardId, initialLists, initialCards }: Kan
                   index={index}
                   onAddCard={handleAddCard}
                   onCardClick={(card) => setSelectedCard(card)}
+                  activeRole={activeRole}
                 />
               );
             })}
             {provided.placeholder}
 
             {/* Add List Button */}
-            <div className="w-72 flex-shrink-0 ml-4">
-              {isAddingList ? (
-                <form onSubmit={handleAddList} className="bg-neu-base p-4 rounded-[1.5rem] shadow-neu-convex border-none">
-                  <input
-                    autoFocus
-                    className="w-full text-sm p-3 mb-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium"
-                    placeholder={t("enter_list_title")}
-                    value={newListName}
-                    onChange={(e) => setNewListName(e.target.value)}
-                  />
-                  <div className="flex items-center justify-between px-1">
-                    <button type="submit" className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
-                      {t("add_list")}
-                    </button>
-                    <button type="button" onClick={() => setIsAddingList(false)} className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:shadow-neu-concave transition-all">
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <button
-                  onClick={() => setIsAddingList(true)}
-                  className="flex items-center justify-center bg-neu-base shadow-neu-convex hover:shadow-neu-concave text-gray-500 text-sm w-full p-4 rounded-[1.5rem] font-bold transition-all duration-200 uppercase tracking-widest"
-                >
-                  <Plus className="w-5 h-5 mr-2" /> {t("add_another_list")}
-                </button>
-              )}
-            </div>
+            {activeRole !== 'guest' && activeRole !== 'member' && (
+              <div className="w-72 flex-shrink-0 ml-4">
+                {isAddingList ? (
+                  <form onSubmit={handleAddList} className="bg-neu-base p-4 rounded-[1.5rem] shadow-neu-convex border-none">
+                    <input
+                      autoFocus
+                      className="w-full text-sm p-3 mb-4 bg-neu-base shadow-neu-concave rounded-xl focus:outline-none border-none text-gray-700 font-medium"
+                      placeholder={t("enter_list_title")}
+                      value={newListName}
+                      onChange={(e) => setNewListName(e.target.value)}
+                    />
+                    <div className="flex items-center justify-between px-1">
+                      <button type="submit" className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs px-5 py-2 rounded-full font-bold uppercase tracking-wider shadow-neu-convex active:shadow-neu-pressed transition-all">
+                        {t("add_list")}
+                      </button>
+                      <button type="button" onClick={() => setIsAddingList(false)} className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:shadow-neu-concave transition-all">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <button
+                    onClick={() => setIsAddingList(true)}
+                    className="flex items-center justify-center bg-neu-base shadow-neu-convex hover:shadow-neu-concave text-gray-500 text-sm w-full p-4 rounded-[1.5rem] font-bold transition-all duration-200 uppercase tracking-widest"
+                  >
+                    <Plus className="w-5 h-5 mr-2" /> {t("add_another_list")}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </Droppable>
