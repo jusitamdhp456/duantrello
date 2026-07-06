@@ -247,8 +247,20 @@ export default function TasksView() {
     if (url === null) return; // User cancelled
     
     try {
-      await updateTask(task.id, { product_url: url.trim() || undefined });
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, product_url: url.trim() || null } : t));
+      const trimmedUrl = url.trim();
+      const updates: any = { product_url: trimmedUrl || null };
+      
+      // Tự động chuyển trạng thái sang "Chờ duyệt" nếu có link sản phẩm
+      if (trimmedUrl) {
+        updates.status = 'review';
+      }
+      
+      await updateTask(task.id, updates);
+      setTasks(prev => prev.map(t => t.id === task.id ? { 
+        ...t, 
+        product_url: trimmedUrl || null,
+        ...(trimmedUrl ? { status: 'review' } : {})
+      } : t));
     } catch (err: any) {
       alert(err.message);
     }
