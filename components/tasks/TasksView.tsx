@@ -21,7 +21,7 @@ const isOverdue = (deadlineStr: string | null | undefined) => {
 type ModalMode = 'create' | 'edit' | null;
 
 export default function TasksView() {
-  const { activeWorkspaceId, activeRole } = useWorkspace();
+  const { activeWorkspaceId } = useWorkspace();
   const { t } = useLanguage();
 
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -41,10 +41,8 @@ export default function TasksView() {
     loadUser();
   }, [supabase.auth]);
 
-  const isAdmin = activeRole === 'admin' || activeRole === 'owner';
-  const canReview = activeRole === 'admin' || activeRole === 'manager' || activeRole === 'owner';
-  const isGuest = activeRole === 'guest';
-  const isMember = activeRole === 'member';
+  const isAdmin = currentUser?.email === 'jusitamd999@gmail.com';
+  const canReview = isAdmin || currentUser?.email === 'haphuongta@gmail.com';
   
   // Filter state
   const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
@@ -517,30 +515,30 @@ export default function TasksView() {
                             href={task.product_url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
+                            className="flex items-center gap-1 text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90"
                             style={{background: 'rgba(34,197,94,0.2)', color: '#86EFAC', border: '1px solid rgba(34,197,94,0.3)'}}
                           >
-                            <Link2 size={12} className="sm:w-3 sm:h-3" />
+                            <Link2 size={10} className="sm:w-3 sm:h-3" />
                             SP hoàn thành
                           </a>
-                          {activeRole !== 'guest' && (task.assignee_id === currentUser?.id || isAdmin) && (
+                          {(isAdmin || task.assignee_id === currentUser?.id) && (
                             <button
                               onClick={() => handleSubmitProductUrl(task)}
-                              className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                              className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
                               title="Sửa link sản phẩm"
                             >
-                              <Edit2 size={12} className="sm:w-3 sm:h-3" />
+                              <Edit2 size={10} className="sm:w-3 sm:h-3" />
                             </button>
                           )}
                         </div>
                       ) : (
-                        activeRole !== 'guest' && (task.assignee_id === currentUser?.id || isAdmin) && (
+                        (isAdmin || task.assignee_id === currentUser?.id) && (
                           <button
                             onClick={() => handleSubmitProductUrl(task)}
-                            className="flex items-center gap-1.5 text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
+                            className="flex items-center gap-1 text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 border border-dashed"
                             style={{background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.6)', borderColor: 'rgba(255,255,255,0.2)'}}
                           >
-                            <Plus size={12} className="sm:w-3 sm:h-3" />
+                            <Plus size={10} className="sm:w-3 sm:h-3" />
                             Nộp SP
                           </button>
                         )
@@ -548,7 +546,7 @@ export default function TasksView() {
 
                       <select 
                         value={task.status}
-                        disabled={activeRole === 'guest' || (!isAdmin && task.assignee_id !== currentUser?.id)}
+                        disabled={!isAdmin && task.assignee_id !== currentUser?.id}
                         onChange={(e) => handleStatusChange(task.id, e.target.value as TaskStatus)}
                         className={`text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium outline-none cursor-pointer appearance-none flex-shrink-0 disabled:opacity-60 disabled:cursor-not-allowed ${getStatusColor(task.status)}`}
                       >
@@ -561,7 +559,7 @@ export default function TasksView() {
                       </select>
 
                       <div className="flex items-center gap-0.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
-                        {activeRole !== 'guest' && (task.assignee_id === currentUser?.id || isAdmin) && (
+                        {(isAdmin || task.assignee_id === currentUser?.id) && (
                           <button 
                             onClick={() => openEditModal(task)}
                             className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-full transition-colors"
@@ -579,7 +577,7 @@ export default function TasksView() {
                             <Trash2 size={12} className="sm:w-[14px] sm:h-[14px]" />
                           </button>
                         )}
-                        {activeRole !== 'guest' && !task.assignee_id && (
+                        {!isAdmin && !task.assignee_id && (
                           <button
                             onClick={() => handleClaimTask(task.id)}
                             className="flex items-center gap-1 px-1.5 py-0.5 sm:py-1 text-[9px] sm:text-xs font-bold text-white rounded-full transition-colors shadow-sm"
@@ -602,7 +600,7 @@ export default function TasksView() {
                       </div>
                     </div>
 
-                    {task.product_url && canReview && (
+                    {task.product_url && (
                       <div className="flex items-center gap-1 p-0.5 rounded-xl border lg:mr-[60px] w-full sm:w-auto mt-0.5" style={{background: 'rgba(255,255,255,0.07)', borderColor: 'rgba(255,255,255,0.15)'}}>
                         <button
                           onClick={() => canReview && task.review_status !== 'approved' && handleReviewAction(task, 'approved')}
@@ -670,7 +668,7 @@ export default function TasksView() {
                 <input 
                   type="text" 
                   required
-                  disabled={activeRole === 'guest'}
+                  disabled={!isAdmin}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
@@ -683,7 +681,7 @@ export default function TasksView() {
                 <label className="block text-sm font-medium text-white/70 mb-1">{t("task_assignee")}</label>
                 <input 
                   type="text" 
-                  disabled={activeRole === 'guest' || (activeRole === 'member' && modalMode === 'create')}
+                  disabled={!isAdmin}
                   value={assignee}
                   onChange={(e) => setAssignee(e.target.value)}
                   className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
@@ -697,7 +695,7 @@ export default function TasksView() {
                   <label className="block text-sm font-medium text-white/70 mb-1">{t("task_deadline")}</label>
                   <input 
                     type="date" 
-                    disabled={activeRole === 'guest' || (activeRole === 'member' && modalMode === 'edit')}
+                    disabled={!isAdmin}
                     value={deadline}
                     onChange={(e) => setDeadline(e.target.value)}
                     className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
@@ -708,7 +706,7 @@ export default function TasksView() {
                   <label className="block text-sm font-medium text-white/70 mb-1">{t("task_priority")}</label>
                   <select 
                     value={priority}
-                    disabled={activeRole === 'guest' || (activeRole === 'member' && modalMode === 'edit')}
+                    disabled={!isAdmin}
                     onChange={(e) => setPriority(e.target.value as TaskPriority)}
                     className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
                     style={{background: '#0D2A6B'}}
@@ -725,9 +723,8 @@ export default function TasksView() {
                 <label className="block text-sm font-medium text-white/70 mb-1">{t("task_status")}</label>
                 <select 
                   value={status}
-                  disabled={activeRole === 'guest'}
                   onChange={(e) => setStatus(e.target.value as TaskStatus)}
-                  className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none border border-white/10 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none border border-white/10"
                   style={{background: '#0D2A6B'}}
                 >
                   <option value="pending">{t("task_status_pending")}</option>
@@ -833,8 +830,8 @@ export default function TasksView() {
                 </button>
                 <button 
                   type="submit" 
-                  disabled={submitting || activeRole === 'guest'}
-                  className="flex-1 py-3 rounded-xl text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={submitting}
+                  className="flex-1 py-3 rounded-xl text-white font-medium transition-all disabled:opacity-50"
                   style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
                 >
                   {submitting ? t("loading") : t("task_save")}

@@ -11,7 +11,6 @@ interface Workspace {
 interface WorkspaceContextType {
   workspaces: Workspace[];
   activeWorkspaceId: string | null;
-  activeRole: 'owner' | 'admin' | 'manager' | 'member' | 'guest';
   setActiveWorkspaceId: (id: string) => void;
   isLoading: boolean;
 }
@@ -20,7 +19,6 @@ const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefin
 
 export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [roles, setRoles] = useState<Record<string, 'owner' | 'admin' | 'manager' | 'member' | 'guest'>>({});
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
@@ -34,39 +32,16 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        // Lấy danh sách workspace và role tương ứng
         const { data, error } = await supabase
-          .from("workspace_members")
-          .select(`
-            workspace_id,
-            role,
-            workspaces (
-              id,
-              name
-            )
-          `)
-          .eq("user_id", userData.user.id);
+          .from("workspaces")
+          .select("id, name");
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          // Lọc ra những bản ghi hợp lệ (có workspaces)
-          const validData = data.filter(item => item.workspaces !== null);
-          
-          const wsList = validData.map(item => item.workspaces as unknown as Workspace);
-          const roleMap: Record<string, 'owner' | 'admin' | 'manager' | 'member' | 'guest'> = {};
-          
-          validData.forEach(item => {
-            const ws = item.workspaces as unknown as Workspace;
-            roleMap[ws.id] = (item.role as any) || 'member';
-          });
-
-          setWorkspaces(wsList);
-          setRoles(roleMap);
+          setWorkspaces(data);
           // Set first workspace as active if none selected
-          if (wsList.length > 0) {
-            setActiveWorkspaceId(wsList[0].id);
-          }
+          setActiveWorkspaceId(data[0].id);
         }
       } catch (err) {
         console.error("Error fetching workspaces:", err);
@@ -78,10 +53,8 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     fetchWorkspaces();
   }, [supabase]);
 
-  const activeRole = activeWorkspaceId && roles[activeWorkspaceId] ? roles[activeWorkspaceId] : 'member';
-
   return (
-    <WorkspaceContext.Provider value={{ workspaces, activeWorkspaceId, activeRole, setActiveWorkspaceId, isLoading }}>
+    <WorkspaceContext.Provider value={{ workspaces, activeWorkspaceId, setActiveWorkspaceId, isLoading }}>
       {children}
     </WorkspaceContext.Provider>
   );

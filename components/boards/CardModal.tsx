@@ -19,7 +19,7 @@ interface CardModalProps {
 
 export default function CardModal({ card, boardId, onClose }: CardModalProps) {
   const { t } = useLanguage();
-  const { activeWorkspaceId, activeRole } = useWorkspace();
+  const { activeWorkspaceId } = useWorkspace();
   const supabase = createClient();
   
   const [description, setDescription] = useState(card.description || "");
@@ -300,24 +300,21 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
                     <MessageSquare className="w-4 h-4 mr-2" /> {t("description")}
                   </h3>
                   <textarea 
-                    className="w-full bg-neu-base shadow-neu-concave rounded-2xl p-4 text-sm focus:outline-none text-gray-700 font-medium min-h-[120px] resize-none border-none placeholder-gray-400 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full bg-neu-base shadow-neu-concave rounded-2xl p-4 text-sm focus:outline-none text-gray-700 font-medium min-h-[120px] resize-none border-none placeholder-gray-400"
                     placeholder={t("add_detailed_desc")}
                     value={description}
-                    disabled={activeRole === 'guest'}
                     onChange={(e) => setDescription(e.target.value)}
                   />
-                  {activeRole !== 'guest' && (
-                    <div className="flex justify-end mt-4">
-                      <button 
-                        onClick={handleSaveDescription}
-                        disabled={isSavingDesc}
-                        className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50 flex items-center"
-                      >
-                        {isSavingDesc && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
-                        {t("save")}
-                      </button>
-                    </div>
-                  )}
+                  <div className="flex justify-end mt-4">
+                    <button 
+                      onClick={handleSaveDescription}
+                      disabled={isSavingDesc}
+                      className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-neu-convex hover:shadow-neu-concave active:shadow-neu-pressed transition-all disabled:opacity-50 flex items-center"
+                    >
+                      {isSavingDesc && <Loader2 className="w-3 h-3 mr-2 animate-spin" />}
+                      {t("save")}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Checklists */}
@@ -335,9 +332,8 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
                           <input 
                             type="checkbox" 
                             checked={item.is_completed}
-                            disabled={activeRole === 'guest'}
                             onChange={(e) => handleToggleItem(cl.id, item.id, e.target.checked)}
-                            className="w-4 h-4 text-indigo-600 rounded mr-3 bg-neu-base border-none shadow-neu-convex disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-4 h-4 text-indigo-600 rounded mr-3 bg-neu-base border-none shadow-neu-convex"
                           />
                           <span className={`text-sm font-medium ${item.is_completed ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
                             {item.content}
@@ -346,14 +342,12 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
                       ))}
                     </div>
 
-                    {activeRole !== 'guest' && (
-                      <button 
-                        onClick={() => handleAddChecklistItem(cl.id)}
-                        className="text-xs text-gray-500 font-bold uppercase tracking-wider hover:text-indigo-500 transition-colors bg-neu-base shadow-neu-convex hover:shadow-neu-concave px-4 py-2 rounded-lg"
-                      >
-                        + Add Item
-                      </button>
-                    )}
+                    <button 
+                      onClick={() => handleAddChecklistItem(cl.id)}
+                      className="text-xs text-gray-500 font-bold uppercase tracking-wider hover:text-indigo-500 transition-colors bg-neu-base shadow-neu-convex hover:shadow-neu-concave px-4 py-2 rounded-lg"
+                    >
+                      + Add Item
+                    </button>
                   </div>
                 ))}
 
@@ -406,9 +400,8 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
               </div>
 
               {/* Sidebar Actions */}
-              {activeRole !== 'guest' && (
-                <div className="md:col-span-1 space-y-6">
-                  <div>
+              <div className="md:col-span-1 space-y-6">
+                <div>
                   <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 pl-2">{t("add_to_card")}</h3>
                   <div className="space-y-3 relative">
                     
@@ -516,7 +509,6 @@ export default function CardModal({ card, boardId, onClose }: CardModalProps) {
                   </div>
                 </div>
               </div>
-              )}
             </div>
           )}
         </div>
