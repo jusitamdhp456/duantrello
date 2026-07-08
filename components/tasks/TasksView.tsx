@@ -365,16 +365,14 @@ export default function TasksView() {
     <div className="flex-1 flex flex-col m-4 overflow-hidden">
       <div className="flex flex-row justify-between items-center gap-2 sm:gap-4 mb-4 sm:mb-6 px-2">
         <h1 className="text-xl sm:text-2xl font-bold text-sky-100 tracking-wide truncate">{t("nav_todo")}</h1>
-        {isAdmin && (
-          <button 
-            onClick={openCreateModal}
-            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-white rounded-full transition-all duration-200 shrink-0"
-            style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
-          >
-            <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
-            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{t("task_add")}</span>
-          </button>
-        )}
+        <button 
+          onClick={openCreateModal}
+          className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-white rounded-full transition-all duration-200 shrink-0"
+          style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
+        >
+          <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
+          <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{t("task_add")}</span>
+        </button>
       </div>
 
       <div className="grid grid-cols-4 gap-1.5 sm:gap-4 md:gap-6 mb-4 sm:mb-8 px-1 sm:px-2">
@@ -668,7 +666,6 @@ export default function TasksView() {
                 <input 
                   type="text" 
                   required
-                  disabled={!isAdmin}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
@@ -681,7 +678,6 @@ export default function TasksView() {
                 <label className="block text-sm font-medium text-white/70 mb-1">{t("task_assignee")}</label>
                 <input 
                   type="text" 
-                  disabled={!isAdmin}
                   value={assignee}
                   onChange={(e) => setAssignee(e.target.value)}
                   className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
@@ -695,7 +691,6 @@ export default function TasksView() {
                   <label className="block text-sm font-medium text-white/70 mb-1">{t("task_deadline")}</label>
                   <input 
                     type="date" 
-                    disabled={!isAdmin}
                     value={deadline}
                     onChange={(e) => setDeadline(e.target.value)}
                     className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
@@ -706,7 +701,6 @@ export default function TasksView() {
                   <label className="block text-sm font-medium text-white/70 mb-1">{t("task_priority")}</label>
                   <select 
                     value={priority}
-                    disabled={!isAdmin}
                     onChange={(e) => setPriority(e.target.value as TaskPriority)}
                     className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
                     style={{background: '#0D2A6B'}}
@@ -741,7 +735,6 @@ export default function TasksView() {
                 <div className="flex gap-2">
                   <input 
                     type="url" 
-                    disabled={!isAdmin}
                     value={videoUrl}
                     onChange={(e) => setVideoUrl(e.target.value)}
                     className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
@@ -768,7 +761,6 @@ export default function TasksView() {
                 <div className="flex gap-2">
                   <input 
                     type="url" 
-                    disabled={!isAdmin}
                     value={videoUrl2}
                     onChange={(e) => setVideoUrl2(e.target.value)}
                     className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
