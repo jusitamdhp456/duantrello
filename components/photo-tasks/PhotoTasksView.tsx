@@ -347,6 +347,10 @@ export default function PhotoTasksView() {
   };
 
   const handleReviewAction = (task: PhotoTask, action: 'approved' | 'rejected') => {
+    if (!canReview) {
+      alert("Chỉ quản lý mới có quyền duyệt ảnh!");
+      return;
+    }
     if (!activeWorkspaceId) return;
     
     if (action === 'approved' && task.review_status !== 'approved') {
@@ -444,14 +448,16 @@ export default function PhotoTasksView() {
     <div className="flex-1 flex flex-col m-4 overflow-hidden">
       <div className="flex flex-row justify-between items-center gap-2 sm:gap-4 mb-4 sm:mb-6 px-2">
         <h1 className="text-xl sm:text-2xl font-bold text-amber-100 tracking-wide truncate">{t("nav_photo_todo" as any) || "Ảnh cần làm"}</h1>
-        <button 
-          onClick={openCreateModal}
-          className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-white rounded-full transition-all duration-200 shrink-0"
-          style={{background: 'linear-gradient(135deg, #C4862B, #8B5E1A)', boxShadow: '0 4px 15px rgba(196,134,43,0.4)'}}
-        >
-          <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
-          <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{t("task_add")}</span>
-        </button>
+        {isAdmin && (
+          <button 
+            onClick={openCreateModal}
+            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-white rounded-full transition-all duration-200 shrink-0"
+            style={{background: 'linear-gradient(135deg, #C4862B, #8B5E1A)', boxShadow: '0 4px 15px rgba(196,134,43,0.4)'}}
+          >
+            <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
+            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{t("task_add")}</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-1.5 sm:gap-4 md:gap-6 mb-4 sm:mb-8 px-1 sm:px-2">
