@@ -95,6 +95,7 @@ export async function createPhotoTask(workspaceId: string, data: Partial<PhotoTa
   if (data.deadline !== undefined) payload.deadline = data.deadline || null;
   if (data.video_url !== undefined) payload.video_url = data.video_url || null;
   if (data.video_url_2 !== undefined) payload.video_url_2 = data.video_url_2 || null;
+  if (data.image_urls !== undefined) payload.image_urls = data.image_urls || [];
   if (data.product_url !== undefined) payload.product_url = data.product_url || null;
 
   const { data: newTask, error } = await supabase
@@ -127,6 +128,7 @@ export async function updatePhotoTask(taskId: string, data: Partial<PhotoTask>) 
   if (data.status !== undefined) payload.status = data.status;
   if (data.video_url !== undefined) payload.video_url = data.video_url;
   if (data.video_url_2 !== undefined) payload.video_url_2 = data.video_url_2;
+  if (data.image_urls !== undefined) payload.image_urls = data.image_urls;
   if (data.product_url !== undefined) payload.product_url = data.product_url;
   if (data.review_status !== undefined) payload.review_status = data.review_status;
 

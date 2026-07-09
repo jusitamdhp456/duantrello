@@ -69,14 +69,15 @@ export default function PhotoTasksView() {
   const [productUrl, setProductUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Image upload state
-  const [imageFile1, setImageFile1] = useState<File | null>(null);
-  const [imageFile2, setImageFile2] = useState<File | null>(null);
-  const [imagePreview1, setImagePreview1] = useState<string | null>(null);
-  const [imagePreview2, setImagePreview2] = useState<string | null>(null);
+  type UploadingImage = {
+    id: string;
+    file?: File;
+    url: string;
+    isExisting: boolean;
+  };
+  const [taskImages, setTaskImages] = useState<UploadingImage[]>([]);
   const [uploading, setUploading] = useState(false);
-  const fileInput1Ref = useRef<HTMLInputElement>(null);
-  const fileInput2Ref = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     async function loadTasks() {
@@ -136,10 +137,7 @@ export default function PhotoTasksView() {
     setVideoUrl("");
     setVideoUrl2("");
     setProductUrl("");
-    setImageFile1(null);
-    setImageFile2(null);
-    setImagePreview1(null);
-    setImagePreview2(null);
+    setTaskImages([]);
     setModalMode('create');
   };
 
@@ -153,48 +151,48 @@ export default function PhotoTasksView() {
     setVideoUrl(task.video_url || "");
     setVideoUrl2(task.video_url_2 || "");
     setProductUrl(task.product_url || "");
-    setImageFile1(null);
-    setImageFile2(null);
-    setImagePreview1(task.video_url || null);
-    setImagePreview2(task.video_url_2 || null);
+    
+    // Load existing images
+    const existingImages: UploadingImage[] = [];
+    if (task.video_url) existingImages.push({ id: Math.random().toString(), url: task.video_url, isExisting: true });
+    if (task.video_url_2) existingImages.push({ id: Math.random().toString(), url: task.video_url_2, isExisting: true });
+    if (task.image_urls && task.image_urls.length > 0) {
+      task.image_urls.forEach(url => existingImages.push({ id: Math.random().toString(), url, isExisting: true }));
+    }
+    setTaskImages(existingImages);
+
     setModalMode('edit');
   };
 
   const closeModal = () => {
     setModalMode(null);
     setEditingTask(null);
-    setImageFile1(null);
-    setImageFile2(null);
-    setImagePreview1(null);
-    setImagePreview2(null);
+    setTaskImages([]);
   };
 
-  const handleImageSelect = (file: File, slot: 1 | 2) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      if (slot === 1) {
-        setImageFile1(file);
-        setImagePreview1(reader.result as string);
-      } else {
-        setImageFile2(file);
-        setImagePreview2(reader.result as string);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
 
-  const removeImage = (slot: 1 | 2) => {
-    if (slot === 1) {
-      setImageFile1(null);
-      setImagePreview1(null);
-      setVideoUrl("");
-      if (fileInput1Ref.current) fileInput1Ref.current.value = '';
-    } else {
-      setImageFile2(null);
-      setImagePreview2(null);
-      setVideoUrl2("");
-      if (fileInput2Ref.current) fileInput2Ref.current.value = '';
+    const newImages = Array.from(files).map(file => {
+      const url = URL.createObjectURL(file);
+      return {
+        id: Math.random().toString(),
+        file,
+        url,
+        isExisting: false
+      };
+    });
+
+    setTaskImages(prev => [...prev, ...newImages]);
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
+  };
+
+  const removeImage = (id: string) => {
+    setTaskImages(prev => prev.filter(img => img.id !== id));
   };
 
   const uploadImage = async (file: File): Promise<string> => {
@@ -223,16 +221,20 @@ export default function PhotoTasksView() {
       setSubmitting(true);
       setUploading(true);
 
-      // Upload images if selected
-      let finalVideoUrl = videoUrl;
-      let finalVideoUrl2 = videoUrl2;
+      // Upload new images
+      const allImageUrls: string[] = [];
+      for (const img of taskImages) {
+        if (img.isExisting) {
+          allImageUrls.push(img.url);
+        } else if (img.file) {
+          const uploadedUrl = await uploadImage(img.file);
+          allImageUrls.push(uploadedUrl);
+        }
+      }
 
-      if (imageFile1) {
-        finalVideoUrl = await uploadImage(imageFile1);
-      }
-      if (imageFile2) {
-        finalVideoUrl2 = await uploadImage(imageFile2);
-      }
+      const finalVideoUrl = allImageUrls.length > 0 ? allImageUrls[0] : null;
+      const finalVideoUrl2 = allImageUrls.length > 1 ? allImageUrls[1] : null;
+      const finalImageUrls = allImageUrls.length > 2 ? allImageUrls.slice(2) : [];
 
       if (modalMode === 'create') {
         const newTask = await createPhotoTask(activeWorkspaceId, {
@@ -241,8 +243,9 @@ export default function PhotoTasksView() {
           deadline: deadline ? new Date(deadline).toISOString() : null,
           priority,
           status,
-          video_url: finalVideoUrl || null,
-          video_url_2: finalVideoUrl2 || null,
+          video_url: finalVideoUrl,
+          video_url_2: finalVideoUrl2,
+          image_urls: finalImageUrls,
           product_url: productUrl || null,
         });
         setTasks(prev => [...prev, newTask]);
@@ -255,6 +258,7 @@ export default function PhotoTasksView() {
           status,
           video_url: finalVideoUrl || null,
           video_url_2: finalVideoUrl2 || null,
+          image_urls: finalImageUrls,
           product_url: productUrl || null,
         });
         setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
@@ -393,20 +397,20 @@ export default function PhotoTasksView() {
 
   const getStatusColor = (s: PhotoTaskStatus) => {
     switch (s) {
-      case 'pending': return 'bg-blue-900/50 text-blue-200';
-      case 'in_progress': return 'bg-sky-700/50 text-sky-200';
-      case 'review': return 'bg-indigo-700/50 text-indigo-200';
-      case 'revision': return 'bg-orange-800/50 text-orange-300';
+      case 'pending': return 'bg-amber-900/50 text-amber-200';
+      case 'in_progress': return 'bg-orange-700/50 text-orange-200';
+      case 'review': return 'bg-yellow-800/50 text-yellow-200';
+      case 'revision': return 'bg-red-800/50 text-red-300';
       case 'completed': return 'bg-green-800/50 text-green-300';
       case 'cancelled': return 'bg-red-900/50 text-red-300';
-      default: return 'bg-blue-900/50 text-blue-200';
+      default: return 'bg-amber-900/50 text-amber-200';
     }
   };
 
   const getPriorityIcon = (p: PhotoTaskPriority) => {
     switch (p) {
-      case 'low': return <span className="text-gray-400 text-xs">●</span>;
-      case 'medium': return <span className="text-purple-400 text-xs">●</span>;
+      case 'low': return <span className="text-stone-400 text-xs">●</span>;
+      case 'medium': return <span className="text-amber-400 text-xs">●</span>;
       case 'high': return <span className="text-orange-400 text-xs">●</span>;
       case 'urgent': return <span className="text-red-500 text-xs">●</span>;
     }
@@ -414,23 +418,23 @@ export default function PhotoTasksView() {
 
   if (!activeWorkspaceId) {
     return (
-      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(13,38,87,0.7)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
-        <div className="text-blue-300">{t("select_workspace")}</div>
+      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(45,24,16,0.7)', boxShadow: 'inset 3px 3px 8px rgba(30,15,8,0.5)'}}>
+        <div className="text-amber-300">{t("select_workspace")}</div>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(13,38,87,0.7)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
-        <div className="animate-spin text-sky-400"><RotateCcw size={32} /></div>
+      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(45,24,16,0.7)', boxShadow: 'inset 3px 3px 8px rgba(30,15,8,0.5)'}}>
+        <div className="animate-spin text-amber-400"><RotateCcw size={32} /></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(13,38,87,0.7)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
+      <div className="flex-1 flex items-center justify-center rounded-[2rem] m-4 p-8" style={{background: 'rgba(45,24,16,0.7)', boxShadow: 'inset 3px 3px 8px rgba(30,15,8,0.5)'}}>
         <div className="text-red-400">{error}</div>
       </div>
     );
@@ -439,11 +443,11 @@ export default function PhotoTasksView() {
   return (
     <div className="flex-1 flex flex-col m-4 overflow-hidden">
       <div className="flex flex-row justify-between items-center gap-2 sm:gap-4 mb-4 sm:mb-6 px-2">
-        <h1 className="text-xl sm:text-2xl font-bold text-sky-100 tracking-wide truncate">{t("nav_photo_todo" as any) || "Ảnh cần làm"}</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-amber-100 tracking-wide truncate">{t("nav_photo_todo" as any) || "Ảnh cần làm"}</h1>
         <button 
           onClick={openCreateModal}
           className="flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 text-white rounded-full transition-all duration-200 shrink-0"
-          style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
+          style={{background: 'linear-gradient(135deg, #C4862B, #8B5E1A)', boxShadow: '0 4px 15px rgba(196,134,43,0.4)'}}
         >
           <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
           <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{t("task_add")}</span>
@@ -451,19 +455,19 @@ export default function PhotoTasksView() {
       </div>
 
       <div className="grid grid-cols-4 gap-1.5 sm:gap-4 md:gap-6 mb-4 sm:mb-8 px-1 sm:px-2">
-        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_total")}</div>
-          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-sky-100 mt-0.5 sm:mt-2 truncate min-w-0">{stats.total}</div>
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #3D1E10, #5C3420)', boxShadow: '2px 2px 6px rgba(30,15,8,0.5), -1px -1px 4px rgba(92,52,32,0.3)'}}>
+          <div className="text-amber-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_total")}</div>
+          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-amber-100 mt-0.5 sm:mt-2 truncate min-w-0">{stats.total}</div>
         </div>
-        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_in_progress")}</div>
-          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-sky-300 mt-0.5 sm:mt-2 truncate min-w-0">{stats.inProgress}</div>
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #3D1E10, #5C3420)', boxShadow: '2px 2px 6px rgba(30,15,8,0.5), -1px -1px 4px rgba(92,52,32,0.3)'}}>
+          <div className="text-amber-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_in_progress")}</div>
+          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-amber-300 mt-0.5 sm:mt-2 truncate min-w-0">{stats.inProgress}</div>
         </div>
-        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
-          <div className="text-blue-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_review")}</div>
-          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-sky-300 mt-0.5 sm:mt-2 truncate min-w-0">{stats.review}</div>
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #3D1E10, #5C3420)', boxShadow: '2px 2px 6px rgba(30,15,8,0.5), -1px -1px 4px rgba(92,52,32,0.3)'}}>
+          <div className="text-amber-300 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_review")}</div>
+          <div className="text-sm sm:text-2xl md:text-3xl font-bold text-amber-300 mt-0.5 sm:mt-2 truncate min-w-0">{stats.review}</div>
         </div>
-        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #0D2657, #0D3E8A)', boxShadow: '2px 2px 6px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'}}>
+        <div className="rounded-xl sm:rounded-3xl p-1.5 sm:p-4 md:p-5 flex flex-col justify-between min-w-0" style={{background: 'linear-gradient(135deg, #3D1E10, #5C3420)', boxShadow: '2px 2px 6px rgba(30,15,8,0.5), -1px -1px 4px rgba(92,52,32,0.3)'}}>
           <div className="text-green-400 text-[8px] sm:text-xs md:text-sm font-medium truncate min-w-0 w-full">{t("task_status_completed")}</div>
           <div className="text-sm sm:text-2xl md:text-3xl font-bold text-green-400 mt-0.5 sm:mt-2 truncate min-w-0">{stats.completed}</div>
         </div>
@@ -480,14 +484,14 @@ export default function PhotoTasksView() {
             onClick={() => setStatusFilter(s)}
             className={`px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap snap-start flex-shrink-0 border`}
             style={statusFilter === s ? {
-              background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)',
+              background: 'linear-gradient(135deg, #C4862B, #8B5E1A)',
               color: 'white',
-              boxShadow: '0 4px 15px rgba(43,145,206,0.4)',
-              borderColor: 'rgba(44,145,206,0.3)'
+              boxShadow: '0 4px 15px rgba(196,134,43,0.4)',
+              borderColor: 'rgba(196,134,43,0.3)'
             } : {
-              background: 'rgba(13,38,87,0.6)',
-              color: '#93C5E8',
-              borderColor: 'rgba(44,116,177,0.3)'
+              background: 'rgba(45,24,16,0.6)',
+              color: '#D4A86A',
+              borderColor: 'rgba(139,94,26,0.3)'
             }}
           >
             {s === 'all' ? "Tất cả" : (t(`task_status_${s}` as any) || s)}
@@ -498,9 +502,9 @@ export default function PhotoTasksView() {
 
       <div className="flex-1 overflow-y-auto px-2 pb-6">
         {filteredTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 rounded-[2rem]" style={{background: 'rgba(13,38,87,0.6)', boxShadow: 'inset 3px 3px 8px rgba(8,23,64,0.5)'}}>
-            <CheckCircle2 size={48} className="text-blue-700 mb-4" />
-            <p className="text-blue-400">{t("task_empty")}</p>
+          <div className="flex flex-col items-center justify-center h-64 rounded-[2rem]" style={{background: 'rgba(45,24,16,0.6)', boxShadow: 'inset 3px 3px 8px rgba(30,15,8,0.5)'}}>
+            <CheckCircle2 size={48} className="text-amber-800 mb-4" />
+            <p className="text-amber-400">{t("task_empty")}</p>
           </div>
         ) : (
           <div className="grid gap-1.5 sm:gap-3">
@@ -512,17 +516,17 @@ export default function PhotoTasksView() {
                   className="min-w-0 rounded-[1rem] md:rounded-[1.2rem] py-2 px-2.5 md:py-3 md:px-4 hover:-translate-y-1 transition-all duration-300 group flex flex-col lg:flex-row items-start lg:items-center justify-between gap-1.5 md:gap-3"
                   style={{
                     background: task.assignee_id 
-                      ? 'linear-gradient(135deg, #0D2657 0%, #0D3E8A 100%)' 
-                      : 'linear-gradient(135deg, #4c1d95 0%, #2e1065 100%)',
+                      ? 'linear-gradient(135deg, #3D1E10 0%, #5C3420 100%)' 
+                      : 'linear-gradient(135deg, #4A2818 0%, #2D1810 100%)',
                     boxShadow: task.assignee_id 
-                      ? '2px 2px 8px rgba(8,23,64,0.5), -1px -1px 4px rgba(30,70,140,0.3)'
-                      : '2px 2px 8px rgba(8,23,64,0.5), -1px -1px 4px rgba(76,29,149,0.3)',
-                    border: task.assignee_id ? 'none' : '1px solid rgba(139,92,246,0.3)',
-                    borderLeft: `3px solid ${isTaskOverdue ? '#f87171' : (task.assignee_id ? 'rgba(44,145,206,0.6)' : 'rgba(167,139,250,0.6)')}`
+                      ? '2px 2px 8px rgba(30,15,8,0.5), -1px -1px 4px rgba(92,52,32,0.3)'
+                      : '2px 2px 8px rgba(30,15,8,0.5), -1px -1px 4px rgba(74,40,24,0.3)',
+                    border: task.assignee_id ? 'none' : '1px solid rgba(196,134,43,0.3)',
+                    borderLeft: `3px solid ${isTaskOverdue ? '#f87171' : (task.assignee_id ? 'rgba(196,134,43,0.6)' : 'rgba(212,168,106,0.6)')}`
                   }}
                 >
                   <div className="flex items-start md:items-center gap-2 sm:gap-3 flex-1 w-full lg:w-auto overflow-hidden min-w-0">
-                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 md:mt-0" style={{background: 'rgba(13,38,87,0.8)', boxShadow: 'inset 2px 2px 4px rgba(8,23,64,0.6), inset -2px -2px 4px rgba(30,70,140,0.3)'}}>
+                    <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 md:mt-0" style={{background: 'rgba(45,24,16,0.8)', boxShadow: 'inset 2px 2px 4px rgba(30,15,8,0.6), inset -2px -2px 4px rgba(92,52,32,0.3)'}}>
                       {getPriorityIcon(task.priority)}
                     </div>
                     <div className="flex flex-col min-w-0 flex-1">
@@ -552,33 +556,25 @@ export default function PhotoTasksView() {
                     </div>
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-1.5 w-full lg:w-auto pt-1.5 lg:pt-0 border-t border-blue-700/30 lg:border-t-0 mt-0.5 lg:mt-0 min-w-0">
+                  <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-end gap-1.5 w-full lg:w-auto pt-1.5 lg:pt-0 border-t border-amber-700/30 lg:border-t-0 mt-0.5 lg:mt-0 min-w-0">
                     <div className="flex flex-wrap items-center gap-1.5 justify-start sm:justify-end w-full lg:w-auto min-w-0">
-                      {task.video_url && (
+                      {[
+                        task.video_url,
+                        task.video_url_2,
+                        ...(task.image_urls || [])
+                      ].filter(Boolean).map((url, idx) => (
                         <a 
-                          href={task.video_url} 
+                          key={idx}
+                          href={url!} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center gap-1"
                           style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
                         >
                           <ImageIcon size={10} className="sm:w-3 sm:h-3" />
-                          Ảnh 1
+                          Ảnh {idx + 1}
                         </a>
-                      )}
-
-                      {task.video_url_2 && (
-                        <a 
-                          href={task.video_url_2} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center gap-1"
-                          style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
-                        >
-                          <ImageIcon size={10} className="sm:w-3 sm:h-3" />
-                          Ảnh 2
-                        </a>
-                      )}
+                      ))}
 
                       <button
                         onClick={() => setSelectedTaskForComments(task)}
@@ -661,7 +657,7 @@ export default function PhotoTasksView() {
                           <button
                             onClick={() => handleClaimTask(task.id)}
                             className="flex items-center gap-1 px-1.5 py-0.5 sm:py-1 text-[9px] sm:text-xs font-bold text-white rounded-full transition-colors shadow-sm"
-                            style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 2px 8px rgba(43,145,206,0.4)'}}
+                            style={{background: 'linear-gradient(135deg, #C4862B, #8B5E1A)', boxShadow: '0 2px 8px rgba(196,134,43,0.4)'}}
                             title="Nhận việc"
                           >
                             <Hand size={10} className="sm:w-3 sm:h-3" /> Nhận việc
@@ -732,7 +728,7 @@ export default function PhotoTasksView() {
 
       {modalMode && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="rounded-[2rem] w-full max-w-md p-6 border border-white/10" style={{background: 'linear-gradient(135deg, #0D2657 0%, #0A1E45 100%)', boxShadow: '0 25px 60px rgba(8,23,64,0.7)'}}>
+          <div className="rounded-[2rem] w-full max-w-md p-6 border border-white/10" style={{background: 'linear-gradient(135deg, #3D1E10 0%, #2D1810 100%)', boxShadow: '0 25px 60px rgba(30,15,8,0.7)'}}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-white">
                 {modalMode === 'create' ? t("task_create") : t("task_edit")}
@@ -785,7 +781,7 @@ export default function PhotoTasksView() {
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as PhotoTaskPriority)}
                     className="w-full rounded-xl px-4 py-3 text-sm text-white focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
-                    style={{background: '#0D2A6B'}}
+                    style={{background: '#4A2818'}}
                   >
                     <option value="low">{t("task_priority_low")}</option>
                     <option value="medium">{t("task_priority_medium")}</option>
@@ -813,74 +809,64 @@ export default function PhotoTasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">Ảnh tham khảo 1</label>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-sm font-medium text-white/70">Ảnh tham khảo ({taskImages.length})</label>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1"
+                  >
+                    <Plus size={14} /> Thêm ảnh
+                  </button>
+                </div>
                 <input
                   type="file"
                   accept="image/*"
+                  multiple
                   className="hidden"
-                  ref={fileInput1Ref}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImageSelect(file, 1);
-                  }}
+                  ref={fileInputRef}
+                  onChange={handleImageSelect}
                 />
-                {imagePreview1 ? (
-                  <div className="relative rounded-xl overflow-hidden border border-white/10" style={{background: 'rgba(255,255,255,0.05)'}}>
-                    <img src={imagePreview1} alt="Ảnh 1" className="w-full h-32 object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(1)}
-                      className="absolute top-2 right-2 bg-red-500/80 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ) : (
+                
+                {taskImages.length === 0 ? (
                   <button
                     type="button"
-                    onClick={() => fileInput1Ref.current?.click()}
-                    className="w-full rounded-xl px-4 py-6 text-sm text-white/50 border border-dashed border-white/20 flex flex-col items-center gap-2 hover:border-sky-400/50 hover:text-sky-300 transition-all"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full rounded-xl px-4 py-6 text-sm text-white/50 border border-dashed border-white/20 flex flex-col items-center gap-2 hover:border-amber-400/50 hover:text-amber-300 transition-all"
                     style={{background: 'rgba(255,255,255,0.03)'}}
                   >
                     <Upload size={24} />
-                    <span>Bấm để chọn ảnh</span>
+                    <span>Bấm để tải ảnh lên</span>
                   </button>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">Ảnh tham khảo 2</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  ref={fileInput2Ref}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImageSelect(file, 2);
-                  }}
-                />
-                {imagePreview2 ? (
-                  <div className="relative rounded-xl overflow-hidden border border-white/10" style={{background: 'rgba(255,255,255,0.05)'}}>
-                    <img src={imagePreview2} alt="Ảnh 2" className="w-full h-32 object-cover" />
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {taskImages.map((img, idx) => (
+                      <div key={img.id} className="relative rounded-xl overflow-hidden border border-white/10 group" style={{background: 'rgba(255,255,255,0.05)'}}>
+                        <img src={img.url} alt={`Ảnh ${idx + 1}`} className="w-full h-24 object-cover" />
+                        <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            type="button"
+                            onClick={() => removeImage(img.id)}
+                            className="bg-red-500/80 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                        <div className="absolute bottom-0 left-0 w-full p-1 bg-black/50 text-[10px] text-white/80 truncate text-center">
+                          Ảnh {idx + 1}
+                        </div>
+                      </div>
+                    ))}
                     <button
                       type="button"
-                      onClick={() => removeImage(2)}
-                      className="absolute top-2 right-2 bg-red-500/80 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="rounded-xl flex flex-col items-center justify-center gap-1 border border-dashed border-white/20 hover:border-amber-400/50 hover:text-amber-300 transition-all text-white/50 h-24"
+                      style={{background: 'rgba(255,255,255,0.03)'}}
                     >
-                      <X size={14} />
+                      <Plus size={20} />
+                      <span className="text-[10px]">Thêm</span>
                     </button>
                   </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => fileInput2Ref.current?.click()}
-                    className="w-full rounded-xl px-4 py-6 text-sm text-white/50 border border-dashed border-white/20 flex flex-col items-center gap-2 hover:border-sky-400/50 hover:text-sky-300 transition-all"
-                    style={{background: 'rgba(255,255,255,0.03)'}}
-                  >
-                    <Upload size={24} />
-                    <span>Bấm để chọn ảnh</span>
-                  </button>
                 )}
               </div>
 
@@ -891,7 +877,7 @@ export default function PhotoTasksView() {
                     type="url" 
                     value={productUrl}
                     onChange={(e) => setProductUrl(e.target.value)}
-                    className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none border border-white/10"
+                    className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-amber-400 outline-none border border-white/10"
                     style={{background: 'rgba(255,255,255,0.08)'}}
                     placeholder="https://... (Link Google Drive...)"
                   />
@@ -926,7 +912,7 @@ export default function PhotoTasksView() {
                   type="submit" 
                   disabled={submitting}
                   className="flex-1 py-3 rounded-xl text-white font-medium transition-all disabled:opacity-50"
-                  style={{background: 'linear-gradient(135deg, #2B91CE, #1A5CB0)', boxShadow: '0 4px 15px rgba(43,145,206,0.4)'}}
+                  style={{background: 'linear-gradient(135deg, #C4862B, #8B5E1A)', boxShadow: '0 4px 15px rgba(196,134,43,0.4)'}}
                 >
                   {submitting ? t("loading") : t("task_save")}
                 </button>
@@ -945,12 +931,12 @@ export default function PhotoTasksView() {
 
       {reviewConfirm && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-[#0D2657] border border-blue-500/30 p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
+          <div className="bg-[#3D1E10] border border-amber-500/30 p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
             style={{boxShadow: '0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)'}}
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-blue-600"></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-600"></div>
             <h3 className="text-xl font-bold text-white mb-3 tracking-wide">Xác nhận</h3>
-            <p className="text-blue-100/80 mb-8 text-sm leading-relaxed">{reviewConfirm.message}</p>
+            <p className="text-amber-100/80 mb-8 text-sm leading-relaxed">{reviewConfirm.message}</p>
             <div className="flex gap-3 justify-center">
               <button 
                 onClick={() => setReviewConfirm(null)}
@@ -975,7 +961,7 @@ export default function PhotoTasksView() {
 
       {successAlert && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-[#0D2657] border border-green-500/30 p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
+          <div className="bg-[#3D1E10] border border-green-500/30 p-6 sm:p-8 rounded-[2rem] shadow-2xl max-w-sm w-full text-center relative overflow-hidden"
             style={{boxShadow: '0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1)'}}
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-600"></div>

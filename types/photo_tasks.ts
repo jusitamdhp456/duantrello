@@ -13,6 +13,7 @@ export interface PhotoTask {
   status: PhotoTaskStatus;
   video_url?: string | null;
   video_url_2?: string | null;
+  image_urls?: string[] | null;
   product_url?: string | null;
   review_status?: 'pending' | 'approved' | 'rejected' | null;
   created_at: string;
