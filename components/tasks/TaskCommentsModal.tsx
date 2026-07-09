@@ -209,7 +209,16 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
             comments.map((comment) => (
               <div key={comment.id} className="p-4 rounded-xl" style={{background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)'}}>
                 <div className="flex justify-between items-start mb-2">
-                  <span className="font-semibold text-white">{comment.user_name || 'Người dùng'}</span>
+                  <div className="flex items-center gap-2">
+                    {comment.user_avatar ? (
+                      <img src={comment.user_avatar} alt={comment.user_name || ''} className="w-7 h-7 rounded-full object-cover border border-white/20" />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-xs font-semibold text-sky-300">
+                        {(comment.user_name || 'U').charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="font-semibold text-white">{comment.user_name || 'Người dùng'}</span>
+                  </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-white/40">
                       {new Date(comment.created_at).toLocaleString('vi-VN')}

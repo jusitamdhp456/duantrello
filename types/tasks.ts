@@ -23,6 +23,7 @@ export interface TaskComment {
   task_id: string;
   user_id: string | null;
   user_name: string | null;
+  user_avatar?: string | null;
   content: string;
   image_url: string | null;
   created_at: string;

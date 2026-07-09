@@ -410,14 +410,15 @@ export async function getTaskComments(taskId: string) {
     if (userIds.length > 0) {
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name')
+        .select('id, full_name, avatar_url')
         .in('id', userIds);
         
       if (profiles && profiles.length > 0) {
-        const profileMap = Object.fromEntries(profiles.map(p => [p.id, p.full_name]));
+        const profileMap = Object.fromEntries(profiles.map(p => [p.id, { full_name: p.full_name, avatar_url: p.avatar_url }]));
         for (const comment of data) {
           if (comment.user_id && profileMap[comment.user_id]) {
-            comment.user_name = profileMap[comment.user_id];
+            comment.user_name = profileMap[comment.user_id].full_name;
+            comment.user_avatar = profileMap[comment.user_id].avatar_url;
           }
         }
       }
