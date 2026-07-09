@@ -89,6 +89,7 @@ export async function createPhotoTask(workspaceId: string, data: Partial<PhotoTa
     review_status: data.review_status || 'pending',
   };
   
+  if (data.description !== undefined) payload.description = data.description || null;
   if (data.assignee_name !== undefined) payload.assignee_name = data.assignee_name || null;
   if (data.assignee_id !== undefined) payload.assignee_id = data.assignee_id || null;
   if (data.deadline !== undefined) payload.deadline = data.deadline || null;
@@ -118,6 +119,7 @@ export async function updatePhotoTask(taskId: string, data: Partial<PhotoTask>) 
 
   const payload: any = { updated_at: new Date().toISOString() };
   if (data.title !== undefined) payload.title = data.title;
+  if (data.description !== undefined) payload.description = data.description;
   if (data.assignee_name !== undefined) payload.assignee_name = data.assignee_name;
   if (data.assignee_id !== undefined) payload.assignee_id = data.assignee_id;
   if (data.deadline !== undefined) payload.deadline = data.deadline;

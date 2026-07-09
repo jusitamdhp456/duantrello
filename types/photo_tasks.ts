@@ -5,6 +5,7 @@ export interface PhotoTask {
   id: string;
   workspace_id: string;
   title: string;
+  description?: string | null;
   assignee_name?: string | null;
   assignee_id?: string | null;
   deadline?: string | null;

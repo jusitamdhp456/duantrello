@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useWorkspace } from "@/components/providers/WorkspaceProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getPhotoTasks, createPhotoTask, updatePhotoTask, updatePhotoTaskStatus, deletePhotoTask, approvePhotoTaskAndPay, revokePhotoTaskApprovalAndDeduct, claimPhotoTask, unclaimPhotoTask } from "@/app/actions/photo_tasks";
 import type { PhotoTask, PhotoTaskStatus, PhotoTaskPriority } from "@/types/photo_tasks";
-import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare, Hand, MessageCircle } from "lucide-react";
+import { Plus, Clock, AlertCircle, CheckCircle2, Trash2, Edit2, Eye, XCircle, RotateCcw, Link2, CheckSquare, Hand, MessageCircle, Image as ImageIcon, Upload, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import PhotoTaskCommentsModal from "@/components/photo-tasks/PhotoTaskCommentsModal";
 
@@ -60,7 +60,7 @@ export default function PhotoTasksView() {
 
   // Form state
   const [title, setTitle] = useState("");
-  const [assignee, setAssignee] = useState("");
+  const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [priority, setPriority] = useState<PhotoTaskPriority>("medium");
   const [status, setStatus] = useState<PhotoTaskStatus>("pending");
@@ -68,6 +68,15 @@ export default function PhotoTasksView() {
   const [videoUrl2, setVideoUrl2] = useState("");
   const [productUrl, setProductUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // Image upload state
+  const [imageFile1, setImageFile1] = useState<File | null>(null);
+  const [imageFile2, setImageFile2] = useState<File | null>(null);
+  const [imagePreview1, setImagePreview1] = useState<string | null>(null);
+  const [imagePreview2, setImagePreview2] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInput1Ref = useRef<HTMLInputElement>(null);
+  const fileInput2Ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     async function loadTasks() {
@@ -120,32 +129,90 @@ export default function PhotoTasksView() {
 
   const openCreateModal = () => {
     setTitle("");
-    setAssignee("");
+    setDescription("");
     setDeadline("");
     setPriority("medium");
     setStatus("pending");
     setVideoUrl("");
     setVideoUrl2("");
     setProductUrl("");
+    setImageFile1(null);
+    setImageFile2(null);
+    setImagePreview1(null);
+    setImagePreview2(null);
     setModalMode('create');
   };
 
   const openEditModal = (task: PhotoTask) => {
     setEditingTask(task);
     setTitle(task.title);
-    setAssignee(task.assignee_name || "");
+    setDescription(task.description || "");
     setDeadline(task.deadline ? new Date(task.deadline).toISOString().split('T')[0] : "");
     setPriority(task.priority);
     setStatus(task.status);
     setVideoUrl(task.video_url || "");
     setVideoUrl2(task.video_url_2 || "");
     setProductUrl(task.product_url || "");
+    setImageFile1(null);
+    setImageFile2(null);
+    setImagePreview1(task.video_url || null);
+    setImagePreview2(task.video_url_2 || null);
     setModalMode('edit');
   };
 
   const closeModal = () => {
     setModalMode(null);
     setEditingTask(null);
+    setImageFile1(null);
+    setImageFile2(null);
+    setImagePreview1(null);
+    setImagePreview2(null);
+  };
+
+  const handleImageSelect = (file: File, slot: 1 | 2) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (slot === 1) {
+        setImageFile1(file);
+        setImagePreview1(reader.result as string);
+      } else {
+        setImageFile2(file);
+        setImagePreview2(reader.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = (slot: 1 | 2) => {
+    if (slot === 1) {
+      setImageFile1(null);
+      setImagePreview1(null);
+      setVideoUrl("");
+      if (fileInput1Ref.current) fileInput1Ref.current.value = '';
+    } else {
+      setImageFile2(null);
+      setImagePreview2(null);
+      setVideoUrl2("");
+      if (fileInput2Ref.current) fileInput2Ref.current.value = '';
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+    const filePath = `photo_tasks/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('task_comments')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('task_comments')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -154,27 +221,40 @@ export default function PhotoTasksView() {
 
     try {
       setSubmitting(true);
+      setUploading(true);
+
+      // Upload images if selected
+      let finalVideoUrl = videoUrl;
+      let finalVideoUrl2 = videoUrl2;
+
+      if (imageFile1) {
+        finalVideoUrl = await uploadImage(imageFile1);
+      }
+      if (imageFile2) {
+        finalVideoUrl2 = await uploadImage(imageFile2);
+      }
+
       if (modalMode === 'create') {
         const newTask = await createPhotoTask(activeWorkspaceId, {
           title,
-          assignee_name: assignee,
+          description: description || null,
           deadline: deadline ? new Date(deadline).toISOString() : null,
           priority,
           status,
-          video_url: videoUrl || null,
-          video_url_2: videoUrl2 || null,
+          video_url: finalVideoUrl || null,
+          video_url_2: finalVideoUrl2 || null,
           product_url: productUrl || null,
         });
         setTasks(prev => [...prev, newTask]);
       } else if (modalMode === 'edit' && editingTask) {
         const updated = await updatePhotoTask(editingTask.id, {
           title,
-          assignee_name: assignee,
+          description: description || null,
           deadline: deadline ? new Date(deadline).toISOString() : null,
           priority,
           status,
-          video_url: videoUrl || null,
-          video_url_2: videoUrl2 || null,
+          video_url: finalVideoUrl || null,
+          video_url_2: finalVideoUrl2 || null,
           product_url: productUrl || null,
         });
         setTasks(prev => prev.map(t => t.id === updated.id ? updated : t));
@@ -184,6 +264,7 @@ export default function PhotoTasksView() {
       alert(err.message);
     } finally {
       setSubmitting(false);
+      setUploading(false);
     }
   };
 
@@ -456,8 +537,13 @@ export default function PhotoTasksView() {
                       <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-white/60 mt-0.5">
                         <span className="flex items-center gap-1">
                           <Eye size={10} className="text-white/40 sm:w-3 sm:h-3" />
-                          <span className="truncate max-w-[90px] sm:max-w-none">{task.assignee_name || "Chưa giao"}</span>
+                          <span className="truncate max-w-[90px] sm:max-w-none">{task.assignee_name || "Chưa nhận"}</span>
                         </span>
+                        {task.description && (
+                          <span className="flex items-center gap-1 text-white/50 italic">
+                            <span className="truncate max-w-[120px] sm:max-w-[200px]">{task.description}</span>
+                          </span>
+                        )}
                         <span className={`flex items-center gap-1 ${isTaskOverdue ? 'text-red-300 font-medium' : ''}`}>
                           <Clock size={10} className={`sm:w-3 sm:h-3 ${isTaskOverdue ? 'text-red-300' : 'text-white/40'}`} />
                           {task.deadline ? new Date(task.deadline).toLocaleDateString('vi-VN') : "Không có"}
@@ -473,10 +559,11 @@ export default function PhotoTasksView() {
                           href={task.video_url} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center"
+                          className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center gap-1"
                           style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
                         >
-                          Source 1
+                          <ImageIcon size={10} className="sm:w-3 sm:h-3" />
+                          Ảnh 1
                         </a>
                       )}
 
@@ -485,10 +572,11 @@ export default function PhotoTasksView() {
                           href={task.video_url_2} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center"
+                          className="text-[9px] sm:text-xs px-1.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-medium whitespace-nowrap transition-all hover:opacity-90 flex items-center gap-1"
                           style={{background: 'rgba(255,255,255,0.12)', color: 'white', border: '1px solid rgba(255,255,255,0.25)'}}
                         >
-                          Source 2
+                          <ImageIcon size={10} className="sm:w-3 sm:h-3" />
+                          Ảnh 2
                         </a>
                       )}
 
@@ -669,14 +757,14 @@ export default function PhotoTasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">{t("task_assignee")}</label>
-                <input 
-                  type="text" 
-                  value={assignee}
-                  onChange={(e) => setAssignee(e.target.value)}
-                  className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
+                <label className="block text-sm font-medium text-white/70 mb-1">Mô tả công việc</label>
+                <textarea 
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10 resize-none"
                   style={{background: 'rgba(255,255,255,0.08)'}}
-                  placeholder="Người phụ trách..."
+                  placeholder="Mô tả chi tiết công việc..."
+                  rows={3}
                 />
               </div>
 
@@ -725,55 +813,75 @@ export default function PhotoTasksView() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">Tài nguyên gốc (Source 1)</label>
-                <div className="flex gap-2">
-                  <input 
-                    type="url" 
-                    value={videoUrl}
-                    onChange={(e) => setVideoUrl(e.target.value)}
-                    className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
-                    style={{background: 'rgba(255,255,255,0.08)'}}
-                    placeholder="https://..."
-                  />
-                  {videoUrl && (
-                    <a 
-                      href={videoUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center whitespace-nowrap text-sm text-white hover:opacity-90"
-                      style={{background: 'rgba(44,145,206,0.3)', border: '1px solid rgba(44,145,206,0.4)'}}
-                      title="Mở link này"
+                <label className="block text-sm font-medium text-white/70 mb-1">Ảnh tham khảo 1</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={fileInput1Ref}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageSelect(file, 1);
+                  }}
+                />
+                {imagePreview1 ? (
+                  <div className="relative rounded-xl overflow-hidden border border-white/10" style={{background: 'rgba(255,255,255,0.05)'}}>
+                    <img src={imagePreview1} alt="Ảnh 1" className="w-full h-32 object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(1)}
+                      className="absolute top-2 right-2 bg-red-500/80 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg"
                     >
-                      Mở link
-                    </a>
-                  )}
-                </div>
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInput1Ref.current?.click()}
+                    className="w-full rounded-xl px-4 py-6 text-sm text-white/50 border border-dashed border-white/20 flex flex-col items-center gap-2 hover:border-sky-400/50 hover:text-sky-300 transition-all"
+                    style={{background: 'rgba(255,255,255,0.03)'}}
+                  >
+                    <Upload size={24} />
+                    <span>Bấm để chọn ảnh</span>
+                  </button>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white/70 mb-1">Tài nguyên gốc (Source 2)</label>
-                <div className="flex gap-2">
-                  <input 
-                    type="url" 
-                    value={videoUrl2}
-                    onChange={(e) => setVideoUrl2(e.target.value)}
-                    className="flex-1 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 focus:ring-2 focus:ring-sky-400 outline-none disabled:opacity-70 disabled:cursor-not-allowed border border-white/10"
-                    style={{background: 'rgba(255,255,255,0.08)'}}
-                    placeholder="https://..."
-                  />
-                  {videoUrl2 && (
-                    <a 
-                      href={videoUrl2} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center whitespace-nowrap text-sm text-white hover:opacity-90"
-                      style={{background: 'rgba(44,145,206,0.3)', border: '1px solid rgba(44,145,206,0.4)'}}
-                      title="Mở link này"
+                <label className="block text-sm font-medium text-white/70 mb-1">Ảnh tham khảo 2</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  ref={fileInput2Ref}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageSelect(file, 2);
+                  }}
+                />
+                {imagePreview2 ? (
+                  <div className="relative rounded-xl overflow-hidden border border-white/10" style={{background: 'rgba(255,255,255,0.05)'}}>
+                    <img src={imagePreview2} alt="Ảnh 2" className="w-full h-32 object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(2)}
+                      className="absolute top-2 right-2 bg-red-500/80 text-white rounded-full p-1 hover:bg-red-500 transition-colors shadow-lg"
                     >
-                      Mở link
-                    </a>
-                  )}
-                </div>
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInput2Ref.current?.click()}
+                    className="w-full rounded-xl px-4 py-6 text-sm text-white/50 border border-dashed border-white/20 flex flex-col items-center gap-2 hover:border-sky-400/50 hover:text-sky-300 transition-all"
+                    style={{background: 'rgba(255,255,255,0.03)'}}
+                  >
+                    <Upload size={24} />
+                    <span>Bấm để chọn ảnh</span>
+                  </button>
+                )}
               </div>
 
               <div>
