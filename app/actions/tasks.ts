@@ -405,6 +405,25 @@ export async function getTaskComments(taskId: string) {
     return [];
   }
 
+  if (data && data.length > 0) {
+    const userIds = Array.from(new Set(data.map(c => c.user_id).filter(Boolean)));
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', userIds);
+        
+      if (profiles && profiles.length > 0) {
+        const profileMap = Object.fromEntries(profiles.map(p => [p.id, p.full_name]));
+        for (const comment of data) {
+          if (comment.user_id && profileMap[comment.user_id]) {
+            comment.user_name = profileMap[comment.user_id];
+          }
+        }
+      }
+    }
+  }
+
   return data;
 }
 
