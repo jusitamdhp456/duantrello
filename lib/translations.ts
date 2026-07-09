@@ -27,7 +27,8 @@ export const translations = {
     nav_settings: "Settings",
     nav_my_kpi: "My KPI",
     nav_my_salary: "My Salary",
-    nav_todo: "To-Do Tasks",
+    nav_todo: "Video To-Do Tasks",
+    nav_photo_todo: "Photo To-Do Tasks",
     nav_meetings: "Meetings",
 
     // Dashboard
@@ -214,7 +215,8 @@ export const translations = {
     nav_settings: "Cài đặt",
     nav_my_kpi: "KPI của tôi",
     nav_my_salary: "Lương của tôi",
-    nav_todo: "Công việc cần làm",
+    nav_todo: "Video Cần làm",
+    nav_photo_todo: "Ảnh cần làm",
     nav_meetings: "Meetings",
 
     // Dashboard

@@ -1,8 +1,8 @@
 import TasksView from "@/components/tasks/TasksView";
 
 export const metadata = {
-  title: "Công việc cần làm | Creative OS",
-  description: "Quản lý công việc cần làm",
+  title: "Video Cần làm | Creative OS",
+  description: "Quản lý video cần làm",
 };
 
 export default function TasksPage() {

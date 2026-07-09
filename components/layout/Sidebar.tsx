@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import WorkspaceSwitcher from "@/components/layout/WorkspaceSwitcher";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { LayoutDashboard, CheckSquare, Target, DollarSign, Settings, Video, Award } from "lucide-react";
+import { LayoutDashboard, CheckSquare, Target, DollarSign, Settings, Video, Award, Image as ImageIcon } from "lucide-react";
 
 export default function Sidebar() {
   const { t } = useLanguage();
@@ -14,6 +14,7 @@ export default function Sidebar() {
   const navItems = [
     { href: "/dashboard", label: "nav_dashboard", icon: LayoutDashboard },
     { href: "/tasks", label: "nav_todo", icon: CheckSquare },
+    { href: "/photo-tasks", label: "nav_photo_todo", icon: ImageIcon },
     { href: "/leaderboard", label: "nav_leaderboard", icon: Award },
     { href: "/meetings", label: "nav_meetings", icon: Video },
   ];
