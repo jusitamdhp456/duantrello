@@ -12,6 +12,7 @@ interface TaskCommentsModalProps {
 }
 
 export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalProps) {
+  console.log("Rendering TaskCommentsModal - Avatar version");
   const [comments, setComments] = useState<TaskComment[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
