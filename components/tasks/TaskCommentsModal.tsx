@@ -141,8 +141,8 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
       setContent("");
       removeSelectedImage();
       
-      // Reload comments is handled by realtime subscription, but we can do it optimistically or wait.
-      // loadComments();
+      // Reload comments immediately to update UI
+      await loadComments();
     } catch (error: any) {
       alert("Lỗi khi gửi nhận xét: " + error.message);
     } finally {

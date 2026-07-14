@@ -142,6 +142,9 @@ export default function PhotoTaskCommentsModal({ task, onClose }: PhotoTaskComme
       setContent("");
       removeSelectedImage();
       
+      // Reload comments immediately to update UI
+      await loadComments();
+      
     } catch (error: any) {
       alert("Lỗi khi gửi nhận xét: " + error.message);
     } finally {
