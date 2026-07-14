@@ -141,7 +141,7 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
       setContent("");
       removeSelectedImage();
       
-      // Reload comments immediately to update UI
+      // Tải lại comments ngay lập tức để UI cập nhật
       await loadComments();
     } catch (error: any) {
       alert("Lỗi khi gửi nhận xét: " + error.message);
