@@ -135,14 +135,16 @@ export default function TaskCommentsModal({ task, onClose }: TaskCommentsModalPr
       }
 
       // Add comment to DB
-      await addTaskComment(task.id, content, imageUrl);
+      const newComment = await addTaskComment(task.id, content, imageUrl);
       
       // Reset form
       setContent("");
       removeSelectedImage();
       
-      // Tải lại comments ngay lập tức để UI cập nhật
-      await loadComments();
+      // Append the new comment directly to state
+      if (newComment) {
+        setComments(prev => [...prev, newComment as TaskComment]);
+      }
     } catch (error: any) {
       alert("Lỗi khi gửi nhận xét: " + error.message);
     } finally {

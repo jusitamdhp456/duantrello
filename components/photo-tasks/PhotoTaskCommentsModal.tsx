@@ -136,14 +136,16 @@ export default function PhotoTaskCommentsModal({ task, onClose }: PhotoTaskComme
       }
 
       // Add comment to DB
-      await addPhotoTaskComment(task.id, content, imageUrl);
+      const newComment = await addPhotoTaskComment(task.id, content, imageUrl);
       
       // Reset form
       setContent("");
       removeSelectedImage();
       
-      // Tải lại comments ngay lập tức để UI cập nhật
-      await loadComments();
+      // Append the new comment directly to state
+      if (newComment) {
+        setComments(prev => [...prev, newComment as PhotoTaskComment]);
+      }
       
     } catch (error: any) {
       alert("Lỗi khi gửi nhận xét: " + error.message);
