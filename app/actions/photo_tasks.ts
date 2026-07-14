@@ -43,16 +43,34 @@ export async function getPhotoTasks(workspaceId: string) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  const { data, error } = await supabase
+  // Lấy các task chưa duyệt (hoặc bị từ chối)
+  const { data: unapprovedTasks, error: err1 } = await supabase
     .from("photo_tasks")
     .select("*")
     .eq("workspace_id", workspaceId)
+    .neq("review_status", "approved")
     .order("deadline", { ascending: true, nullsFirst: false });
 
-  if (error) {
-    console.error("Error fetching photo tasks:", error);
-    throw new Error(error.message);
+  if (err1) {
+    console.error("Error fetching unapproved photo tasks:", err1);
+    throw new Error(err1.message);
   }
+
+  // Lấy 50 task đã duyệt gần nhất để tránh tải quá nhiều dữ liệu cũ
+  const { data: approvedTasks, error: err2 } = await supabase
+    .from("photo_tasks")
+    .select("*")
+    .eq("workspace_id", workspaceId)
+    .eq("review_status", "approved")
+    .order("updated_at", { ascending: false })
+    .limit(50);
+
+  if (err2) {
+    console.error("Error fetching approved photo tasks:", err2);
+  }
+
+  // Gộp kết quả lại
+  const data = [...(unapprovedTasks || []), ...(approvedTasks || [])];
 
   if (data && data.length > 0) {
     const assigneeIds = Array.from(new Set(data.map(t => t.assignee_id).filter(Boolean)));
